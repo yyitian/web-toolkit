@@ -1,0 +1,18 @@
+:root {
+  /* 语义色板(模仿 element-plus,自有默认值) */
+  --wt-color-primary: #409eff;
+  --wt-color-success: #67c23a;
+  --wt-color-warning: #e6a23c;
+  --wt-color-danger: #f56c6c;
+  --wt-color-info: #909399;
+
+  /* 中性色(自绘组件用:文字/表面/描边) */
+  --wt-color-text: #222;
+  --wt-color-text-inverse: #fff;
+  --wt-color-bg: #fff;
+  --wt-color-bg-inverse: #222;
+  --wt-color-border: #e5e7eb;
+
+  /* 几何 */
+  --wt-radius: 4px;
+}

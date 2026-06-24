@@ -1,0 +1,103 @@
+@use 'sass:map';
+@use 'sass:meta';
+@use 'sass:list';
+@use '../mixin/index' as mixins;
+
+@layer style.utilities {
+  // 所有的mixin
+  $mixins: meta.module-mixins('mixins');
+
+  // flex的间距集合(取自设计规范)
+  $gaps: (0, 4, 6, 8, 10, 12, 16, 20, 24, 28, 32);
+
+  // flex容器类名集合
+  $flex-containers: (
+    'flex',
+    'flex-align-center',
+    'flex-between',
+    'flex-between-center',
+    'flex-center',
+    'flex-wrap',
+    'flex-column'
+  );
+
+  // 根据gap生成flex容器类名
+  @each $gap-value in $gaps {
+    @each $container in $flex-containers {
+      @if $gap-value == 0 {
+        .#{$container} {
+          @include meta.apply(map.get($mixins, $container));
+        }
+      } @else {
+        .#{$container}-#{$gap-value} {
+          @include meta.apply(map.get($mixins, $container), $gap-value * 1px);
+        }
+      }
+    }
+  }
+
+  // flex子项类名集合
+  $flex-items: (
+    'flex-right',
+    'flex-bottom',
+    'flex-shrink',
+    'flex-grow',
+    (
+      'flex-grow': hidden,
+    )
+  );
+
+  // 生成flex子项类名
+  @each $item in $flex-items {
+    @if meta.type-of($item) == 'string' {
+      .#{$item} {
+        @include meta.apply(map.get($mixins, $item));
+      }
+    } @else {
+      @each $key, $value in $item {
+        .#{$key}-#{$value} {
+          @include meta.apply(map.get($mixins, $key), $value);
+        }
+      }
+    }
+  }
+
+  // 字体size类名集合
+  @for $i from 0 through 10 {
+    $size: 12 + $i * 2;
+    $font-size: $size * 1px;
+    .font-#{$size} {
+      @include mixins.font($size: $font-size);
+    }
+    .font-#{$size}-bold {
+      @include mixins.font($size: $font-size, $bold: true);
+    }
+  }
+
+  // 过滤未生成class的mixin
+  @function filter-mixins() {
+    $list: ();
+    $font-list: 'font';
+    $use-list: list.join(
+      list.join($flex-containers, $flex-items),
+      ([$font-list])
+    );
+
+    @each $mixin in map.keys($mixins) {
+      @if not list.index($use-list, $mixin) {
+        $list: list.append($list, $mixin);
+      }
+    }
+
+    @return $list;
+  }
+
+  $filter-mixins: filter-mixins();
+
+  // 给未生成class的mixin添加类名
+  @each $un-use-mixin in $filter-mixins {
+    .#{$un-use-mixin} {
+      @include meta.apply(map.get($mixins, $un-use-mixin));
+    }
+  }
+}

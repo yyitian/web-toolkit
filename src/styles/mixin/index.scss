@@ -1,0 +1,44 @@
+@forward './flex';
+@forward './font';
+
+@mixin border-radius {
+  border-radius: 8px;
+}
+
+@mixin border($width: 1px, $style: solid, $color: var(--border-color)) {
+  border: $width $style $color;
+}
+
+@mixin border-right($width: 1px, $style: solid, $color: var(--border-color)) {
+  border-right: $width $style $color;
+}
+
+@mixin border-left($width: 1px, $style: solid, $color: var(--border-color)) {
+  border-left: $width $style $color;
+}
+
+@mixin border-bottom($width: 1px, $style: solid, $color: var(--border-color)) {
+  border-bottom: $width $style $color;
+}
+@mixin border-top($width: 1px, $style: solid, $color: var(--border-color)) {
+  border-top: $width $style $color;
+}
+
+@mixin divider {
+  border-bottom: 1px solid var(--divider-color);
+}
+
+@mixin transition(
+  $duration: 0.8s,
+  $property: all,
+  $function: ease,
+  $delay: 0s
+) {
+  transition: $property $duration $function $delay;
+}
+
+@mixin line-1 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

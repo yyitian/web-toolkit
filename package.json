@@ -1,0 +1,86 @@
+{
+  "name": "@yyitian/web-toolkit",
+  "version": "0.1.0",
+  "description": "个人跨项目复用的 Vue 3 组件工具库(SuperIcon / SuperButton / SuperPopover + vite 插件 + scss mixin)",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css",
+    "**/*.scss"
+  ],
+  "repository": "github:yyitian/web-toolkit",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "files": [
+    "dist",
+    "src/styles"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/lib/main.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./vite-plugin": {
+      "types": "./dist/vite.plugin.d.ts",
+      "import": "./dist/vite-plugin.js"
+    },
+    "./dynamic-icons": {
+      "types": "./dist/lib/dynamic-icons.d.ts",
+      "import": "./dist/dynamic-icons.js"
+    },
+    "./style.css": "./dist/style.css",
+    "./styles/mixin": {
+      "sass": "./src/styles/mixin/index.scss",
+      "style": "./src/styles/mixin/index.scss",
+      "default": "./src/styles/mixin/index.scss"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build && vite build --config vite.config.plugin.ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepublishOnly": "pnpm build"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0",
+    "element-plus": "^2.14.0",
+    "@lucide/vue": "^1.18.0"
+  },
+  "peerDependenciesMeta": {
+    "element-plus": {
+      "optional": true
+    },
+    "@lucide/vue": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@floating-ui/vue": "^2.0.0"
+  },
+  "devDependencies": {
+    "@lucide/vue": "^1.18.0",
+    "@types/node": "^25.9.3",
+    "@vitejs/plugin-vue": "^6.0.7",
+    "@vue/eslint-config-prettier": "^10.2.0",
+    "@vue/eslint-config-typescript": "^14.8.0",
+    "@vue/language-core": "^3.3.5",
+    "element-plus": "^2.14.2",
+    "eslint": "^10.5.0",
+    "eslint-plugin-vue": "^10.9.2",
+    "globals": "^17.6.0",
+    "prettier": "^3.8.4",
+    "sass-embedded": "^1.100.0",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.61.1",
+    "unplugin-auto-import": "^21.0.0",
+    "unplugin-element-plus": "^0.11.2",
+    "vite": "^8.0.3",
+    "vite-plugin-dts": "^5.0.2",
+    "vue": "^3.5.38",
+    "vue-tsc": "^3.3.5"
+  }
+}

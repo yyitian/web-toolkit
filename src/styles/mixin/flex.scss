@@ -1,0 +1,93 @@
+@use 'sass:map';
+@use 'sass:meta';
+
+@mixin flex($gap: 0) {
+  display: flex;
+
+  @if $gap != 0 {
+    gap: $gap;
+  }
+
+  @content;
+}
+
+@mixin flex-align-center($args...) {
+  @include flex($args...) {
+    align-items: center;
+    @content;
+  }
+}
+
+@mixin flex-between($args...) {
+  @include flex($args...) {
+    justify-content: space-between;
+    @content;
+  }
+}
+
+@mixin flex-between-center($args...) {
+  @include flex-between($args...) {
+    align-items: center;
+    @content;
+  }
+}
+
+@mixin flex-around($args...) {
+  @include flex($args...) {
+    justify-content: space-around;
+    @content;
+  }
+}
+
+@mixin flex-around-center($args...) {
+  @include flex-around($args...) {
+    align-items: center;
+    @content;
+  }
+}
+
+@mixin flex-center($args...) {
+  @include flex($args...) {
+    align-items: center;
+    justify-content: center;
+    @content;
+  }
+}
+
+@mixin flex-wrap($args...) {
+  @include flex($args...) {
+    flex-wrap: wrap;
+    @content;
+  }
+}
+
+@mixin flex-column($args...) {
+  @include flex($args...) {
+    flex-direction: column;
+    @content;
+  }
+}
+
+@mixin flex-item($grow: 0, $shrink: 1, $basis: auto) {
+  flex: $grow $shrink $basis;
+}
+
+@mixin flex-grow($hidden: false) {
+  @include flex-item($grow: 1);
+
+  @if $hidden {
+    overflow: hidden;
+  }
+}
+
+@mixin flex-shrink($basis: auto) {
+  @include flex-item($shrink: 0, $basis: $basis);
+}
+
+@mixin flex-right {
+  margin-left: auto;
+}
+
+@mixin flex-bottom {
+  margin-top: auto;
+}

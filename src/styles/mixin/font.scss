@@ -1,0 +1,24 @@
+@mixin font-bold {
+  font-weight: bold;
+}
+
+@mixin font(
+  $size: 14px,
+  $height: 0,
+  $bold: false,
+  $color: var(--wt-color-text)
+) {
+  font-size: $size;
+
+  @if $bold {
+    @include font-bold;
+  }
+
+  @if $height != 0 {
+    line-height: $height;
+  } @else {
+    line-height: calc($size + 8px);
+  }
+
+  color: $color;
+}
