@@ -2,12 +2,10 @@
 
 本文件记录在「代码质量优化 + GitHub Packages 发布配置」(见 `specs/2026-06-17-publish-and-code-quality-design.md`)执行过程中,被明确判定为**超出本次范围**、留待以后处理的事项。每条注明背景与原因,便于将来单独开 spec/plan 推进。
 
-## 1. SuperIcon 按需加载 lucide 图标(根治打包体积)
+## 1. ~~SuperIcon 按需加载 lucide 图标(根治打包体积)~~ —— 已解决(2026-06-23 图标重构)
 
-- **背景:** `src/components/SuperIcon/index.vue` 用 `import * as LucideIcons from '@lucide/vue'` + `Reflect.get(LucideIcons, name)` 动态按名取图标。这种写法**无法 tree-shake**,会把 lucide 全量(约 790KB)带入打包结果。
-- **本次处置:** 把 `@lucide/vue` 设为 external 可选 peer(见发布配置),让 790KB 不进入我们发布的包;但消费方若用图标功能,其 app 仍会因动态访问而带入全部 lucide——**体积问题只是转移,未根治**。
-- **真正的解法(待办):** 重构图标加载为「按需」,例如:按图标名做动态 `import()`、改为消费方显式传入图标组件、或维护一个显式注册表。属于改变组件行为/API 的重构。
-- **优先级:** 中(影响所有使用 SuperIcon lucide 功能的消费方 app 体积)。
+- **背景(历史):** 旧实现用 `import * as LucideIcons from '@lucide/vue'` + `Reflect.get(LucideIcons, name)` 动态按名取图标,无法 tree-shake,会把 lucide 全量(约 790KB)带入打包结果。
+- **已解决:** `SuperIcon` 已重构为单一 `icon` prop(`string | Component`),lucide 图标由**消费方显式 import 后传入**(`h(icon)` 渲染),不再有 `import *` / `Reflect.get`。即本条原列「真正的解法」中的「改为消费方显式传入图标组件」已落地,体积问题根治(消费方只带入实际用到的图标,自动 tree-shake)。详见 `specs/2026-06-23-icon-merge-popover-theming-design.md`。
 
 ## 2. SuperButton 脱离 element-plus(零依赖)
 
@@ -22,6 +20,7 @@
 - **本次处置:** 明确不在本次范围(发布配置 + 类型规范优先)。
 - **待办:** 为一个会长期跨项目复用的组件库引入 Vitest + Vue Test Utils,至少覆盖三个组件的核心渲染/交互,改组件时防回归。
 - **优先级:** 中高(库被多项目依赖后,回归风险随之上升)。
+- **2026-06-24 决策:** 研讨后明确**本阶段不做**,搁置(见 `../2026-06-23-reliability-fixes.md` P0-1)。
 
 ---
 
