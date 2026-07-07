@@ -4,6 +4,8 @@ import SuperIcon from '@/components/SuperIcon/index.vue';
 import SuperButton from '@/components/SuperButton/index.vue';
 import SuperPopover from '@/components/SuperPopover/index.vue';
 import DynamicPin from '@/components/SuperIcon/dynamic-icons/DynamicPin.vue';
+import DynamicAudioLines from '@/components/SuperIcon/dynamic-icons/DynamicAudioLines.vue';
+import DynamicChevronLeft from '@/components/SuperIcon/dynamic-icons/DynamicChevronLeft.vue';
 
 const pinActive = ref(false);
 
@@ -38,6 +40,8 @@ function handleLoading() {
         :active="pinActive"
         @click="pinActive = !pinActive"
       />
+      <SuperIcon :icon="DynamicAudioLines" :active="pinActive"></SuperIcon>
+      <SuperIcon :icon="DynamicChevronLeft" :active="pinActive"></SuperIcon>
       <SuperIcon loading />
       <SuperIcon :icon="Settings" title="设置" effect="dark" />
       <SuperIcon :icon="Settings" title="设置" effect="light" />

@@ -1,6 +1,6 @@
 {
   "name": "@yyitian/web-toolkit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "个人跨项目复用的 Vue 3 组件工具库(SuperIcon / SuperButton / SuperPopover + vite 插件 + scss mixin)",
   "license": "MIT",
   "type": "module",
