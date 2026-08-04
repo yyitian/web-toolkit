@@ -32,7 +32,7 @@ function renderIcon() {
 
 <template>
   <el-button class="super-button" :disabled="isDisabled">
-    <template #icon>
+    <template v-if="props.icon" #icon>
       <Component :is="renderIcon" />
     </template>
     <slot />

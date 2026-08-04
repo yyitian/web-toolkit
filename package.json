@@ -1,7 +1,7 @@
 {
   "name": "@yyitian/web-toolkit",
-  "version": "0.2.0",
-  "description": "个人跨项目复用的 Vue 3 组件工具库(SuperIcon / SuperButton / SuperPopover + vite 插件 + scss mixin)",
+  "version": "0.3.0",
+  "description": "个人跨项目复用的 Vue 3 组件工具库（图标、按钮、浮层、表单、弹窗与 Vite 插件）",
   "license": "MIT",
   "type": "module",
   "sideEffects": [
@@ -10,7 +10,8 @@
   ],
   "repository": "github:yyitian/web-toolkit",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "files": [
     "dist",
@@ -46,9 +47,9 @@
     "prepublishOnly": "pnpm build"
   },
   "peerDependencies": {
-    "vue": "^3.5.0",
+    "@lucide/vue": "^1.18.0",
     "element-plus": "^2.14.0",
-    "@lucide/vue": "^1.18.0"
+    "vue": "^3.5.0"
   },
   "peerDependenciesMeta": {
     "element-plus": {
@@ -59,7 +60,8 @@
     }
   },
   "dependencies": {
-    "@floating-ui/vue": "^2.0.0"
+    "@floating-ui/vue": "^2.0.0",
+    "es-toolkit": "^1.50.0"
   },
   "devDependencies": {
     "@lucide/vue": "^1.18.0",

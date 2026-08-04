@@ -26,6 +26,31 @@ pnpm format:check   # prettier --check .
 
 仓库没有配置测试框架，也没有 `test` 脚本。变更后优先运行 `pnpm lint` 和 `pnpm build`。
 
+## 发布流程
+
+包公开发布到 npm 官方仓库，`package.json` 必须保持：
+
+```json
+{
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
+```
+
+发布新版本时按以下顺序执行：
+
+1. 运行 `git fetch origin main --tags`，确认本地与 `origin/main` 的分叉情况，且目标标签不存在。
+2. 运行 `npm whoami --registry=https://registry.npmjs.org/` 验证发布身份；凭据只放用户级 npm 配置或环境变量，不写入仓库。
+3. 更新 `package.json` 版本，并运行 `pnpm lint`、`pnpm build`。
+4. 检查发布包内容，创建符合仓库约定的提交和 `v<version>` 标签。
+5. 运行 `pnpm publish --access public --registry=https://registry.npmjs.org/`。
+6. 发布后查询 npm 版本和访问级别，并在不加载用户凭据的临时环境中验证安装。
+7. 验证通过后推送 `main` 和对应版本标签。
+
+不要把 scope 重新映射到 GitHub Packages，也不要在项目中创建包含认证信息的 `.npmrc`。
+
 ## 技术栈与结构
 
 - Vue 3.5、TypeScript、Vite。

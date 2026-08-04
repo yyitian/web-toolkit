@@ -19,9 +19,8 @@ export default defineConfig({
       cssFileName: 'style', // 抽取的组件样式 → dist/style.css
     },
     rollupOptions: {
-      // vue、element-plus 由消费方提供;@lucide/vue 全量体积大且无法 tree-shake,
-      // 改为外部可选 peer,避免把整套图标打进产物。@floating-ui/vue 体积小,继续打包。
-      external: ['vue', 'element-plus', /^element-plus\/.*/, '@lucide/vue'],
+      // vue、element-plus 由消费方提供；内部使用的 lucide 图标参与 tree-shaking。
+      external: ['vue', 'element-plus', /^element-plus\/.*/],
     },
   },
   resolve: { alias: { '@': resolve(__dirname, 'src') } },

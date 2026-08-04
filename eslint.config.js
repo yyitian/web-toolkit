@@ -10,7 +10,12 @@ import autoImportGlobals from './.eslintrc-auto-import.json' with { type: 'json'
 export default defineConfigWithVueTs(
   {
     name: 'web-toolkit/ignores',
-    ignores: ['**/dist/**', '**/auto-imports.d.ts', '**/coverage/**'],
+    ignores: [
+      '**/dist/**',
+      '**/auto-imports.d.ts',
+      '**/coverage/**',
+      'src/demo/bak/**',
+    ],
   },
   pluginVue.configs['flat/recommended'],
   vueTsConfigs.recommended,

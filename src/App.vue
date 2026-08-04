@@ -6,6 +6,7 @@ import SuperPopover from '@/components/SuperPopover/index.vue';
 import DynamicPin from '@/components/SuperIcon/dynamic-icons/DynamicPin.vue';
 import DynamicAudioLines from '@/components/SuperIcon/dynamic-icons/DynamicAudioLines.vue';
 import DynamicChevronLeft from '@/components/SuperIcon/dynamic-icons/DynamicChevronLeft.vue';
+import SuperFormDemo from '@/demo/SuperFormDemo.vue';
 
 const pinActive = ref(false);
 
@@ -90,11 +91,12 @@ function handleLoading() {
         <span class="demo-trigger">disabled manual</span>
       </SuperPopover>
     </div>
+    <SuperFormDemo />
   </section>
 </template>
 <style lang="scss" scoped>
 .app-container {
-  height: 100vh;
+  min-height: 100vh;
 }
 .super-icon-group {
   @include flex(16px);
