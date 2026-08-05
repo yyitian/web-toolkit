@@ -9,13 +9,11 @@ pnpm add @yyitian/web-toolkit
 # 或
 npm install @yyitian/web-toolkit
 
-# 若用到 SuperButton、SuperDialog、SuperForm 或 SuperFormDialog，需自行安装 element-plus（可选 peer）
+# 使用 SuperButton、SuperDialog、SuperForm 或 SuperFormDialog
 pnpm add element-plus
-# 若用到 lucide 图标(给 SuperIcon :icon 传入 lucide 组件),需自行安装 @lucide/vue(可选 peer)
+# 使用 lucide 组件图标或 dynamic-icons
 pnpm add @lucide/vue
 ```
-
-安装公开包无需 GitHub PAT 或 npm 访问令牌。若曾使用旧版 GitHub Packages，请删除用户级 `~/.npmrc` 中把 `@yyitian` 指向 `https://npm.pkg.github.com` 的配置，避免包管理器继续访问旧私有源。
 
 **依赖矩阵**(用到哪个能力,才需装对应 peer):
 
@@ -25,7 +23,7 @@ pnpm add @lucide/vue
 | `element-plus` | 可选     | `SuperButton`、`SuperDialog`、`SuperForm`、`SuperFormDialog`       |
 | `@lucide/vue`  | 可选     | 给 `:icon` 传 lucide 组件、或使用 `dynamic-icons` 子路径的成品图标 |
 
-> 「可选」指**没用到对应组件就无需安装**;一旦用到该组件,对应 peer 即为硬性要求(不装会运行时报错)。只用 `SuperIcon` 的 sprite 图标 + `SuperPopover` 时,两个可选 peer 都不需要。
+只安装实际使用组件对应的可选 peer；`vue` 为所有组件的必需依赖。
 
 ## 用法
 
@@ -40,11 +38,11 @@ import {
   SuperForm,
   SuperFormDialog,
 } from '@yyitian/web-toolkit';
-// ⚠️ 必须手动引入一次样式(通常在应用入口)
+// 在应用入口引入一次样式
 import '@yyitian/web-toolkit/style.css';
 ```
 
-> **⚠️ `style.css` 不可省略。** 主题变量 `--wt-*`(含 popover 的背景/文字/边框默认值)随它注入。漏引时变量全部 undefined → popover 透明、边框消失,且**不会有任何报错**。务必在应用入口引入一次。
+组件样式和 `--wt-*` 默认主题变量由 `style.css` 提供，消费方需要在应用入口引入一次。
 
 ### Dynamic Icon(带状态/过渡动画的图标)
 
@@ -97,17 +95,30 @@ export default defineConfig({
   --wt-color-primary: #6d28d9;
 }
 
-/* 想跟 element-plus 主题同步,消费端自行桥接(库不绑定任何 UI 库) */
+/* 与 Element Plus 主题色同步 */
 :root {
   --wt-color-primary: var(--el-color-primary);
 }
 ```
 
+### SuperButton
+
+`SuperButton` 支持 Element Plus 按钮属性，并提供 `icon`、`label`、`square`、`active` 和 `loading`。只有图标且未声明默认插槽时显示为纯图标按钮；此时 `label` 用作 tooltip 和默认 `aria-label`。
+
+```vue
+<SuperButton label="保存" />
+<SuperButton :icon="Save">保存</SuperButton>
+<SuperButton :icon="Settings" label="设置" />
+<SuperButton :icon="Settings" :square="32" label="设置" />
+```
+
+`square` 接受大于 `0` 的数字，单位为 px，图标尺寸为边长的一半。纯图标按钮默认宽高和图标尺寸均为 `20px`；传入 `square` 可设置固定的正方形点击区域。`#icon` 的优先级高于 `icon`；声明默认插槽后，`square` 和 `label` 不生效。`loading` 显示加载图标并禁用按钮。
+
 ### SuperPopover
 
-`SuperPopover` 默认把浮层 Teleport 到 `body`,避免被父组件的 `overflow:hidden`、局部 stacking context 等影响。消费方仍可通过 `--wt-popover-*` 变量定制 UI,但变量必须作用在浮层节点自身或它的真实 DOM 祖先上。
+`SuperPopover` 支持 `hover`、`click` 和 `manual` 三种触发方式。通过 `#reference="{ setReference }"` 指定参考元素，浮层内容写在 `#content`；浮层默认挂载到 `body`。
 
-默认推荐使用 `popperClass` / `popperStyle` 作为浮层自定义入口:
+使用 `popperClass`、`popperStyle` 和 `--wt-popover-*` 变量自定义浮层样式：
 
 ```vue
 <SuperPopover
@@ -115,7 +126,9 @@ export default defineConfig({
   :popper-style="{ '--wt-popover-z-index': 3000 }"
   :arrow="false"
 >
-  <button>hover</button>
+  <template #reference="{ setReference }">
+    <button :ref="setReference">hover</button>
+  </template>
   <template #content>…title + description…</template>
 </SuperPopover>
 ```
@@ -136,7 +149,9 @@ export default defineConfig({
 
 ```vue
 <SuperPopover trigger="click" close-on-click-outside>
-  <button>点击打开</button>
+  <template #reference="{ setReference }">
+    <button :ref="setReference">点击打开</button>
+  </template>
   <template #content>点击浮层内部不会关闭</template>
 </SuperPopover>
 
@@ -145,12 +160,14 @@ export default defineConfig({
   trigger="manual"
   :close-on-click-outside="false"
 >
-  <button>外部控制</button>
+  <template #reference="{ setReference }">
+    <button :ref="setReference">外部控制</button>
+  </template>
   <template #content>完全手动关闭</template>
 </SuperPopover>
 ```
 
-`teleportTo` 默认是 `'body'`;传 `false` 时浮层会保留在组件当前位置渲染,此时可以利用真实 DOM 继承影响浮层变量,但这不是默认推荐路径。
+将 `teleportTo` 设为 CSS 选择器或目标元素可指定挂载位置，设为 `false` 可在组件当前位置渲染浮层。
 
 边框默认与背景同色,因此通常不可见;设置 `--wt-popover-border-color` 即可显形。`--wt-popover-max-width` 默认是 `400px`。
 

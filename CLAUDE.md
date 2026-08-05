@@ -63,6 +63,6 @@ pnpm format:check   # prettier --check .
 
 `SuperButton`（包 `ElButton`）→ 内部用 `SuperIcon`；`SuperIcon`（带 title 时）→ 内部用 `SuperPopover`。`SuperButton` 直接把 `icon: string | Component` 透传给 `SuperIcon`，无前缀/无来源区分逻辑。
 
-`SuperPopover` 基于 `@floating-ui/vue` 实现 hover tooltip：`config.ts` 的 `placementMap` 用于箭头反向定位（`arrowInnerBorderHidden` 据此隐藏箭头内侧两边、避免设了可见 border 时露接缝）；用 `strategy: 'fixed'` + `whileElementsMounted: autoUpdate` 定位（**刻意不 Teleport**，以保留浮层作为单根 `.super-popover` 的 DOM 后代、继承 `--wt-popover-*` 变量）；带 120ms 关闭延迟以支持鼠标移入浮层。
+`SuperPopover` 基于 `@floating-ui/vue` 实现 hover tooltip：`config.ts` 的 `placementMap` 用于箭头反向定位（`arrowInnerBorderHidden` 据此隐藏箭头内侧两边、避免设了可见 border 时露接缝）；用 `strategy: 'fixed'` + `whileElementsMounted: autoUpdate` 定位，默认 Teleport 到 `body`，并带 120ms 关闭延迟以支持鼠标移入浮层。
 
-**Popover 主题与二开**：单根 `.super-popover`（`display:contents`）承载 `--wt-popover-*` 预设变量，预设用 `:global(:where(...))` 把权重归零，消费方给 `<SuperPopover>` 叠加任意 class 覆盖变量即可二次开发（背景支持渐变；边框默认与背景同色隐形，设 `--wt-popover-border-color` 才显形）。变量靠 DOM 继承生效，故消费端务必引入 `style.css`（`--wt-*` 默认值在内），否则浮层透明且无报错。
+**Popover reference 与二开**：组件只接受 `#reference="{ setReference }"` scoped slot，不生成参考节点包装 DOM。浮层样式通过 `popperClass`、`popperStyle` 以及作用在浮层自身或真实祖先上的 `--wt-popover-*` 变量定制；边框默认与背景同色，设置 `--wt-popover-border-color` 才显形。消费端仍须引入 `style.css` 获取 `--wt-*` 默认值。

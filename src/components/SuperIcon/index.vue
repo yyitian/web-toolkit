@@ -51,7 +51,7 @@ export default defineComponent({
       );
     }
 
-    function renderIcon() {
+    function renderIcon(setReference?: (value: unknown) => void) {
       const icon =
         typeof props.icon === 'string'
           ? props.icon
@@ -62,6 +62,7 @@ export default defineComponent({
       return h(
         'span',
         {
+          ref: setReference,
           class: ['super-icon', { loading: props.loading }],
           style: {
             // 负角度(如 -90)同样应生效;仅 loading 时让位给旋转动画
@@ -76,7 +77,10 @@ export default defineComponent({
       return h(
         SuperPopover,
         { title: props.title, effect: props.effect },
-        { default: renderIcon },
+        {
+          reference: ({ setReference }: { setReference: (value: unknown) => void }) =>
+            renderIcon(setReference),
+        },
       );
     }
 
@@ -89,7 +93,7 @@ export default defineComponent({
 .super-icon {
   @include flex-align-center;
   position: relative;
-  cursor: pointer;
+  cursor: inherit;
   &.loading {
     animation: loading 1.2s linear infinite;
   }

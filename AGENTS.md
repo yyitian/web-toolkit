@@ -110,7 +110,7 @@ import '@yyitian/web-toolkit/style.css';
 
 `style.css` 提供 `--wt-*` 主题变量默认值。漏引不会报错，但会导致例如 `SuperPopover` 背景透明、边框和颜色异常。
 
-`SuperPopover` 支持通过给组件根节点追加 class 并覆盖 `--wt-popover-*` 变量二次开发。由于组件刻意不 Teleport，变量依赖 DOM 继承生效。
+`SuperPopover` 默认把浮层 Teleport 到 `body`。浮层样式通过 `popperClass`、`popperStyle` 和作用在浮层自身或其真实祖先上的 `--wt-popover-*` 变量定制。
 
 ## 组件设计要点
 
@@ -133,7 +133,7 @@ defineOptions({ dynamicIcon: true });
 
 ### SuperButton
 
-`SuperButton` 内部使用 `SuperIcon`，直接把 `icon: string | Component` 透传给 `SuperIcon`。不要增加前缀判断或来源区分逻辑。
+`SuperButton` 内部使用 `SuperIcon`，直接把 `icon: string | Component` 透传给 `SuperIcon`。不要增加前缀判断或来源区分逻辑。只有图标且未声明默认插槽时自动进入纯图标形态；`square` 控制精确正方形边长，`label` 用作 tooltip 和默认无障碍名称。组件自有 `loading` 不传给 Element Plus。
 
 ### SuperPopover
 
@@ -142,7 +142,9 @@ defineOptions({ dynamicIcon: true });
 - `strategy: 'fixed'`。
 - `whileElementsMounted: autoUpdate`。
 - 带 120ms 关闭延迟，支持鼠标移入浮层。
-- 不使用 Teleport，以保留单根 `.super-popover` DOM 后代和 CSS 变量继承。
+- 使用唯一的 `#reference="{ setReference }"` scoped slot，不生成参考节点包装 DOM。
+- 默认 Teleport 到 `body`；`teleportTo=false` 时浮层会成为 reference 后方的真实兄弟节点。
+- 浮层样式使用 `popperClass`、`popperStyle` 和 `--wt-popover-*` 变量。
 - `config.ts` 的 `placementMap` 用于箭头反向定位和隐藏内侧边框接缝。
 
 ## Vite 插件
@@ -167,6 +169,6 @@ defineOptions({ dynamicIcon: true });
 - 新增对外组件时，同时更新 `lib/main.ts` 和必要文档。
 - 新增动态图标时，同时更新 `lib/dynamic-icons.ts`。
 - 不要移除消费方必须手动引入 `style.css` 的说明。
-- 不要把 `SuperPopover` 改成 Teleport，除非同步重新设计 CSS 变量继承方案。
+- 不要恢复 `SuperPopover` 的默认插槽触发协议或参考节点包装层。
 - 保持库代码与演示代码边界清晰：`src/App.vue` 只用于本地预览，不是发布入口。
 - 变更完成后，优先运行 `pnpm lint` 和 `pnpm build` 验证。

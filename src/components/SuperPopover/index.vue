@@ -1,398 +1,370 @@
 <script lang="ts">
-import type { StyleValue } from 'vue';
+import {
+  autoUpdate,
+  arrow as useArrow,
+  flip as useFlip,
+  offset as useOffset,
+  shift as useShift,
+  useFloating,
+} from '@floating-ui/vue';
+import type { Placement } from '@floating-ui/vue';
+import { createVNode, Teleport, type PropType, type StyleValue } from 'vue';
+import { placementMap } from './config.ts';
 
 type PopoverTrigger = 'hover' | 'click' | 'manual';
 type PopoverDelay = number | { open?: number; close?: number };
 type TeleportTarget = string | HTMLElement | false;
+type ReferenceSetter = (target: unknown) => void;
 
 const DEFAULT_DELAY = { open: 0, close: 120 } as const;
-</script>
 
-<script setup lang="ts">
-import {
-  useFloating,
-  autoUpdate,
-  offset as useOffset,
-  flip as useFlip,
-  shift as useShift,
-  arrow as useArrow,
-} from '@floating-ui/vue';
-import type { Placement } from '@floating-ui/vue';
-import { placementMap } from './config';
-
-const visible = defineModel({ type: Boolean });
-const props = withDefaults(
-  defineProps<{
-    placement?: Placement;
-    offset?: number;
-    effect?: 'dark' | 'light';
-    title?: string;
-    teleportTo?: TeleportTarget;
-    trigger?: PopoverTrigger;
-    disabled?: boolean;
-    arrow?: boolean;
-    delay?: PopoverDelay;
-    closeOnClickOutside?: boolean;
-    popperClass?: unknown;
-    popperStyle?: StyleValue;
-  }>(),
-  {
-    placement: 'top',
-    title: '',
-    offset: 12,
-    effect: 'dark',
-    teleportTo: 'body',
-    trigger: 'hover',
-    disabled: false,
-    arrow: true,
-    delay: () => ({ ...DEFAULT_DELAY }),
-    closeOnClickOutside: true,
-    popperClass: undefined,
-    popperStyle: undefined,
+export default defineComponent({
+  inheritAttrs: false,
+  props: {
+    modelValue: { type: Boolean, default: false },
+    placement: {
+      type: String as PropType<Placement>,
+      default: 'top',
+    },
+    offset: { type: Number, default: 12 },
+    effect: {
+      type: String as PropType<'dark' | 'light'>,
+      default: 'dark',
+    },
+    title: { type: String, default: '' },
+    teleportTo: {
+      type: [String, Object, Boolean] as PropType<TeleportTarget>,
+      default: 'body',
+    },
+    trigger: {
+      type: String as PropType<PopoverTrigger>,
+      default: 'hover',
+    },
+    disabled: { type: Boolean, default: false },
+    arrow: { type: Boolean, default: true },
+    delay: {
+      type: [Number, Object] as PropType<PopoverDelay>,
+      default: () => ({ ...DEFAULT_DELAY }),
+    },
+    closeOnClickOutside: { type: Boolean, default: true },
+    popperClass: { type: null, default: undefined },
+    popperStyle: {
+      type: [String, Array, Object] as PropType<StyleValue>,
+      default: undefined,
+    },
   },
-);
+  emits: ['update:modelValue'],
+  setup(props, { emit, slots }) {
+    const reference = ref<HTMLElement | null>(null);
+    const floating = ref<HTMLElement | null>(null);
+    const floatingArrow = ref<HTMLElement | null>(null);
 
-const { placement } = toRefs(props);
+    const internalVisible = ref(props.modelValue);
+    const visible = computed({
+      get: () => internalVisible.value,
+      set: (value: boolean) => {
+        internalVisible.value = value;
+        emit('update:modelValue', value);
+      },
+    });
 
-const reference = ref<HTMLElement | null>(null);
-const floating = ref<HTMLElement | null>(null);
-const floatingArrow = ref<HTMLElement | null>(null);
+    watch(
+      () => props.modelValue,
+      (modelValue) => {
+        internalVisible.value = modelValue;
+      },
+    );
 
-const normalizedDelay = computed(() => {
-  if (typeof props.delay === 'number') {
-    return {
-      open: props.delay,
-      close: props.delay,
+    const normalizedDelay = computed(() => {
+      if (typeof props.delay === 'number') {
+        return { open: props.delay, close: props.delay };
+      }
+
+      return {
+        open: props.delay.open ?? DEFAULT_DELAY.open,
+        close: props.delay.close ?? DEFAULT_DELAY.close,
+      };
+    });
+
+    const isOpen = computed(() => visible.value && !props.disabled);
+    const middleware = computed(() => {
+      const middlewares = [useOffset(props.offset), useFlip(), useShift()];
+
+      if (props.arrow) {
+        middlewares.push(useArrow({ element: floatingArrow }));
+      }
+
+      return middlewares;
+    });
+
+    const {
+      floatingStyles,
+      middlewareData,
+      placement: resolvedPlacement,
+    } = useFloating(reference, floating, {
+      placement: computed(() => props.placement),
+      middleware,
+      strategy: 'fixed',
+      whileElementsMounted: autoUpdate,
+    });
+
+    let openTimer: ReturnType<typeof setTimeout> | undefined;
+    let closeTimer: ReturnType<typeof setTimeout> | undefined;
+
+    function clearOpenTimer() {
+      if (openTimer != null) {
+        clearTimeout(openTimer);
+        openTimer = undefined;
+      }
+    }
+
+    function clearCloseTimer() {
+      if (closeTimer != null) {
+        clearTimeout(closeTimer);
+        closeTimer = undefined;
+      }
+    }
+
+    function clearTimers() {
+      clearOpenTimer();
+      clearCloseTimer();
+    }
+
+    function setOpen(nextVisible: boolean) {
+      if (props.disabled) {
+        visible.value = false;
+        return;
+      }
+
+      visible.value = nextVisible;
+    }
+
+    function closeImmediately() {
+      clearTimers();
+      visible.value = false;
+    }
+
+    function scheduleOpen() {
+      if (props.trigger !== 'hover' || props.disabled) return;
+
+      clearCloseTimer();
+      clearOpenTimer();
+
+      if (normalizedDelay.value.open <= 0) {
+        setOpen(true);
+        return;
+      }
+
+      openTimer = setTimeout(() => {
+        if (props.trigger === 'hover') setOpen(true);
+      }, normalizedDelay.value.open);
+    }
+
+    function scheduleClose() {
+      if (props.trigger !== 'hover') return;
+
+      clearOpenTimer();
+      clearCloseTimer();
+
+      if (normalizedDelay.value.close <= 0) {
+        setOpen(false);
+        return;
+      }
+
+      closeTimer = setTimeout(() => {
+        if (props.trigger === 'hover') setOpen(false);
+      }, normalizedDelay.value.close);
+    }
+
+    function handleReferenceClick() {
+      if (props.trigger === 'click' && !props.disabled) {
+        setOpen(!isOpen.value);
+      }
+    }
+
+    function bindReferenceListeners(element: HTMLElement | null) {
+      element?.addEventListener('mouseenter', scheduleOpen);
+      element?.addEventListener('mouseleave', scheduleClose);
+      element?.addEventListener('click', handleReferenceClick);
+    }
+
+    function unbindReferenceListeners(element: HTMLElement | null) {
+      element?.removeEventListener('mouseenter', scheduleOpen);
+      element?.removeEventListener('mouseleave', scheduleClose);
+      element?.removeEventListener('click', handleReferenceClick);
+    }
+
+    function resolveReferenceElement(target: unknown): HTMLElement | null {
+      if (typeof HTMLElement === 'undefined') return null;
+      if (target instanceof HTMLElement) return target;
+      if (target == null || typeof target !== 'object') return null;
+
+      const exposedReference = (target as { ref?: unknown }).ref;
+      if (exposedReference instanceof HTMLElement) return exposedReference;
+      if (exposedReference && typeof exposedReference === 'object') {
+        const exposedValue = (exposedReference as { value?: unknown }).value;
+        if (exposedValue instanceof HTMLElement) return exposedValue;
+      }
+
+      const componentElement = (target as { $el?: unknown }).$el;
+      return componentElement instanceof HTMLElement ? componentElement : null;
+    }
+
+    const setReference: ReferenceSetter = (target) => {
+      reference.value = resolveReferenceElement(target);
     };
-  }
 
-  return {
-    open: props.delay.open ?? DEFAULT_DELAY.open,
-    close: props.delay.close ?? DEFAULT_DELAY.close,
-  };
-});
+    watch(reference, (nextReference, previousReference) => {
+      unbindReferenceListeners(previousReference);
+      bindReferenceListeners(nextReference);
+    });
 
-const isOpen = computed(() => Boolean(visible.value) && !props.disabled);
+    watch(
+      () => props.disabled,
+      (disabled) => {
+        if (disabled) closeImmediately();
+      },
+      { immediate: true },
+    );
 
-const middleware = computed(() => {
-  const middlewares = [useOffset(props.offset), useFlip(), useShift()];
+    watch(visible, (nextVisible) => {
+      if (props.disabled && nextVisible) visible.value = false;
+    });
 
-  if (props.arrow) {
-    middlewares.push(useArrow({ element: floatingArrow }));
-  }
+    watch(
+      () => props.trigger,
+      () => clearTimers(),
+    );
 
-  return middlewares;
-});
+    const clickOutsideListenerOptions = true;
+    const shouldBindClickOutside = computed(
+      () =>
+        isOpen.value &&
+        props.closeOnClickOutside &&
+        (props.trigger === 'click' || props.trigger === 'manual'),
+    );
 
-const {
-  floatingStyles,
-  middlewareData,
-  placement: usePlacement,
-} = useFloating(reference, floating, {
-  placement,
-  middleware,
-  strategy: 'fixed',
-  // 打开期间滚动/缩放自动重新定位
-  whileElementsMounted: autoUpdate,
-});
-
-let openTimer: ReturnType<typeof setTimeout> | undefined;
-let closeTimer: ReturnType<typeof setTimeout> | undefined;
-
-function clearOpenTimer() {
-  if (openTimer != null) {
-    clearTimeout(openTimer);
-    openTimer = undefined;
-  }
-}
-
-function clearCloseTimer() {
-  if (closeTimer != null) {
-    clearTimeout(closeTimer);
-    closeTimer = undefined;
-  }
-}
-
-function clearTimers() {
-  clearOpenTimer();
-  clearCloseTimer();
-}
-
-function setOpen(nextVisible: boolean) {
-  if (props.disabled) {
-    visible.value = false;
-    return;
-  }
-
-  visible.value = nextVisible;
-}
-
-function closeImmediately() {
-  clearTimers();
-  visible.value = false;
-}
-
-function scheduleOpen() {
-  if (props.trigger !== 'hover' || props.disabled) {
-    return;
-  }
-
-  clearCloseTimer();
-  clearOpenTimer();
-
-  if (normalizedDelay.value.open <= 0) {
-    setOpen(true);
-    return;
-  }
-
-  openTimer = setTimeout(() => {
-    if (props.trigger === 'hover') {
-      setOpen(true);
-    }
-  }, normalizedDelay.value.open);
-}
-
-function scheduleClose() {
-  if (props.trigger !== 'hover') {
-    return;
-  }
-
-  clearOpenTimer();
-  clearCloseTimer();
-
-  if (normalizedDelay.value.close <= 0) {
-    setOpen(false);
-    return;
-  }
-
-  closeTimer = setTimeout(() => {
-    if (props.trigger === 'hover') {
-      setOpen(false);
-    }
-  }, normalizedDelay.value.close);
-}
-
-function handleReferenceMouseenter() {
-  scheduleOpen();
-}
-
-function handleReferenceMouseleave() {
-  scheduleClose();
-}
-
-function handleFloatingMouseenter() {
-  if (props.trigger !== 'hover') {
-    return;
-  }
-
-  clearCloseTimer();
-}
-
-function handleFloatingMouseleave() {
-  scheduleClose();
-}
-
-function handleReferenceClick() {
-  if (props.trigger !== 'click' || props.disabled) {
-    return;
-  }
-
-  setOpen(!isOpen.value);
-}
-
-const clickOutsideListenerOptions = true;
-
-const shouldBindClickOutside = computed(() => {
-  return (
-    isOpen.value &&
-    props.closeOnClickOutside &&
-    (props.trigger === 'click' || props.trigger === 'manual')
-  );
-});
-
-function handleDocumentPointerdown(event: PointerEvent) {
-  if (!(event.target instanceof Node)) {
-    return;
-  }
-
-  if (
-    reference.value?.contains(event.target) ||
-    floating.value?.contains(event.target)
-  ) {
-    return;
-  }
-
-  closeImmediately();
-}
-
-watch(
-  () => props.disabled,
-  (disabled) => {
-    if (disabled) {
+    function handleDocumentPointerdown(event: PointerEvent) {
+      if (!(event.target instanceof Node)) return;
+      if (
+        reference.value?.contains(event.target) ||
+        floating.value?.contains(event.target)
+      ) {
+        return;
+      }
       closeImmediately();
     }
-  },
-  { immediate: true },
-);
 
-watch(visible, (nextVisible) => {
-  if (props.disabled && nextVisible) {
-    visible.value = false;
-  }
-});
+    watch(
+      shouldBindClickOutside,
+      (shouldBind) => {
+        if (typeof document === 'undefined') return;
+        if (shouldBind) {
+          document.addEventListener(
+            'pointerdown',
+            handleDocumentPointerdown,
+            clickOutsideListenerOptions,
+          );
+        } else {
+          document.removeEventListener(
+            'pointerdown',
+            handleDocumentPointerdown,
+            clickOutsideListenerOptions,
+          );
+        }
+      },
+      { immediate: true },
+    );
 
-watch(
-  () => props.trigger,
-  () => {
-    clearTimers();
-  },
-);
+    onBeforeUnmount(() => {
+      clearTimers();
+      unbindReferenceListeners(reference.value);
+      if (typeof document !== 'undefined') {
+        document.removeEventListener(
+          'pointerdown',
+          handleDocumentPointerdown,
+          clickOutsideListenerOptions,
+        );
+      }
+    });
 
-watch(
-  shouldBindClickOutside,
-  (shouldBind) => {
-    if (shouldBind) {
-      document.addEventListener(
-        'pointerdown',
-        handleDocumentPointerdown,
-        clickOutsideListenerOptions,
+    const staticSide = computed(
+      () => placementMap[resolvedPlacement.value.split('-')[0]],
+    );
+
+    const arrowInnerBorderHidden = computed<Record<string, string>>(() => {
+      if (!props.arrow) return {};
+
+      const map: Record<string, Record<string, string>> = {
+        bottom: { borderTopWidth: '0', borderLeftWidth: '0' },
+        top: { borderBottomWidth: '0', borderRightWidth: '0' },
+        left: { borderTopWidth: '0', borderRightWidth: '0' },
+        right: { borderBottomWidth: '0', borderLeftWidth: '0' },
+      };
+      return map[staticSide.value] ?? {};
+    });
+
+    function renderFloating() {
+      if (!isOpen.value) return null;
+
+      return h(
+        'div',
+        {
+          ref: floating,
+          class: [
+            'super-popover-floating',
+            { 'super-popover-floating--light': props.effect === 'light' },
+            props.popperClass,
+          ],
+          style: [floatingStyles.value, props.popperStyle],
+          onMouseenter: () => {
+            if (props.trigger === 'hover') clearCloseTimer();
+          },
+          onMouseleave: scheduleClose,
+        },
+        [
+          slots.content?.() ?? h('span', props.title),
+          props.arrow
+            ? h('div', {
+                ref: floatingArrow,
+                class: 'super-popover-arrow',
+                style: {
+                  left:
+                    middlewareData.value.arrow?.x != null
+                      ? `${middlewareData.value.arrow.x}px`
+                      : '',
+                  top:
+                    middlewareData.value.arrow?.y != null
+                      ? `${middlewareData.value.arrow.y}px`
+                      : '',
+                  [staticSide.value]: '-4px',
+                  ...arrowInnerBorderHidden.value,
+                },
+              })
+            : null,
+        ],
       );
-      return;
     }
 
-    document.removeEventListener(
-      'pointerdown',
-      handleDocumentPointerdown,
-      clickOutsideListenerOptions,
-    );
+    return () => {
+      const referenceNode = slots.reference?.({ setReference });
+      const floatingNode = renderFloating();
+      const renderedFloating =
+        props.teleportTo === false
+          ? floatingNode
+          : createVNode(
+              Teleport,
+              { to: props.teleportTo },
+              floatingNode ? [floatingNode] : [],
+            );
+
+      return [referenceNode, renderedFloating];
+    };
   },
-  { immediate: true },
-);
-
-onBeforeUnmount(() => {
-  clearTimers();
-  document.removeEventListener(
-    'pointerdown',
-    handleDocumentPointerdown,
-    clickOutsideListenerOptions,
-  );
 });
-
-const staticSide = computed(() => {
-  return placementMap[usePlacement.value.split('-')[0]];
-});
-
-// 箭头(旋转 45° 的方块)朝向 floating 内侧的两条边随 staticSide 变化,
-// 隐藏这两条边的边框,只留外侧两边形成三角描边,避免设了可见 border-color 时内侧露接缝
-const arrowInnerBorderHidden = computed<Record<string, string>>(() => {
-  if (!props.arrow) {
-    return {};
-  }
-
-  const map: Record<string, Record<string, string>> = {
-    bottom: { borderTopWidth: '0', borderLeftWidth: '0' },
-    top: { borderBottomWidth: '0', borderRightWidth: '0' },
-    left: { borderTopWidth: '0', borderRightWidth: '0' },
-    right: { borderBottomWidth: '0', borderLeftWidth: '0' },
-  };
-  return map[staticSide.value] ?? {};
-});
-
-const floatingClass = computed(() => [
-  'super-popover-floating',
-  { 'super-popover-floating--light': props.effect === 'light' },
-  props.popperClass,
-]);
-
-const mergedFloatingStyle = computed<StyleValue>(() => [
-  floatingStyles.value,
-  props.popperStyle,
-]);
 </script>
 
-<template>
-  <div class="super-popover">
-    <div
-      ref="reference"
-      class="super-popover-reference"
-      @mouseenter="handleReferenceMouseenter"
-      @mouseleave="handleReferenceMouseleave"
-      @click="handleReferenceClick"
-    >
-      <slot><span>hover</span></slot>
-    </div>
-    <Teleport v-if="teleportTo !== false" :to="teleportTo">
-      <div
-        v-if="isOpen"
-        ref="floating"
-        :class="floatingClass"
-        :style="mergedFloatingStyle"
-        @mouseenter="handleFloatingMouseenter"
-        @mouseleave="handleFloatingMouseleave"
-      >
-        <slot name="content">
-          <span>{{ title }}</span>
-        </slot>
-        <div
-          v-if="arrow"
-          ref="floatingArrow"
-          class="super-popover-arrow"
-          :style="{
-            left:
-              middlewareData.arrow?.x != null
-                ? `${middlewareData.arrow.x}px`
-                : '',
-            top:
-              middlewareData.arrow?.y != null
-                ? `${middlewareData.arrow.y}px`
-                : '',
-            [staticSide]: '-4px',
-            ...arrowInnerBorderHidden,
-          }"
-        ></div>
-      </div>
-    </Teleport>
-    <div
-      v-else-if="isOpen"
-      ref="floating"
-      :class="floatingClass"
-      :style="mergedFloatingStyle"
-      @mouseenter="handleFloatingMouseenter"
-      @mouseleave="handleFloatingMouseleave"
-    >
-      <slot name="content">
-        <span>{{ title }}</span>
-      </slot>
-      <div
-        v-if="arrow"
-        ref="floatingArrow"
-        class="super-popover-arrow"
-        :style="{
-          left:
-            middlewareData.arrow?.x != null
-              ? `${middlewareData.arrow.x}px`
-              : '',
-          top:
-            middlewareData.arrow?.y != null
-              ? `${middlewareData.arrow.y}px`
-              : '',
-          [staticSide]: '-4px',
-          ...arrowInnerBorderHidden,
-        }"
-      ></div>
-    </div>
-  </div>
-</template>
-
 <style lang="scss" scoped>
-.super-popover {
-  display: contents;
-}
-
-.super-popover-reference {
-  display: inline-block;
-}
-
 :global(:where(.super-popover-floating)) {
   --wt-popover-bg: var(--wt-color-bg-inverse);
   --wt-popover-color: var(--wt-color-text-inverse);
