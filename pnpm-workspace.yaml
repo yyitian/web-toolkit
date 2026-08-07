@@ -1,5 +1,7 @@
 allowBuilds:
-    '@parcel/watcher': false
+  '@parcel/watcher': false
+  esbuild: false
+  workerd: false
 # @parcel/watcher 自带预编译二进制,无需运行安装脚本;不批准任何依赖的构建脚本。
 onlyBuiltDependencies: []
 # Vite 8 的依赖状态检查会非交互执行 pnpm install,遇未批准构建脚本默认退出 1;

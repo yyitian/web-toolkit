@@ -24,3 +24,4 @@ dist
 
 .superpowers
 .worktrees
+website/.vitepress/cache

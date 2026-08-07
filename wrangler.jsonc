@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "web-toolkit-docs",
+  "compatibility_date": "2026-08-07",
+  "workers_dev": false,
+  "assets": {
+    "directory": "website/.vitepress/dist",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page",
+  },
+  "routes": [
+    {
+      "pattern": "wt.yyitian.top",
+      "custom_domain": true,
+    },
+  ],
+}

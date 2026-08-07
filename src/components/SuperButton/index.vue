@@ -1,7 +1,12 @@
 <script lang="ts">
 import { ElButton, buttonProps } from 'element-plus';
 import type { ButtonProps } from 'element-plus';
-import { mergeProps, type Component, type CSSProperties, type PropType } from 'vue';
+import {
+  mergeProps,
+  type Component,
+  type CSSProperties,
+  type PropType,
+} from 'vue';
 import SuperIcon from '../SuperIcon/index.vue';
 import SuperPopover from '../SuperPopover/index.vue';
 
@@ -13,7 +18,10 @@ const SUPER_BUTTON_PROP_KEYS = new Set([
   'loading',
 ]);
 
-export interface SuperButtonProps extends Omit<ButtonProps, 'icon' | 'loading'> {
+export interface SuperButtonProps extends Omit<
+  ButtonProps,
+  'icon' | 'loading'
+> {
   icon?: string | Component;
   label?: string;
   square?: number;
@@ -64,7 +72,8 @@ export default defineComponent({
           }
         : {};
 
-      const ariaLabel = attrs['aria-label'] ??
+      const ariaLabel =
+        attrs['aria-label'] ??
         (isIconOnly && props.label ? props.label : undefined);
       const buttonAttrs = mergeProps(elButtonProps, attrs, {
         ref: setReference,
@@ -79,10 +88,11 @@ export default defineComponent({
         style: internalStyle,
         disabled: props.disabled || props.loading,
         'aria-label': ariaLabel,
+        'aria-busy': props.loading || undefined,
       });
 
       const resolvedSlots: Record<string, () => unknown> = {};
-      if (hasIcon) {
+      if (hasIcon || props.loading) {
         resolvedSlots.icon = () => {
           if (props.loading) {
             return h(SuperIcon, { loading: true });
@@ -109,8 +119,11 @@ export default defineComponent({
           SuperPopover,
           { title: props.label },
           {
-            reference: ({ setReference }: { setReference: (value: unknown) => void }) =>
-              renderButton(setReference),
+            reference: ({
+              setReference,
+            }: {
+              setReference: (value: unknown) => void;
+            }) => renderButton(setReference),
           },
         );
       }

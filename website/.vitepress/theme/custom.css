@@ -1,0 +1,50 @@
+:root {
+  --vp-c-brand-1: var(--wt-color-primary);
+  --vp-c-brand-2: #337ecc;
+  --vp-c-brand-3: #79bbff;
+}
+
+.demo-block {
+  margin: 20px 0;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  background: var(--vp-c-bg-soft);
+  padding: 20px;
+}
+
+.demo-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+
+.demo-output {
+  margin-top: 16px;
+  border-radius: 6px;
+  padding: 12px;
+  background: var(--vp-code-block-bg);
+  white-space: pre-wrap;
+}
+
+.demo-trigger {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  border: 1px dashed var(--vp-c-divider);
+  border-radius: 6px;
+  padding: 4px 10px;
+  background: var(--vp-c-bg);
+  color: var(--vp-c-text-1);
+  cursor: pointer;
+}
+
+.vp-doc table {
+  display: table;
+  width: 100%;
+}
+
+.vp-doc .el-form ul,
+.vp-doc .el-form ol {
+  padding-left: 0;
+}

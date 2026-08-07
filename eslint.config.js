@@ -14,6 +14,7 @@ export default defineConfigWithVueTs(
       '**/dist/**',
       '**/auto-imports.d.ts',
       '**/coverage/**',
+      'website/.vitepress/cache/**',
       'src/demo/bak/**',
     ],
   },

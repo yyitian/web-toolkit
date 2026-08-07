@@ -1,6 +1,6 @@
 {
   "name": "@yyitian/web-toolkit",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "个人跨项目复用的 Vue 3 组件工具库（图标、按钮、浮层、表单、弹窗与 Vite 插件）",
   "license": "MIT",
   "type": "module",
@@ -40,6 +40,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build && vite build --config vite.config.plugin.ts",
+    "docs:dev": "vitepress dev website",
+    "docs:build": "vitepress build website",
+    "docs:preview": "vitepress preview website",
+    "docs:deploy": "pnpm docs:build && wrangler deploy",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
@@ -82,7 +86,9 @@
     "unplugin-element-plus": "^0.11.2",
     "vite": "^8.0.3",
     "vite-plugin-dts": "^5.0.2",
+    "vitepress": "1.6.4",
     "vue": "^3.5.38",
-    "vue-tsc": "^3.3.5"
+    "vue-tsc": "^3.3.5",
+    "wrangler": "4.119.0"
   }
 }
