@@ -10,7 +10,11 @@ function optionValue(value: unknown) {
 }
 </script>
 <template>
-  <ElCheckboxGroup v-if="options.length" v-bind="$attrs">
+  <ElCheckboxGroup
+    v-if="options.length"
+    class="super-form-checkbox"
+    v-bind="$attrs"
+  >
     <ElCheckbox
       v-for="option in options"
       :key="String(option.value)"
@@ -20,5 +24,7 @@ function optionValue(value: unknown) {
       {{ option.label }}
     </ElCheckbox>
   </ElCheckboxGroup>
-  <ElCheckbox v-else v-bind="$attrs"><slot /></ElCheckbox>
+  <ElCheckbox v-else class="super-form-checkbox" v-bind="$attrs">
+    <slot />
+  </ElCheckbox>
 </template>

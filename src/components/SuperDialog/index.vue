@@ -64,12 +64,55 @@ const cancelText = computed(() =>
 
 <style lang="scss">
 .super-dialog {
+  --_wt-dialog-bg: var(--el-dialog-bg-color);
+
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
+  color: var(
+    --wt-dialog-color,
+    var(--wt-text-regular, var(--el-text-color-regular))
+  );
+  background: var(--wt-dialog-bg, var(--_wt-dialog-bg));
+  border: 1px solid
+    var(--wt-dialog-border-color, var(--wt-border-color-light, transparent));
+  border-radius: var(
+    --wt-dialog-radius,
+    var(--el-dialog-border-radius, var(--wt-radius-base, 4px))
+  );
+  box-shadow: var(
+    --wt-dialog-shadow,
+    var(--wt-shadow-overlay, var(--el-dialog-box-shadow))
+  );
+  backdrop-filter: var(
+    --wt-dialog-backdrop-filter,
+    var(--wt-backdrop-filter, none)
+  );
+
+  > .el-dialog__header {
+    color: var(--wt-dialog-header-color, var(--wt-text-primary, inherit));
+  }
 
   > .el-dialog__body {
     min-height: 0;
+    color: var(
+      --wt-dialog-body-color,
+      var(--wt-dialog-color, var(--wt-text-regular))
+    );
     overflow: auto;
   }
+
+  > .el-dialog__footer {
+    border-top: 1px solid var(--wt-dialog-footer-border-color, transparent);
+  }
+}
+
+:where(:root[data-wt-material='glass']) .super-dialog {
+  --_wt-dialog-bg:
+    radial-gradient(
+      circle at 20% 0%,
+      var(--wt-glass-highlight),
+      transparent 34%
+    ),
+    var(--wt-surface-overlay);
 }
 </style>

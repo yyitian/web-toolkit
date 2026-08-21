@@ -28,8 +28,8 @@ export default defineComponent({
     },
     offset: { type: Number, default: 12 },
     effect: {
-      type: String as PropType<'dark' | 'light'>,
-      default: 'dark',
+      type: String as PropType<'auto' | 'dark' | 'light'>,
+      default: 'auto',
     },
     title: { type: String, default: '' },
     teleportTo: {
@@ -313,7 +313,7 @@ export default defineComponent({
           ref: floating,
           class: [
             'super-popover-floating',
-            { 'super-popover-floating--light': props.effect === 'light' },
+            `super-popover-floating--${props.effect}`,
             props.popperClass,
           ],
           style: [floatingStyles.value, props.popperStyle],
@@ -365,41 +365,67 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-:global(:where(.super-popover-floating)) {
-  --wt-popover-bg: var(--wt-color-bg-inverse);
-  --wt-popover-color: var(--wt-color-text-inverse);
-  --wt-popover-border-color: var(--wt-popover-bg);
-  --wt-popover-radius: var(--wt-radius);
-  --wt-popover-padding: 4px 6px;
-  --wt-popover-shadow: none;
-  --wt-popover-z-index: 2000;
-  --wt-popover-max-width: 400px;
+.super-popover-floating {
+  @include font(
+    12px,
+    $color: var(--wt-popover-color, var(--_wt-popover-color, #fff))
+  );
+
+  z-index: var(--wt-popover-z-index, 2000);
+  max-width: var(--wt-popover-max-width, 400px);
+  background: var(--wt-popover-bg, var(--_wt-popover-bg, #222));
+  border: 1px solid
+    var(--wt-popover-border-color, var(--_wt-popover-border-color, #222));
+  border-radius: var(--wt-popover-radius, var(--wt-radius-base, 4px));
+  padding: var(--wt-popover-padding, 4px 6px);
+  box-shadow: var(--wt-popover-shadow, var(--_wt-popover-shadow, none));
+  backdrop-filter: var(
+    --wt-popover-backdrop-filter,
+    var(--_wt-popover-backdrop-filter, none)
+  );
 }
 
-.super-popover-floating {
-  @include font(12px, $color: var(--wt-popover-color));
-
-  z-index: var(--wt-popover-z-index);
-  max-width: var(--wt-popover-max-width);
-  background: var(--wt-popover-bg);
-  border: 1px solid var(--wt-popover-border-color);
-  border-radius: var(--wt-popover-radius);
-  padding: var(--wt-popover-padding);
-  box-shadow: var(--wt-popover-shadow);
+:global(:where(.super-popover-floating--auto, .super-popover-floating--dark)) {
+  --_wt-popover-bg: #222;
+  --_wt-popover-color: #fff;
+  --_wt-popover-border-color: #222;
+  --_wt-popover-shadow: none;
+  --_wt-popover-backdrop-filter: none;
 }
 
 :global(:where(.super-popover-floating--light)) {
-  --wt-popover-bg: var(--wt-color-bg);
-  --wt-popover-color: var(--wt-color-text);
-  --wt-popover-shadow: 0 2px 8px rgb(0 0 0 / 12%);
+  --_wt-popover-bg: #fff;
+  --_wt-popover-color: #303133;
+  --_wt-popover-border-color: #e4e7ed;
+  --_wt-popover-shadow: 0 2px 8px rgb(0 0 0 / 12%);
+  --_wt-popover-backdrop-filter: none;
+}
+
+:global(:where(:root[data-wt-scheme] .super-popover-floating--auto)) {
+  --_wt-popover-bg: var(--wt-surface-overlay, #fff);
+  --_wt-popover-color: var(--wt-text-regular, #606266);
+  --_wt-popover-border-color: var(--wt-border-color-light, #e4e7ed);
+  --_wt-popover-shadow: var(--wt-shadow-overlay, none);
+  --_wt-popover-backdrop-filter: var(--wt-backdrop-filter, none);
+}
+
+:global(:where(:root[data-wt-material='glass'] .super-popover-floating--auto)) {
+  --_wt-popover-bg:
+    radial-gradient(
+      circle at 20% 0%,
+      var(--wt-glass-highlight),
+      transparent 34%
+    ),
+    var(--wt-surface-overlay);
 }
 
 .super-popover-arrow {
   position: absolute;
   width: 8px;
   height: 8px;
-  background: var(--wt-popover-bg);
-  border: 1px solid var(--wt-popover-border-color);
+  background: var(--wt-popover-bg, var(--_wt-popover-bg, #222));
+  border: 1px solid
+    var(--wt-popover-border-color, var(--_wt-popover-border-color, #222));
   transform: rotate(45deg);
 }
 </style>

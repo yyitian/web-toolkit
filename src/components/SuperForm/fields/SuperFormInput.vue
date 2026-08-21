@@ -2,4 +2,6 @@
 import { ElInput } from 'element-plus';
 defineOptions({ inheritAttrs: false });
 </script>
-<template><ElInput v-bind="{ clearable: true, ...$attrs }" /></template>
+<template>
+  <ElInput class="super-form-input" v-bind="{ clearable: true, ...$attrs }" />
+</template>

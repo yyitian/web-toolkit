@@ -2,4 +2,9 @@
 import { ElSwitch } from 'element-plus';
 defineOptions({ inheritAttrs: false });
 </script>
-<template><ElSwitch v-bind="{ inlinePrompt: true, ...$attrs }" /></template>
+<template>
+  <ElSwitch
+    class="super-form-switch"
+    v-bind="{ inlinePrompt: true, ...$attrs }"
+  />
+</template>

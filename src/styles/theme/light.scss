@@ -1,0 +1,43 @@
+:where(:root) {
+  color-scheme: light;
+
+  --wt-text-primary: #303133;
+  --wt-text-regular: #606266;
+  --wt-text-secondary: #909399;
+  --wt-text-placeholder: #a8abb2;
+  --wt-text-disabled: #c0c4cc;
+  --wt-text-inverse: #fff;
+  --wt-palette-mix-surface: #fff;
+  --wt-palette-contrast: #000;
+
+  --_wt-solid-surface-page: #f2f3f5;
+  --_wt-solid-surface-base: #fff;
+  --_wt-solid-surface-raised: #fafafa;
+  --_wt-solid-surface-overlay: #fff;
+  --_wt-solid-surface-mask: rgb(0 0 0 / 50%);
+  --_wt-solid-border: #dcdfe6;
+  --_wt-solid-border-light: #e4e7ed;
+  --_wt-solid-border-strong: #cdd0d6;
+  --_wt-solid-shadow-base: 0 0 6px #0000001f;
+  --_wt-solid-shadow-raised: 0 0 12px #0000001f;
+  --_wt-solid-shadow-overlay:
+    0 12px 32px 4px rgb(0 0 0 / 4%), 0 8px 20px rgb(0 0 0 / 8%);
+
+  --wt-glass-bg: rgb(255 255 255 / 56%);
+  --wt-glass-bg-strong: rgb(255 255 255 / 72%);
+  --wt-glass-highlight: rgb(255 255 255 / 55%);
+  --wt-glass-border: rgb(255 255 255 / 52%);
+  --wt-glass-border-strong: rgb(255 255 255 / 72%);
+  --wt-glass-shadow-soft: 0 8px 24px rgb(15 23 42 / 10%);
+  --wt-glass-shadow: 0 18px 50px rgb(15 23 42 / 16%);
+  --wt-glass-blur: 22px;
+  --wt-glass-saturation: 170%;
+  --_wt-glass-surface-mask: rgb(0 0 0 / 32%);
+
+  --_wt-fill-darker-weight: 12%;
+  --_wt-fill-dark-weight: 10%;
+  --_wt-fill-weight: 7%;
+  --_wt-fill-light-weight: 4%;
+  --_wt-fill-lighter-weight: 2%;
+  --_wt-fill-extra-light-weight: 1%;
+}

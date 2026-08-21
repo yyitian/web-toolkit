@@ -66,7 +66,8 @@ pnpm format:check   # prettier --check .
 - `src/components/SuperButton/index.vue`：按钮组件，内部使用 `SuperIcon`。
 - `src/components/SuperPopover/index.vue`：hover tooltip / popover。
 - `src/components/SuperPopover/config.ts`：popover placement 和箭头定位配置。
-- `src/styles/theme.css`：`--wt-*` 主题变量默认值。
+- `src/styles/theme/`：明暗色系、实体/玻璃材质和 Element Plus 变量桥接。
+- `src/theme/index.ts`：`createWtTheme()` 插件与 `useWtTheme()` 组合式函数。
 - `src/styles/mixin/`：全局 SCSS mixin。
 - `src/styles/class/index.scss`：程序化生成的工具类。
 
@@ -108,7 +109,11 @@ import { ref } from 'vue';
 import '@yyitian/web-toolkit/style.css';
 ```
 
-`style.css` 提供 `--wt-*` 主题变量默认值。漏引不会报错，但会导致例如 `SuperPopover` 背景透明、边框和颜色异常。
+`style.css` 提供主题变量、组件样式、现有通用工具类和 `.wt-interactive`。漏引不会报错，但会导致例如 `SuperPopover` 背景透明、边框和颜色异常。
+
+主题通过 `createWtTheme()` 初始化，使用 `light/dark × solid/glass` 双轴状态，并通过
+`useWtTheme()` 控制。插件会写入根节点 `data-wt-*` 属性并桥接工具库使用范围内的
+Element Plus 变量。
 
 `SuperPopover` 默认把浮层 Teleport 到 `body`。浮层样式通过 `popperClass`、`popperStyle` 和作用在浮层自身或其真实祖先上的 `--wt-popover-*` 变量定制。
 

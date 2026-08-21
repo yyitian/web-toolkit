@@ -1,3 +1,2 @@
-@forward './theme.css';
-@forward './class/index';
-@forward './reset.css';
+@use './theme';
+@use './class';

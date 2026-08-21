@@ -212,7 +212,7 @@ onBeforeUnmount(() => {
     />
     <SuperButton
       v-if="type === 'file'"
-      class="super-form-upload__file-trigger"
+      class="super-form-upload__file-trigger wt-interactive"
       type="primary"
       :disabled="triggerDisabled"
       @click="input?.click()"
@@ -224,7 +224,7 @@ onBeforeUnmount(() => {
       <div
         v-for="item in currentItems()"
         :key="itemKey(item)"
-        class="super-form-upload__file-item"
+        class="super-form-upload__file-item wt-interactive"
       >
         <SuperIcon
           :icon="FileIcon"
@@ -258,7 +258,7 @@ onBeforeUnmount(() => {
 
     <div v-else class="super-form-upload__image-grid">
       <SuperButton
-        class="super-form-upload__image-trigger"
+        class="super-form-upload__image-trigger wt-interactive"
         :disabled="triggerDisabled"
         aria-label="上传图片"
         @click="input?.click()"
@@ -269,7 +269,7 @@ onBeforeUnmount(() => {
       <div
         v-for="(item, index) in visibleImageItems"
         :key="itemKey(item)"
-        class="super-form-upload__image-item"
+        class="super-form-upload__image-item wt-interactive"
       >
         <ElImage
           class="super-form-upload__image"
@@ -333,6 +333,20 @@ onBeforeUnmount(() => {
 
 .super-form-upload__file-trigger {
   width: 96px;
+  color: var(--wt-upload-trigger-color, var(--el-text-color-secondary));
+  background: var(
+    --wt-upload-trigger-bg,
+    var(--wt-form-control-bg, var(--el-fill-color-blank))
+  );
+  border-color: var(
+    --wt-upload-trigger-border-color,
+    var(--wt-form-control-border-color, var(--el-border-color))
+  );
+
+  &:hover:not(:disabled) {
+    color: var(--wt-upload-trigger-hover-color, var(--el-color-primary));
+    background: var(--wt-upload-trigger-hover-bg, var(--el-fill-color-light));
+  }
 }
 
 .super-form-upload__file-list {
@@ -346,14 +360,11 @@ onBeforeUnmount(() => {
   height: 24px;
   padding: 0 0 0 4px;
   line-height: 24px;
-  border-radius: 4px;
-  transition:
-    color 0.2s,
-    background-color 0.2s;
+  border-radius: var(--wt-upload-radius, 6px);
 
   &:hover {
     color: var(--el-color-primary);
-    background: var(--el-fill-color-light);
+    background: var(--wt-upload-file-hover-bg, var(--el-fill-color-light));
   }
 }
 
@@ -399,24 +410,29 @@ onBeforeUnmount(() => {
   box-sizing: border-box;
   width: 96px;
   height: 96px;
-  border-radius: 6px;
+  border-radius: var(--wt-upload-radius, 6px);
 }
 
 .super-form-upload__image-trigger.el-button {
   @include flex-center;
   margin: 0;
   padding: 0;
-  color: var(--el-text-color-secondary);
-  background: var(--el-fill-color-blank);
-  border: 1px dashed var(--el-border-color);
+  color: var(--wt-upload-trigger-color, var(--el-text-color-secondary));
+  background: var(
+    --wt-upload-trigger-bg,
+    var(--wt-form-control-bg, var(--el-fill-color-blank))
+  );
+  border: 1px dashed
+    var(
+      --wt-upload-trigger-border-color,
+      var(--wt-form-control-border-color, var(--el-border-color))
+    );
   cursor: pointer;
-  transition:
-    color 0.2s,
-    border-color 0.2s;
 
   &:hover:not(:disabled) {
-    color: var(--el-color-primary);
-    border-color: var(--el-color-primary);
+    color: var(--wt-upload-trigger-hover-color, var(--el-color-primary));
+    background: var(--wt-upload-trigger-hover-bg, var(--el-fill-color-light));
+    border-color: var(--wt-upload-trigger-hover-color, var(--el-color-primary));
   }
 
   &:disabled {
@@ -429,23 +445,14 @@ onBeforeUnmount(() => {
 .super-form-upload__image-item {
   position: relative;
   overflow: hidden;
-  border: 1px solid var(--el-border-color-lighter);
+  border: 1px solid
+    var(--wt-upload-image-border-color, var(--el-border-color-lighter));
 }
 
 .super-form-upload__image {
   display: block;
   width: 100%;
   height: 100%;
-}
-
-.super-form-upload__image :deep(.el-image__inner) {
-  transition: transform 0.2s ease;
-}
-
-.super-form-upload__image-item:hover
-  .super-form-upload__image
-  :deep(.el-image__inner) {
-  transform: scale(1.08);
 }
 
 .super-form-upload__image-more {
@@ -455,7 +462,7 @@ onBeforeUnmount(() => {
   color: #fff;
   font-size: 24px;
   font-weight: 600;
-  background: rgb(0 0 0 / 52%);
+  background: var(--wt-upload-image-overlay-bg, rgb(0 0 0 / 52%));
   pointer-events: none;
 }
 
@@ -468,7 +475,7 @@ onBeforeUnmount(() => {
   width: 32px;
   height: 32px;
   padding: 0;
-  color: var(--wt-color-danger);
+  color: var(--wt-upload-delete-color, var(--wt-color-danger));
   background: transparent;
   border: 0;
   cursor: pointer;
@@ -477,7 +484,10 @@ onBeforeUnmount(() => {
     position: absolute;
     inset: 0;
     content: '';
-    background: rgb(255 255 255 / 72%);
+    background: var(
+      --wt-upload-delete-bg,
+      var(--wt-surface-raised, rgb(255 255 255 / 72%))
+    );
     clip-path: polygon(0 0, 100% 0, 100% 100%);
   }
 
@@ -490,7 +500,7 @@ onBeforeUnmount(() => {
 .super-form-upload__image-delete.el-button {
   min-width: 0;
   margin: 0;
-  color: var(--wt-color-danger);
+  color: var(--wt-upload-delete-color, var(--wt-color-danger));
   background: transparent;
   border: 0;
 }

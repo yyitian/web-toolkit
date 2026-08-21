@@ -16,16 +16,42 @@ const toolkitPlugin = webToolkitPlugin({
 const injectSprite = toolkitPlugin.transformIndexHtml as unknown as (
   html: string,
 ) => string;
+const wtThemeInitScript = `;(() => {
+  let scheme = 'light'
+  let material = 'solid'
+  try {
+    const stored = JSON.parse(localStorage.getItem('wt-theme') || 'null')
+    if (
+      stored &&
+      stored.version === 1 &&
+      (stored.scheme === 'light' || stored.scheme === 'dark') &&
+      (stored.material === 'solid' || stored.material === 'glass')
+    ) {
+      scheme = stored.scheme
+      material = stored.material
+    }
+  } catch {}
+
+  const root = document.documentElement
+  root.dataset.wtScheme = scheme
+  root.dataset.wtMaterial = material
+  root.dataset.wtTheme = material === 'glass'
+    ? (scheme === 'dark' ? 'glass-dark' : 'glass-light')
+    : scheme
+  root.classList.toggle('dark', scheme === 'dark')
+})()`;
 
 export default defineConfig({
   lang: 'zh-CN',
   title: 'Web Toolkit',
   description: '@yyitian/web-toolkit Vue 3 组件工具库使用文档',
+  appearance: false,
   cleanUrls: true,
   lastUpdated: true,
   head: [
     ['meta', { name: 'theme-color', content: '#409eff' }],
     ['link', { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' }],
+    ['script', {}, wtThemeInitScript],
   ],
   transformHtml(code) {
     return code.includes('id="icon-example"') ? code : injectSprite(code);
@@ -52,10 +78,13 @@ export default defineConfig({
         text: '基础组件',
         items: [
           { text: 'SuperIcon', link: '/components/super-icon' },
-          { text: '动态图标', link: '/components/dynamic-icons' },
           { text: 'SuperButton', link: '/components/super-button' },
           { text: 'SuperPopover', link: '/components/super-popover' },
           { text: 'SuperDialog', link: '/components/super-dialog' },
+          {
+            text: 'SuperThemeSwitcher',
+            link: '/components/super-theme-switcher',
+          },
         ],
       },
       {

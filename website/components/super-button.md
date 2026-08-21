@@ -8,7 +8,7 @@ import ButtonIconDemo from '../examples/demos/ButtonIconDemo.vue';
 在 Element Plus `ElButton` 基础上统一接入 `SuperIcon`、纯图标形态、tooltip、精确正方形
 尺寸和组件自有 loading 状态。
 
-## 基础内容
+## 基础用法
 
 <ClientOnly><DemoBlock><ButtonBasicDemo /></DemoBlock></ClientOnly>
 
@@ -16,105 +16,59 @@ import ButtonIconDemo from '../examples/demos/ButtonIconDemo.vue';
 <script setup lang="ts">
 import { Save } from '@lucide/vue';
 import { SuperButton } from '@yyitian/web-toolkit';
-
-const loading = ref(false);
-
-function startLoading() {
-  loading.value = true;
-  window.setTimeout(() => {
-    loading.value = false;
-  }, 2000);
-}
 </script>
 
 <template>
-  <!-- 文字 -->
-  <SuperButton type="primary">普通按钮</SuperButton>
+  <!-- 默认 label -->
+  <SuperButton label="普通按钮" />
 
-  <!-- 文字 + icon -->
-  <SuperButton type="primary" :icon="Save">保存</SuperButton>
-
-  <!-- Disabled -->
-  <SuperButton type="primary" disabled>禁用按钮</SuperButton>
+  <!-- icon + 默认插槽 -->
+  <SuperButton :icon="Save">保存</SuperButton>
 
   <!-- Loading -->
-  <SuperButton
-    type="primary"
-    :icon="Save"
-    :loading="loading"
-    @click="startLoading"
-  >
-    保存
-  </SuperButton>
-  <SuperButton type="primary" :loading="loading" @click="startLoading">
-    加载数据
-  </SuperButton>
+  <SuperButton label="加载中" loading />
+
+  <!-- Disabled -->
+  <SuperButton label="按钮禁用" disabled />
 </template>
 ```
 
-`label` 在没有图标和默认插槽时作为按钮文字；在纯图标形态下则作为 tooltip 和默认
-无障碍名称。字符串图标需要先通过[Vite 插件](/guide/vite-plugin)注入。
+没有图标和默认插槽时，`label` 直接作为按钮文字；图标与文字并用时，通过 `icon` 指定
+图标、默认插槽提供文字。上方展示区按效果完整呈现 Element Plus Button 的主题色及
+`plain`、`round`、`dashed`、`text`、`loading` 状态。字符串图标需要先通过
+[Vite 插件](/guide/vite-plugin)注入。
 
-## 纯图标
+## 图标模式
 
 <ClientOnly><DemoBlock><ButtonIconDemo /></DemoBlock></ClientOnly>
 
 ```vue
 <script setup lang="ts">
-import {
-  Bell,
-  BellOff,
-  Download,
-  RefreshCw,
-  Search,
-  Settings,
-  Upload,
-} from '@lucide/vue';
+import { Bell, RefreshCw, Search, Settings } from '@lucide/vue';
 import { SuperButton } from '@yyitian/web-toolkit';
-
-const loading = ref(false);
-
-function startLoading() {
-  loading.value = true;
-  window.setTimeout(() => {
-    loading.value = false;
-  }, 2000);
-}
 </script>
 
 <template>
-  <!-- 裸 icon -->
-  <SuperButton :icon="Search" />
-
-  <!-- icon + label -->
-  <SuperButton :icon="Settings" label="设置" />
-
-  <!-- Square -->
-  <SuperButton :icon="Bell" label="通知" :square="36" />
-
-  <!-- Disabled -->
-  <SuperButton :icon="BellOff" label="禁用通知" disabled />
+  <!-- 纯图标 -->
+  <SuperButton :icon="Search" label="搜索" />
 
   <!-- Loading -->
-  <SuperButton :icon="RefreshCw" :loading="loading" @click="startLoading" />
-  <SuperButton
-    :icon="Download"
-    label="下载"
-    :loading="loading"
-    @click="startLoading"
-  />
-  <SuperButton
-    :icon="Upload"
-    label="上传"
-    :square="36"
-    :loading="loading"
-    @click="startLoading"
-  />
+  <SuperButton :icon="RefreshCw" label="刷新中" loading />
+
+  <!-- Disabled -->
+  <SuperButton :icon="RefreshCw" label="禁用" disabled />
+
+  <!-- Square -->
+  <SuperButton type="primary" :icon="Settings" label="设置" :square="36" />
+
+  <!-- Square + Circle -->
+  <SuperButton type="primary" :icon="Bell" label="通知" :square="36" circle />
 </template>
 ```
 
 未设置 `square` 的纯图标按钮使用无边框紧凑形态；设置后，`square` 就是按钮的精确
-边长。spinner 只替换图标，不会改变既有按钮形态。
+边长，并可配合 Element Plus 的 `circle` 属性切换为圆形外观。纯图标按钮的 `label`
+用于 tooltip 和默认无障碍名称；loading 只替换内部图标，不改变原有按钮形态。
 
 ## 自有 Props
 

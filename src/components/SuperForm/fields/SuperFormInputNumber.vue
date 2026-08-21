@@ -4,6 +4,7 @@ defineOptions({ inheritAttrs: false });
 </script>
 <template>
   <ElInputNumber
+    class="super-form-input-number"
     v-bind="{ stepStrictly: true, controlsPosition: 'right', ...$attrs }"
   />
 </template>

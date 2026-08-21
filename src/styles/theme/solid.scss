@@ -1,0 +1,14 @@
+:where(:root) {
+  --wt-surface-page: var(--_wt-solid-surface-page);
+  --wt-surface-base: var(--_wt-solid-surface-base);
+  --wt-surface-raised: var(--_wt-solid-surface-raised);
+  --wt-surface-overlay: var(--_wt-solid-surface-overlay);
+  --wt-surface-mask: var(--_wt-solid-surface-mask);
+  --wt-border-color: var(--_wt-solid-border);
+  --wt-border-color-light: var(--_wt-solid-border-light);
+  --wt-border-color-strong: var(--_wt-solid-border-strong);
+  --wt-shadow-base: var(--_wt-solid-shadow-base);
+  --wt-shadow-raised: var(--_wt-solid-shadow-raised);
+  --wt-shadow-overlay: var(--_wt-solid-shadow-overlay);
+  --wt-backdrop-filter: none;
+}

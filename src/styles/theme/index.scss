@@ -1,0 +1,169 @@
+@use './light';
+@use './dark';
+@use './solid';
+@use './glass';
+
+:where(:root) {
+  --wt-color-primary: #409eff;
+  --wt-color-success: #67c23a;
+  --wt-color-warning: #e6a23c;
+  --wt-color-danger: #f56c6c;
+  --wt-color-info: #909399;
+  --wt-radius-small: 2px;
+  --wt-radius-base: 4px;
+  --wt-radius-large: 8px;
+  --wt-motion-fast: 120ms;
+  --wt-motion-base: 200ms;
+}
+
+:root[data-wt-scheme='light'] {
+  color-scheme: light;
+}
+
+:root[data-wt-scheme='dark'] {
+  color-scheme: dark;
+}
+
+:root:is([data-wt-scheme='light'], [data-wt-scheme='dark']) {
+  --el-color-primary: var(--wt-color-primary);
+  --el-color-success: var(--wt-color-success);
+  --el-color-warning: var(--wt-color-warning);
+  --el-color-danger: var(--wt-color-danger);
+  --el-color-error: var(--wt-color-danger);
+  --el-color-info: var(--wt-color-info);
+
+  --el-text-color-primary: var(--wt-text-primary);
+  --el-text-color-regular: var(--wt-text-regular);
+  --el-text-color-secondary: var(--wt-text-secondary);
+  --el-text-color-placeholder: var(--wt-text-placeholder);
+  --el-text-color-disabled: var(--wt-text-disabled);
+  --el-bg-color-page: var(--wt-surface-page);
+  --el-bg-color: var(--wt-surface-base);
+  --el-bg-color-overlay: var(--wt-surface-overlay);
+  --el-fill-color-blank: var(--wt-surface-base);
+
+  --el-fill-color-darker: color-mix(
+    in srgb,
+    var(--wt-text-primary) var(--_wt-fill-darker-weight),
+    var(--wt-surface-base)
+  );
+  --el-fill-color-dark: color-mix(
+    in srgb,
+    var(--wt-text-primary) var(--_wt-fill-dark-weight),
+    var(--wt-surface-base)
+  );
+  --el-fill-color: color-mix(
+    in srgb,
+    var(--wt-text-primary) var(--_wt-fill-weight),
+    var(--wt-surface-base)
+  );
+  --el-fill-color-light: color-mix(
+    in srgb,
+    var(--wt-text-primary) var(--_wt-fill-light-weight),
+    var(--wt-surface-base)
+  );
+  --el-fill-color-lighter: color-mix(
+    in srgb,
+    var(--wt-text-primary) var(--_wt-fill-lighter-weight),
+    var(--wt-surface-base)
+  );
+  --el-fill-color-extra-light: color-mix(
+    in srgb,
+    var(--wt-text-primary) var(--_wt-fill-extra-light-weight),
+    var(--wt-surface-base)
+  );
+
+  --el-border-color-darker: var(--wt-border-color-strong);
+  --el-border-color-dark: color-mix(
+    in srgb,
+    var(--wt-border-color-strong) 60%,
+    var(--wt-border-color)
+  );
+  --el-border-color: var(--wt-border-color);
+  --el-border-color-light: var(--wt-border-color-light);
+  --el-border-color-lighter: color-mix(
+    in srgb,
+    var(--wt-border-color-light) 75%,
+    var(--wt-surface-base)
+  );
+  --el-border-color-extra-light: color-mix(
+    in srgb,
+    var(--wt-border-color-light) 50%,
+    var(--wt-surface-base)
+  );
+  --el-border-color-hover: var(--wt-border-color-strong);
+  --el-border: 1px solid var(--el-border-color);
+
+  --el-border-radius-base: var(--wt-radius-base);
+  --el-border-radius-small: var(--wt-radius-small);
+  --el-disabled-bg-color: var(--el-fill-color-light);
+  --el-disabled-text-color: var(--wt-text-disabled);
+  --el-disabled-border-color: var(--wt-border-color-light);
+  --el-box-shadow: var(--wt-shadow-overlay);
+  --el-box-shadow-light: var(--wt-shadow-raised);
+  --el-box-shadow-lighter: var(--wt-shadow-base);
+  --el-box-shadow-dark: var(--wt-shadow-overlay);
+  --el-overlay-color: var(--wt-surface-mask);
+  --el-overlay-color-light: var(--wt-surface-mask);
+  --el-overlay-color-lighter: var(--wt-surface-mask);
+  --el-popup-modal-bg-color: var(--wt-surface-mask);
+  --el-popup-modal-opacity: 1;
+  --el-mask-color: color-mix(in srgb, var(--wt-surface-base) 90%, transparent);
+  --el-mask-color-extra-light: color-mix(
+    in srgb,
+    var(--wt-surface-base) 30%,
+    transparent
+  );
+}
+
+@each $name,
+  $token
+    in (
+      'primary': 'primary',
+      'success': 'success',
+      'warning': 'warning',
+      'danger': 'danger',
+      'error': 'danger',
+      'info': 'info'
+    )
+{
+  :root:is([data-wt-scheme='light'], [data-wt-scheme='dark']) {
+    --el-color-#{$name}-light-3: color-mix(
+      in srgb,
+      var(--wt-color-#{$token}) 70%,
+      var(--wt-palette-mix-surface)
+    );
+    --el-color-#{$name}-light-5: color-mix(
+      in srgb,
+      var(--wt-color-#{$token}) 50%,
+      var(--wt-palette-mix-surface)
+    );
+    --el-color-#{$name}-light-7: color-mix(
+      in srgb,
+      var(--wt-color-#{$token}) 30%,
+      var(--wt-palette-mix-surface)
+    );
+    --el-color-#{$name}-light-8: color-mix(
+      in srgb,
+      var(--wt-color-#{$token}) 20%,
+      var(--wt-palette-mix-surface)
+    );
+    --el-color-#{$name}-light-9: color-mix(
+      in srgb,
+      var(--wt-color-#{$token}) 10%,
+      var(--wt-palette-mix-surface)
+    );
+    --el-color-#{$name}-dark-2: color-mix(
+      in srgb,
+      var(--wt-color-#{$token}) 80%,
+      var(--wt-palette-contrast)
+    );
+  }
+}
+
+:where(.wt-form-select-popper, .wt-form-date-picker-popper) {
+  backdrop-filter: var(
+    --wt-form-control-backdrop-filter,
+    var(--wt-backdrop-filter, none)
+  );
+}

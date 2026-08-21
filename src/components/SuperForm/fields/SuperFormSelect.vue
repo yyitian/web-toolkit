@@ -5,19 +5,34 @@ withDefaults(defineProps<{ options?: SuperFormOption[] }>(), {
   options: () => [],
 });
 defineOptions({ inheritAttrs: false });
+const attrs = useAttrs();
+const mergedAttrs = computed(() =>
+  Object.fromEntries(
+    Object.entries(attrs).filter(
+      ([key]) => !['popperClass', 'popper-class'].includes(key),
+    ),
+  ),
+);
+const popperClass = computed(() =>
+  ['wt-form-select-popper', attrs.popperClass ?? attrs['popper-class']]
+    .filter(Boolean)
+    .join(' '),
+);
 function optionValue(value: unknown) {
   return value as string | number | boolean | object;
 }
 </script>
 <template>
   <ElSelect
+    class="super-form-select"
     v-bind="{
       filterable: true,
       clearable: true,
       fitInputWidth: true,
       reserveKeyword: false,
-      ...$attrs,
+      ...mergedAttrs,
     }"
+    :popper-class="popperClass"
   >
     <template v-for="option in options" :key="String(option.value)">
       <ElOptionGroup

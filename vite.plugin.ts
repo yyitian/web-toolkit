@@ -34,6 +34,7 @@ function buildSprite(iconDirs: string[]): string {
       );
     }
   }
+  if (symbols.length === 0) return '';
   return `<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">${symbols.join('')}</svg>`;
 }
 
@@ -60,6 +61,7 @@ export function webToolkitPlugin(
 
     transformIndexHtml(html: string) {
       const sprite = buildSprite(iconDirs);
+      if (!sprite) return html;
       return html.replace(/(<body[^>]*>)/i, `$1${sprite}`);
     },
   };

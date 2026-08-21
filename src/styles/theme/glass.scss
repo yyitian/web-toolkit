@@ -1,0 +1,24 @@
+:where(:root[data-wt-material='glass']) {
+  --wt-surface-base: var(--wt-glass-bg);
+  --wt-surface-raised: var(--wt-glass-bg-strong);
+  --wt-surface-overlay: var(--wt-glass-bg-strong);
+  --wt-surface-mask: var(--_wt-glass-surface-mask);
+  --wt-border-color: var(--wt-glass-border);
+  --wt-border-color-light: var(--wt-glass-border);
+  --wt-border-color-strong: var(--wt-glass-border-strong);
+  --wt-shadow-base: var(--wt-glass-shadow-soft);
+  --wt-shadow-raised: var(--wt-glass-shadow-soft);
+  --wt-shadow-overlay: var(--wt-glass-shadow);
+  --wt-backdrop-filter: blur(var(--wt-glass-blur))
+    saturate(var(--wt-glass-saturation));
+  --_wt-form-switch-bg: color-mix(
+    in srgb,
+    var(--wt-text-regular) 48%,
+    transparent
+  );
+  --_wt-form-switch-border-color: color-mix(
+    in srgb,
+    var(--wt-text-regular) 64%,
+    transparent
+  );
+}

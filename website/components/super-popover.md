@@ -26,7 +26,7 @@ import PopoverDemo from '../examples/demos/PopoverDemo.vue';
 | `modelValue`          | `boolean`                                     | `false`                   | 浮层可见状态                                |
 | `placement`           | `Placement`                                   | `'top'`                   | Floating UI 定位方向                        |
 | `offset`              | `number`                                      | `12`                      | 浮层与参考节点的距离                        |
-| `effect`              | `'dark' \| 'light'`                           | `'dark'`                  | 默认外观                                    |
+| `effect`              | `'auto' \| 'dark' \| 'light'`                 | `'auto'`                  | 跟随主题或固定实体外观                      |
 | `title`               | `string`                                      | `''`                      | 无 `content` 插槽时的内容                   |
 | `teleportTo`          | `string \| HTMLElement \| false`              | `'body'`                  | Teleport 目标；`false` 时渲染为真实兄弟节点 |
 | `trigger`             | `'hover' \| 'click' \| 'manual'`              | `'hover'`                 | 触发方式                                    |
@@ -54,3 +54,25 @@ import PopoverDemo from '../examples/demos/PopoverDemo.vue';
 
 默认浮层位于 `body`，不要依赖触发器祖先的 scoped 样式。使用 `popperClass` 或
 `popperStyle` 把变量应用到浮层自身，详情参阅[主题定制](/guide/theming)。
+
+上方示例中的“容器外浮层”位于 `overflow: hidden` 容器内，但浮层默认 Teleport 到
+`body`，不会被容器裁切。单实例样式可以直接应用到浮层：
+
+```vue
+<SuperPopover
+  popper-class="project-popover"
+  :popper-style="{ '--wt-popover-padding': '10px 14px' }"
+>
+  <template #reference="{ setReference }">
+    <button :ref="setReference">查看详情</button>
+  </template>
+  <template #content>自定义内容</template>
+</SuperPopover>
+
+<style>
+.project-popover {
+  --wt-popover-bg: linear-gradient(135deg, #7c3aed, #2563eb);
+  --wt-popover-color: #fff;
+}
+</style>
+```

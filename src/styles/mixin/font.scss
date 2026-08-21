@@ -6,7 +6,7 @@
   $size: 14px,
   $height: 0,
   $bold: false,
-  $color: var(--wt-color-text)
+  $color: var(--wt-text-regular, inherit)
 ) {
   font-size: $size;
 

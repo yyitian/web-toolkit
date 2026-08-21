@@ -18,6 +18,19 @@ type DatePickerType =
 const props = withDefaults(defineProps<{ type?: DatePickerType }>(), {
   type: 'date',
 });
+const attrs = useAttrs();
+const mergedAttrs = computed(() =>
+  Object.fromEntries(
+    Object.entries(attrs).filter(
+      ([key]) => !['popperClass', 'popper-class'].includes(key),
+    ),
+  ),
+);
+const popperClass = computed(() =>
+  ['wt-form-date-picker-popper', attrs.popperClass ?? attrs['popper-class']]
+    .filter(Boolean)
+    .join(' '),
+);
 const dynamicProps = computed(() => {
   const times = getDatePickerDefaultTime();
   if (props.type.includes('range')) return { defaultTime: times };
@@ -28,8 +41,9 @@ const dynamicProps = computed(() => {
 <template>
   <ElDatePicker
     class="super-form-date-picker"
-    v-bind="{ ...dynamicProps, ...$attrs }"
+    v-bind="{ ...dynamicProps, ...mergedAttrs }"
     :type="type"
+    :popper-class="popperClass"
   />
 </template>
 <style scoped>

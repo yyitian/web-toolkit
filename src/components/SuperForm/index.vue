@@ -301,4 +301,128 @@ defineExpose({ getFormData, setFormData, validate, submit, elForm });
 .super-form__label {
   @include flex-align-center(6px);
 }
+
+.super-form {
+  :deep(.el-form-item__label) {
+    color: var(--wt-form-label-color, var(--el-text-color-regular));
+  }
+
+  :deep(.el-form-item.is-required .el-form-item__label::before),
+  :deep(.el-form-item.is-required .el-form-item__label::after) {
+    color: var(--wt-form-label-required-color, var(--el-color-danger));
+  }
+
+  :deep(.el-input__wrapper),
+  :deep(.el-select__wrapper),
+  :deep(.el-textarea__inner) {
+    color: var(--wt-form-control-color, var(--el-text-color-regular));
+    background: var(--wt-form-control-bg, var(--el-fill-color-blank));
+    border-color: var(--wt-form-control-border-color, var(--el-border-color));
+    box-shadow: var(
+      --wt-form-control-shadow,
+      0 0 0 1px var(--wt-form-control-border-color, var(--el-border-color))
+        inset
+    );
+    backdrop-filter: var(
+      --wt-form-control-backdrop-filter,
+      var(--wt-backdrop-filter, none)
+    );
+  }
+
+  :deep(.el-input__wrapper:hover),
+  :deep(.el-select__wrapper:hover),
+  :deep(.el-textarea__inner:hover) {
+    box-shadow: var(
+      --wt-form-control-hover-shadow,
+      0 0 0 1px
+        var(--wt-form-control-hover-border-color, var(--el-border-color-hover))
+        inset
+    );
+  }
+
+  :deep(.el-input__wrapper.is-focus),
+  :deep(.el-select__wrapper.is-focused),
+  :deep(.el-textarea__inner:focus) {
+    box-shadow: var(
+      --wt-form-control-focus-shadow,
+      0 0 0 1px
+        var(--wt-form-control-focus-border-color, var(--el-color-primary)) inset
+    );
+  }
+
+  :deep(.el-input__inner),
+  :deep(.el-select__selected-item),
+  :deep(.el-textarea__inner) {
+    color: var(--wt-form-control-color, var(--el-text-color-regular));
+  }
+
+  :deep(.el-input__inner::placeholder),
+  :deep(.el-select__placeholder),
+  :deep(.el-textarea__inner::placeholder) {
+    color: var(
+      --wt-form-control-placeholder-color,
+      var(--el-text-color-placeholder)
+    );
+  }
+
+  :deep(.is-disabled .el-input__wrapper),
+  :deep(.is-disabled.el-select__wrapper),
+  :deep(.el-textarea.is-disabled .el-textarea__inner) {
+    color: var(--wt-form-control-disabled-color, var(--el-disabled-text-color));
+    background: var(--wt-form-control-disabled-bg, var(--el-disabled-bg-color));
+    box-shadow: 0 0 0 1px
+      var(
+        --wt-form-control-disabled-border-color,
+        var(--el-disabled-border-color)
+      )
+      inset;
+  }
+
+  :deep(.el-radio),
+  :deep(.el-checkbox) {
+    color: var(--wt-form-control-color, var(--el-text-color-regular));
+  }
+
+  :deep(.el-radio__inner),
+  :deep(.el-checkbox__inner) {
+    background: var(--wt-form-control-bg, var(--el-fill-color-blank));
+    border-color: var(--wt-form-control-border-color, var(--el-border-color));
+    backdrop-filter: var(
+      --wt-form-control-backdrop-filter,
+      var(--wt-backdrop-filter, none)
+    );
+  }
+
+  :deep(.el-switch__core) {
+    background: var(
+      --wt-form-switch-bg,
+      var(
+        --_wt-form-switch-bg,
+        var(--el-switch-off-color, var(--el-border-color))
+      )
+    );
+    border-color: var(
+      --wt-form-switch-border-color,
+      var(
+        --_wt-form-switch-border-color,
+        var(--el-switch-off-color, var(--el-border-color))
+      )
+    );
+    backdrop-filter: var(
+      --wt-form-control-backdrop-filter,
+      var(--wt-backdrop-filter, none)
+    );
+  }
+
+  :deep(.el-radio__input.is-checked .el-radio__inner),
+  :deep(.el-checkbox__input.is-checked .el-checkbox__inner),
+  :deep(.el-checkbox__input.is-indeterminate .el-checkbox__inner),
+  :deep(.el-switch.is-checked .el-switch__core) {
+    background: var(--wt-form-control-active-bg, var(--el-color-primary));
+    border-color: var(
+      --wt-form-control-active-border-color,
+      var(--el-color-primary)
+    );
+  }
+}
 </style>

@@ -1,0 +1,43 @@
+:where(:root[data-wt-scheme='dark']) {
+  color-scheme: dark;
+
+  --wt-text-primary: #e5eaf3;
+  --wt-text-regular: #cfd3dc;
+  --wt-text-secondary: #a3a6ad;
+  --wt-text-placeholder: #8d9095;
+  --wt-text-disabled: #6c6e72;
+  --wt-text-inverse: #fff;
+  --wt-palette-mix-surface: #141414;
+  --wt-palette-contrast: #fff;
+
+  --_wt-solid-surface-page: #0a0a0a;
+  --_wt-solid-surface-base: #141414;
+  --_wt-solid-surface-raised: #18191a;
+  --_wt-solid-surface-overlay: #1d1e1f;
+  --_wt-solid-surface-mask: rgb(0 0 0 / 80%);
+  --_wt-solid-border: #4c4d4f;
+  --_wt-solid-border-light: #414243;
+  --_wt-solid-border-strong: #636466;
+  --_wt-solid-shadow-base: 0 0 6px #000000b8;
+  --_wt-solid-shadow-raised: 0 0 12px #000000b8;
+  --_wt-solid-shadow-overlay:
+    0 12px 32px 4px rgb(0 0 0 / 36%), 0 8px 20px rgb(0 0 0 / 72%);
+
+  --wt-glass-bg: rgb(20 20 24 / 64%);
+  --wt-glass-bg-strong: rgb(29 30 31 / 78%);
+  --wt-glass-highlight: rgb(255 255 255 / 8%);
+  --wt-glass-border: rgb(245 248 255 / 16%);
+  --wt-glass-border-strong: rgb(245 248 255 / 24%);
+  --wt-glass-shadow-soft: 0 10px 30px rgb(0 0 0 / 36%);
+  --wt-glass-shadow: 0 20px 56px rgb(0 0 0 / 52%);
+  --wt-glass-blur: 22px;
+  --wt-glass-saturation: 150%;
+  --_wt-glass-surface-mask: rgb(0 0 0 / 62%);
+
+  --_wt-fill-darker-weight: 20%;
+  --_wt-fill-dark-weight: 16%;
+  --_wt-fill-weight: 12%;
+  --_wt-fill-light-weight: 8%;
+  --_wt-fill-lighter-weight: 4%;
+  --_wt-fill-extra-light-weight: 2%;
+}

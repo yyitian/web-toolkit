@@ -77,10 +77,9 @@
   // 过滤未生成class的mixin
   @function filter-mixins() {
     $list: ();
-    $font-list: 'font';
-    $use-list: list.join(
+    $use-list: list.append(
       list.join($flex-containers, $flex-items),
-      ([$font-list])
+      'interactive'
     );
 
     @each $mixin in map.keys($mixins) {
@@ -93,6 +92,10 @@
   }
 
   $filter-mixins: filter-mixins();
+
+  .wt-interactive {
+    @include mixins.interactive;
+  }
 
   // 给未生成class的mixin添加类名
   @each $un-use-mixin in $filter-mixins {

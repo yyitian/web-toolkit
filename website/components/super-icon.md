@@ -1,4 +1,5 @@
 <script setup>
+import DynamicIconDemo from '../examples/demos/DynamicIconDemo.vue';
 import IconDemo from '../examples/demos/IconDemo.vue';
 </script>
 
@@ -27,17 +28,49 @@ import { SuperIcon } from '@yyitian/web-toolkit';
 
 字符串图标必须先通过[Vite 插件](/guide/vite-plugin)注入对应 symbol。
 
+## 动态图标
+
+动态图标内部管理状态过渡，由 `SuperIcon` 或 `SuperButton` 自动透传 `active`。
+
+<ClientOnly><DemoBlock><DynamicIconDemo /></DemoBlock></ClientOnly>
+
+```vue
+<script setup lang="ts">
+import { SuperButton } from '@yyitian/web-toolkit';
+import { DynamicPin } from '@yyitian/web-toolkit/dynamic-icons';
+
+const active = ref(false);
+</script>
+
+<template>
+  <SuperButton
+    :icon="DynamicPin"
+    :active="active"
+    label="置顶"
+    @click="active = !active"
+  />
+</template>
+```
+
+| 导出名               | 用途               |
+| -------------------- | ------------------ |
+| `DynamicPin`         | 置顶状态切换       |
+| `DynamicAudioLines`  | 音频状态切换       |
+| `DynamicChevronLeft` | 展开或方向状态切换 |
+
+动态图标从 `@yyitian/web-toolkit/dynamic-icons` 子路径导入。不要依赖组件源码路径。
+
 ## Props
 
-| 属性      | 类型                  | 默认值   | 说明                       |
-| --------- | --------------------- | -------- | -------------------------- |
-| `icon`    | `string \| Component` | `''`     | sprite 名称或 Vue 图标组件 |
-| `title`   | `string`              | `''`     | 非空时显示 tooltip         |
-| `size`    | `string \| number`    | `20`     | 图标宽高                   |
-| `rotate`  | `number`              | `0`      | 旋转角度，支持负数         |
-| `loading` | `boolean`             | `false`  | 使用内置 spinner           |
-| `active`  | `boolean`             | `false`  | 仅向动态图标透传状态       |
-| `effect`  | `'dark' \| 'light'`   | `'dark'` | tooltip 外观               |
+| 属性      | 类型                          | 默认值   | 说明                           |
+| --------- | ----------------------------- | -------- | ------------------------------ |
+| `icon`    | `string \| Component`         | `''`     | sprite 名称或 Vue 图标组件     |
+| `title`   | `string`                      | `''`     | 非空时显示 tooltip             |
+| `size`    | `string \| number`            | `20`     | 图标宽高                       |
+| `rotate`  | `number`                      | `0`      | 旋转角度，支持负数             |
+| `loading` | `boolean`                     | `false`  | 使用内置 spinner               |
+| `active`  | `boolean`                     | `false`  | 仅向动态图标透传状态           |
+| `effect`  | `'auto' \| 'dark' \| 'light'` | `'auto'` | tooltip 跟随主题或固定实体外观 |
 
 ## 注意事项
 

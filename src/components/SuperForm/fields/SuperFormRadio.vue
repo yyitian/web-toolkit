@@ -10,7 +10,7 @@ function optionValue(value: unknown) {
 }
 </script>
 <template>
-  <ElRadioGroup v-bind="$attrs">
+  <ElRadioGroup class="super-form-radio" v-bind="$attrs">
     <ElRadio
       v-for="option in options"
       :key="String(option.value)"

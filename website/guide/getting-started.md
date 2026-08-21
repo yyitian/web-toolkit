@@ -20,11 +20,15 @@ pnpm add @lucide/vue
 
 ```ts
 import { createApp } from 'vue';
+import { createWtTheme } from '@yyitian/web-toolkit';
 import '@yyitian/web-toolkit/style.css';
 import App from './App.vue';
 
-createApp(App).mount('#app');
+createApp(App).use(createWtTheme()).mount('#app');
 ```
+
+`createWtTheme()` 默认使用浅色实体主题且不持久化。主题插件会把当前主题写入根节点并
+联动工具库实际使用的 Element Plus 变量；完整配置参阅[主题定制](/guide/theming)。
 
 使用 Element Plus 组件时，还应按项目既有方式引入其样式。可以使用
 `unplugin-element-plus` 按需加载，也可以引入完整样式：

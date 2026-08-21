@@ -4,6 +4,7 @@ import vue from '@vitejs/plugin-vue';
 import dts from 'vite-plugin-dts';
 import AutoImport from 'unplugin-auto-import/vite';
 import ElementPlus from 'unplugin-element-plus/vite';
+import { webToolkitPlugin } from './vite.plugin.ts';
 
 export default defineConfig({
   build: {
@@ -27,7 +28,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@use '@/styles/mixin' as *;`,
+        api: 'modern-compiler',
       },
     },
   },
@@ -38,11 +39,13 @@ export default defineConfig({
       imports: ['vue'],
       eslintrc: { enabled: false },
     }),
+    webToolkitPlugin(),
     dts({
       include: [
         'lib/**/*.ts',
         'src/components/**/*.ts',
         'src/components/**/*.vue',
+        'src/theme/**/*.ts',
         // 让 vue-tsc 识别 unplugin-auto-import 注入的全局 API(h、ref、computed…)
         'auto-imports.d.ts',
       ],

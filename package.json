@@ -1,6 +1,6 @@
 {
   "name": "@yyitian/web-toolkit",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "个人跨项目复用的 Vue 3 组件工具库（图标、按钮、浮层、表单、弹窗与 Vite 插件）",
   "license": "MIT",
   "type": "module",
@@ -48,6 +48,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "verify:theme": "node scripts/verify-theme.mjs",
     "prepublishOnly": "pnpm build"
   },
   "peerDependencies": {

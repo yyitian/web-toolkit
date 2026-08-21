@@ -14,7 +14,10 @@ export default defineComponent({
     rotate: { type: Number, default: 0 },
     loading: { type: Boolean },
     active: { type: Boolean },
-    effect: { type: String as () => 'dark' | 'light', default: 'dark' },
+    effect: {
+      type: String as () => 'auto' | 'dark' | 'light',
+      default: 'auto',
+    },
   },
   setup(props) {
     function renderComponentIcon(icon: Component) {
@@ -78,8 +81,11 @@ export default defineComponent({
         SuperPopover,
         { title: props.title, effect: props.effect },
         {
-          reference: ({ setReference }: { setReference: (value: unknown) => void }) =>
-            renderIcon(setReference),
+          reference: ({
+            setReference,
+          }: {
+            setReference: (value: unknown) => void;
+          }) => renderIcon(setReference),
         },
       );
     }
@@ -93,9 +99,11 @@ export default defineComponent({
 .super-icon {
   @include flex-align-center;
   position: relative;
+  color: var(--wt-icon-color, inherit);
   cursor: inherit;
   &.loading {
-    animation: loading 1.2s linear infinite;
+    color: var(--wt-icon-loading-color, var(--wt-icon-color, inherit));
+    animation: loading var(--wt-icon-loading-duration, 1.2s) linear infinite;
   }
 }
 

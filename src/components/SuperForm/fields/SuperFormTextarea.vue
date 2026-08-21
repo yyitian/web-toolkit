@@ -4,6 +4,7 @@ defineOptions({ inheritAttrs: false });
 </script>
 <template>
   <ElInput
+    class="super-form-textarea"
     v-bind="{
       type: 'textarea',
       resize: 'none',
