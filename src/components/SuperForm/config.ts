@@ -21,13 +21,3 @@ export function formatOptions(
     ...(children ? { children: formatOptions(children) } : {}),
   }));
 }
-
-export function getDatePickerDefaultTime(): [Date, Date] {
-  const year = new Date().getFullYear();
-  return [new Date(year, 0, 1, 0, 0, 0), new Date(year, 0, 1, 23, 59, 59)];
-}
-
-export const datePickerDefaultTime: readonly [Date, Date] =
-  getDatePickerDefaultTime();
-export const dateFormat = 'YYYY-MM-DD HH:mm';
-export const dateFormatSec = 'YYYY-MM-DD HH:mm:ss';

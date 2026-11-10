@@ -161,7 +161,11 @@
   }
 }
 
-:where(.wt-form-select-popper, .wt-form-date-picker-popper) {
+:where(
+  .wt-form-select-popper,
+  .wt-form-date-picker-popper,
+  .wt-form-cascader-popper
+) {
   backdrop-filter: var(
     --wt-form-control-backdrop-filter,
     var(--wt-backdrop-filter, none)

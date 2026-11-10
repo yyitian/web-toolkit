@@ -171,3 +171,39 @@
 .vp-doc .el-form ol {
   padding-left: 0;
 }
+
+/* 表格演示使用组件样式，避免 Markdown 表格和列表规则改变布局。 */
+.super-table-doc .vp-doc table {
+  display: block;
+}
+
+.vp-doc .super-table table {
+  display: table;
+  margin: 0;
+  border-collapse: separate;
+  overflow: visible;
+}
+
+.vp-doc .super-table tr {
+  border-top: 0;
+  background: transparent;
+}
+
+.vp-doc .super-table .el-table__cell {
+  border-top: 0;
+  border-left: 0;
+}
+
+.vp-doc .super-table .el-table:not(.el-table--border) .el-table__cell {
+  border-right: 0;
+}
+
+.vp-doc .super-table .el-pagination ul {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.vp-doc .super-table .el-pagination li + li {
+  margin-top: 0;
+}

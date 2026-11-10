@@ -43,9 +43,11 @@ export default defineConfig({
     dts({
       include: [
         'lib/**/*.ts',
+        'src/constants/**/*.ts',
         'src/components/**/*.ts',
         'src/components/**/*.vue',
         'src/theme/**/*.ts',
+        'src/utils/**/*.ts',
         // 让 vue-tsc 识别 unplugin-auto-import 注入的全局 API(h、ref、computed…)
         'auto-imports.d.ts',
       ],

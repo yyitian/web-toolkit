@@ -1,18 +1,19 @@
 # 快速开始
 
-`@yyitian/web-toolkit` 面向 Vue 3 和 Vite 项目，提供图标、按钮、浮层、弹窗及配置式表单。
+`@yyitian/web-toolkit` 面向 Vue 3 和 Vite 项目，提供图标、按钮、浮层、弹窗、配置式表单与表格，以及日期和确认弹窗工具。
 
 ## 安装依赖
 
 ```bash
-pnpm add @yyitian/web-toolkit element-plus
+pnpm add @yyitian/web-toolkit element-plus @lucide/vue
 ```
 
-项目需要 Vue 3.5 或更高版本。只有使用 Lucide 组件图标时才需要安装：
+项目需要 Vue 3.5 或更高版本。上面的命令安装完整组件所需的依赖；当前对等依赖范围为
+`element-plus ^2.14.0`、`@lucide/vue ^1.18.0`。表单（含上传）、表格、表单弹窗、
+主题切换器和成品动态图标内部也使用 Lucide 图标。
 
-```bash
-pnpm add @lucide/vue
-```
+`webToolkitPlugin` 只处理 SVG sprite 和 SCSS mixin，不负责自动导入 Vue API 或注册组件。
+下方示例均通过显式导入使用组件。
 
 ## 引入样式
 
@@ -67,24 +68,9 @@ import { SuperIcon } from '@yyitian/web-toolkit';
 
 插件会查找 `logo.svg` 并生成 `#icon-logo` symbol。
 
-## 按需引入动态图标
+## 继续阅读
 
-动态图标使用独立子路径，避免无关图标进入主入口：
-
-```vue
-<script setup lang="ts">
-import { SuperButton } from '@yyitian/web-toolkit';
-import { DynamicPin } from '@yyitian/web-toolkit/dynamic-icons';
-
-const active = ref(false);
-</script>
-
-<template>
-  <SuperButton
-    :icon="DynamicPin"
-    :active="active"
-    label="置顶"
-    @click="active = !active"
-  />
-</template>
-```
+- [SuperIcon](/components/super-icon#动态图标)：从独立子路径引入成品动态图标。
+- [SuperForm](/components/super-form)：配置字段、验证与上传。
+- [SuperTable](/components/super-table)：请求模式、搜索和分页。
+- [工具方法](/guide/utilities)：日期格式化、日期常量和确认弹窗。

@@ -6,7 +6,7 @@
 ## 基础配置
 
 ```ts
-import { resolve } from 'node:path';
+import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { webToolkitPlugin } from '@yyitian/web-toolkit/vite-plugin';
@@ -15,7 +15,7 @@ export default defineConfig({
   plugins: [
     vue(),
     webToolkitPlugin({
-      iconDirs: [resolve(__dirname, 'src/assets/icons')],
+      iconDirs: [fileURLToPath(new URL('./src/assets/icons', import.meta.url))],
     }),
   ],
 });
@@ -43,7 +43,8 @@ export default defineConfig({
 @use '@yyitian/web-toolkit/styles/mixin' as *;
 ```
 
-因此项目的 SCSS 中可以直接使用 `flex()`、`font()` 和 `flex-align-center` 等 mixin。
+项目需先安装 Sass 预处理器，例如 `pnpm add -D sass-embedded`。之后在 SCSS 中可以
+直接使用 `flex()`、`font()` 和 `flex-align-center` 等 mixin。
 如果项目已经自行配置同一入口，可以关闭重复注入：
 
 ```ts
@@ -52,7 +53,9 @@ webToolkitPlugin({ injectMixin: false });
 
 ## 注意事项
 
-- `iconDirs` 必须是构建机器上可读取的绝对路径。
+- `iconDirs` 使用构建机器上可读取的目录绝对路径；只扫描目录直属的 `.svg` 文件，不递归子目录。
+- 不存在或不可读的目录会被跳过，请确认路径正确。
 - symbol 名称取 SVG 文件名，不包含 `.svg`，请避免目录间同名。
-- 插件在构建时读取 SVG；新增或修改文件后需要重新构建。
+- sprite 在 HTML 转换时读取 SVG。开发环境修改后需重新加载页面，插件不提供 SVG 热更新；
+  已部署站点需要重新构建。
 - SVG 内应使用 `currentColor`，以便图标继承组件文字颜色。

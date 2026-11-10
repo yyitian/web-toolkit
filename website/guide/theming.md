@@ -52,8 +52,7 @@ createApp(App)
 <script setup lang="ts">
 import { useWtTheme } from '@yyitian/web-toolkit';
 
-const { theme, scheme, material, setTheme, setScheme, setMaterial } =
-  useWtTheme();
+const { setTheme } = useWtTheme();
 </script>
 
 <template>
@@ -61,7 +60,9 @@ const { theme, scheme, material, setTheme, setScheme, setMaterial } =
 </template>
 ```
 
-`setTheme()` 会原子替换两个维度。未安装主题插件时调用 `useWtTheme()` 会明确报错。
+`theme`、`scheme` 和 `material` 为只读响应式状态。`setTheme(scheme, material)` 同时
+更新两个维度；`setScheme()`、`setMaterial()` 可单独切换一个维度。
+未安装主题插件时调用 `useWtTheme()` 会明确报错。
 
 ## 全局语义变量
 
@@ -112,21 +113,12 @@ const { theme, scheme, material, setTheme, setScheme, setMaterial } =
 - Form：`--wt-form-label-color` 与 `--wt-form-control-*` 控件基础、悬停、聚焦、选中状态变量；
   Switch 关闭轨道可用 `--wt-form-switch-bg`、`--wt-form-switch-border-color` 独立控制。
 - Upload：`--wt-upload-trigger-*`、`--wt-upload-file-hover-bg`、图片描边、遮罩和删除按钮变量。
+- Table：`--wt-table-bg`、`--wt-table-color`、表头、边框、悬停和固定列背景，以及间距；
+  完整列表参阅 [SuperTable 样式定制](/components/super-table#样式定制)。
 
 `SuperPopover` 默认 Teleport 到 `body`。根节点变量可以正常继承；单实例变量需要通过
-`popperClass` 或 `popperStyle` 应用到浮层自身：
-
-```vue
-<SuperPopover
-  popper-class="project-popover"
-  :popper-style="{ '--wt-popover-radius': '12px' }"
-  title="详情"
->
-  <template #reference="{ setReference }">
-    <button :ref="setReference">查看</button>
-  </template>
-</SuperPopover>
-```
+`popperClass` 或 `popperStyle` 应用到浮层自身。
+用法参阅 [SuperPopover 的 Teleport 与样式](/components/super-popover#teleport-与样式)。
 
 ## 毛玻璃与 Element Plus
 
@@ -135,7 +127,7 @@ const { theme, scheme, material, setTheme, setScheme, setMaterial } =
 `--wt-backdrop-filter: none` 关闭滤镜。
 
 安装主题插件后，工具库会桥接实际使用范围内的 Element Plus 文字、表面、边框、状态色、
-阴影与遮罩变量。工具库内 Dialog、Popover、Form 控件以及 Select/DatePicker 浮层会
+阴影与遮罩变量。工具库内 Dialog、Popover、Form、Table 以及 Select/DatePicker/Cascader 浮层会
 补充玻璃滤镜；消费方直接使用的 Element Plus 控件只获得全局配色，不会被强制增加滤镜。
 
 ## 通用交互动效

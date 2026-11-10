@@ -38,6 +38,7 @@ import { SuperIcon } from '@yyitian/web-toolkit';
 <script setup lang="ts">
 import { SuperButton } from '@yyitian/web-toolkit';
 import { DynamicPin } from '@yyitian/web-toolkit/dynamic-icons';
+import { ref } from 'vue';
 
 const active = ref(false);
 </script>
@@ -52,13 +53,19 @@ const active = ref(false);
 </template>
 ```
 
-| 导出名               | 用途               |
-| -------------------- | ------------------ |
-| `DynamicPin`         | 置顶状态切换       |
-| `DynamicAudioLines`  | 音频状态切换       |
-| `DynamicChevronLeft` | 展开或方向状态切换 |
+| 导出名               | 用途                                            |
+| -------------------- | ----------------------------------------------- |
+| `DynamicPin`         | 置顶状态切换                                    |
+| `DynamicAudioLines`  | 音频状态切换                                    |
+| `DynamicChevronLeft` | 展开或方向状态切换                              |
+| `DynamicRefresh`     | 激活时顺时针持续旋转，取消后平滑归零            |
+| `DynamicFoldLeft`    | 左侧展开/收起，仅中间箭头在 0° 与 180° 之间旋转 |
 
-动态图标从 `@yyitian/web-toolkit/dynamic-icons` 子路径导入。不要依赖组件源码路径。
+动态图标从 `@yyitian/web-toolkit/dynamic-icons` 子路径导入，需要安装 `@lucide/vue`。
+不要依赖组件源码路径。
+
+`DynamicRefresh` 每秒顺时针旋转一圈，取消激活后保持原速补完当前圈，停在 0°，不会反转或加速。
+`DynamicFoldLeft` 非激活时箭头朝右，激活时用 200ms 旋转 180° 朝左，方形外框保持不动。
 
 ## Props
 

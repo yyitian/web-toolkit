@@ -1,6 +1,6 @@
 # @yyitian/web-toolkit
 
-面向 Vue 3 的组件工具库，提供图标、按钮、浮层、配置式表单、弹窗与主题能力，以及 SVG sprite 和 SCSS mixin 集成能力。
+面向 Vue 3 的组件工具库，提供图标、按钮、浮层、配置式表单、标准表格、弹窗与主题能力，以及 SVG sprite 和 SCSS mixin 集成能力。
 
 完整使用说明、组件示例与 API 请访问：[wt.yyitian.top](https://wt.yyitian.top/)。
 
@@ -10,7 +10,7 @@
 pnpm add @yyitian/web-toolkit
 ```
 
-`vue` 是必需的 peer dependency。使用表单、弹窗或按钮组件时需要安装 `element-plus`；使用 Lucide 图标或动态图标时需要安装 `@lucide/vue`。
+`vue` 是必需的 peer dependency。使用表单、表格、弹窗或按钮组件时需要安装 `element-plus`；使用 Lucide 图标或动态图标时需要安装 `@lucide/vue`。
 
 ```bash
 pnpm add element-plus @lucide/vue
@@ -50,6 +50,36 @@ const { setTheme } = useWtTheme();
   <button @click="setTheme('dark', 'glass')">暗色毛玻璃</button>
 </template>
 ```
+
+`SuperTable` 支持外部数据和 Promise 请求函数两种模式，通过列配置生成搜索、展示、
+排序及勾选，通过 `config` 控制首次加载、行标识和区域显隐。独立导出的
+`DATE_FORMATS` 提供日期、分钟和秒三种格式；日期搜索默认使用
+`datePickerDefaultTime` 和 `DATE_FORMATS.dateTimeSeconds`，列级配置可分别覆盖。
+
+此外可直接导入 `formatDate`、`openConfirm`、`openDeleteConfirm` 工具方法：
+
+```ts
+import {
+  formatDate,
+  DATE_FORMATS,
+  openConfirm,
+  openDeleteConfirm,
+} from '@yyitian/web-toolkit';
+
+formatDate('2026-11-10 14:05:09'); // '2026-11-10'
+formatDate('2026-11-10 14:05:09', DATE_FORMATS.dateTimeSeconds);
+formatDate('2026-11-10', 'YYYY年MM月DD日'); // '2026年11月10日'
+
+if ((await openConfirm('确认提交吗？')) === 'confirm') {
+  // 执行提交
+}
+if (await openDeleteConfirm('示例任务')) {
+  // 执行删除
+}
+```
+
+日期空值或无效值返回空字符串。确认弹窗需要安装 `element-plus`，支持覆盖文案和原生
+弹窗选项；取消、关闭统一返回取消结果，实际异常仍会抛出。
 
 Vite 插件、主题定制、各组件用法及完整 API 均以[在线文档](https://wt.yyitian.top/)为准。
 

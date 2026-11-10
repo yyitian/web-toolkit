@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ElDatePicker } from 'element-plus';
-import { getDatePickerDefaultTime } from '../config.ts';
+import { getDatePickerDefaultTime } from '../../../constants/date.ts';
 defineOptions({ inheritAttrs: false });
 type DatePickerType =
   | 'date'

@@ -35,9 +35,13 @@ import FormDialogDemo from '../examples/demos/FormDialogDemo.vue';
 | `loading`    | `boolean`                 | `false` | 禁用表单并让确认按钮显示 loading |
 | `confirm`    | `LabelValue`              | 自动    | 自定义确认按钮文案               |
 
-其他 attrs 会传给 `SuperDialog`，组件固定设置 `close-on-click-modal="false"`。
+其他 attrs 会传给 `SuperDialog`。遮罩点击关闭默认禁用，可通过
+`close-on-click-modal` 覆盖；默认页脚仅提供一个保存（只读时为关闭）按钮。
 
-`formData` 只写入其中实际提供且与 `columns` 匹配的字段；未提供的字段保留各自默认值。
+`formData` 在内部表单挂载时写入，处理规则参阅
+[SuperForm 数据赋值](/components/super-form#数据初始化与赋值)。弹窗已打开后修改
+`formData` 不会自动同步到表单；异步加载数据时可调用实例 `setFormData()`。
+`form:mounted` 事件先发出，随后组件再写入 `formData`。
 
 ## Events
 
@@ -52,11 +56,11 @@ import FormDialogDemo from '../examples/demos/FormDialogDemo.vue';
 
 ## Slots
 
-| 插槽         | 说明                                   |
-| ------------ | -------------------------------------- |
-| `header`     | 透传到 `SuperDialog` 标题              |
-| `footer`     | 覆盖默认确认按钮                       |
-| 其他命名插槽 | 透传到 `SuperForm`，供 `slot` 字段使用 |
+| 插槽         | 说明                                                   |
+| ------------ | ------------------------------------------------------ |
+| `header`     | 透传到 `SuperDialog` 标题                              |
+| `footer`     | 覆盖默认确认按钮                                       |
+| 其他命名插槽 | 透传到 `SuperForm`，用于字段及子插槽；不透传作用域参数 |
 
 ## Expose
 

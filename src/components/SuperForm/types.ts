@@ -1,5 +1,10 @@
 import type { Component, Slot } from 'vue';
-import type { FormInstance, FormItemRule } from 'element-plus';
+import type {
+  CascaderOption,
+  CascaderProps,
+  FormInstance,
+  FormItemRule,
+} from 'element-plus';
 
 export type LabelRecord = Record<string, string | (() => string)>;
 
@@ -54,6 +59,17 @@ export type SuperFormColumn =
       component?: never;
       defaultValue?: unknown;
       props?: Record<string, unknown> & { options?: SuperFormOption[] };
+      slots?: Record<string, string | Slot>;
+      change?: (formData: Record<string, unknown>, value: unknown) => void;
+    })
+  | (SuperFormColumnBase & {
+      formType: 'cascader';
+      component?: never;
+      defaultValue?: unknown;
+      props?: Record<string, unknown> & {
+        options?: (SuperFormOption | CascaderOption)[];
+        props?: CascaderProps;
+      };
       slots?: Record<string, string | Slot>;
       change?: (formData: Record<string, unknown>, value: unknown) => void;
     })

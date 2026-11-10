@@ -90,10 +90,4 @@ import { SuperButton } from '@yyitian/web-toolkit';
 | `default` | 按钮文字；存在时不进入纯图标形态          |
 | `icon`    | 自定义图标，优先于 `icon` prop 的渲染内容 |
 
-## 纯图标规则
-
-- 有图标且没有默认插槽时进入纯图标形态。
-- loading 只替换或补充内部图标，不参与按钮形态判断。
-- 设置 `square` 后才获得精确正方形尺寸；未设置时为无边框紧凑图标按钮。
-- 纯图标按钮建议始终提供 `label`。
-- 原生事件和 attrs 会继续传给底层 `ElButton`。
+原生事件和 attrs 会继续传给底层 `ElButton`。

@@ -1,6 +1,6 @@
 {
   "name": "@yyitian/web-toolkit",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "个人跨项目复用的 Vue 3 组件工具库（图标、按钮、浮层、表单、弹窗与 Vite 插件）",
   "license": "MIT",
   "type": "module",
@@ -49,6 +49,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "verify:theme": "node scripts/verify-theme.mjs",
+    "verify:table": "node scripts/verify-table.mjs",
+    "verify:utils": "node scripts/verify-utils.mjs",
     "prepublishOnly": "pnpm build"
   },
   "peerDependencies": {
@@ -66,6 +68,7 @@
   },
   "dependencies": {
     "@floating-ui/vue": "^2.0.0",
+    "dayjs": "^1.11.21",
     "es-toolkit": "^1.50.0"
   },
   "devDependencies": {

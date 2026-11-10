@@ -6,6 +6,7 @@ import type { FormInstance } from 'element-plus';
 import type { Component } from 'vue';
 import SuperIcon from '../SuperIcon/index.vue';
 import { formatLabel, formatOptions } from './config.ts';
+import SuperFormCascader from './fields/SuperFormCascader.vue';
 import SuperFormCheckbox from './fields/SuperFormCheckbox.vue';
 import SuperFormDatePicker from './fields/SuperFormDatePicker.vue';
 import SuperFormInput from './fields/SuperFormInput.vue';
@@ -36,6 +37,7 @@ const fieldComponents = {
   'input-number': SuperFormInputNumber,
   radio: SuperFormRadio,
   select: SuperFormSelect,
+  cascader: SuperFormCascader,
   checkbox: SuperFormCheckbox,
   switch: SuperFormSwitch,
   'date-picker': SuperFormDatePicker,
@@ -63,6 +65,11 @@ function getDefaultValue(column: SuperFormColumn): unknown {
         ?.value;
     case 'select':
       return fieldProps.multiple ? [] : '';
+    case 'cascader':
+      return column.props?.props?.multiple ||
+        column.props?.props?.emitPath !== false
+        ? []
+        : '';
     case 'checkbox':
       return fieldProps.options ? [] : false;
     case 'switch':
@@ -216,7 +223,7 @@ function renderField(column: SuperFormColumn) {
   }
   const component: Component = fieldComponents[column.formType];
   const fieldProps = controlledFieldProps(column);
-  if ('options' in fieldProps) {
+  if (column.formType !== 'cascader' && 'options' in fieldProps) {
     fieldProps.options = formatOptions(fieldProps.options as never[]);
   }
   return h(

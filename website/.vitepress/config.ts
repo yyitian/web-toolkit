@@ -72,6 +72,7 @@ export default defineConfig({
           { text: '快速开始', link: '/guide/getting-started' },
           { text: 'Vite 插件', link: '/guide/vite-plugin' },
           { text: '主题定制', link: '/guide/theming' },
+          { text: '工具方法', link: '/guide/utilities' },
         ],
       },
       {
@@ -86,6 +87,10 @@ export default defineConfig({
             link: '/components/super-theme-switcher',
           },
         ],
+      },
+      {
+        text: '数据展示',
+        items: [{ text: 'SuperTable', link: '/components/super-table' }],
       },
       {
         text: '表单组件',

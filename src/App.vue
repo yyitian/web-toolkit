@@ -6,6 +6,11 @@ import SuperIcon from '@/components/SuperIcon/index.vue';
 import SuperPopover from '@/components/SuperPopover/index.vue';
 import SuperThemeSwitcher from '@/components/SuperThemeSwitcher/index.vue';
 import DynamicPin from '@/components/SuperIcon/dynamic-icons/DynamicPin.vue';
+import DynamicIconDemo from '../website/examples/demos/DynamicIconDemo.vue';
+import TableDemo from '../website/examples/demos/TableDemo.vue';
+import TableExternalDemo from '../website/examples/demos/TableExternalDemo.vue';
+import TableDateDemo from '../website/examples/demos/TableDateDemo.vue';
+import TableFeaturesDemo from '../website/examples/demos/TableFeaturesDemo.vue';
 import { useWtTheme } from '@/theme/index.ts';
 
 const pinActive = ref(false);
@@ -40,6 +45,18 @@ function startLoading() {
       </div>
       <SuperThemeSwitcher />
     </div>
+
+    <section class="demo-section" data-demo="table-regression">
+      <SuperThemeSwitcher variant="inline" />
+      <h2>SuperTable 请求模式</h2>
+      <TableDemo />
+      <h2>SuperTable 外部数据模式</h2>
+      <TableExternalDemo />
+      <h2>日期检索配置</h2>
+      <TableDateDemo />
+      <h2>单元格与底层扩展</h2>
+      <TableFeaturesDemo />
+    </section>
 
     <section class="demo-section" data-demo="button-regression">
       <h2>SuperButton 边界回归</h2>
@@ -81,6 +98,11 @@ function startLoading() {
         <SuperButton :icon="Settings" :square="32" label="组一" />
         <SuperButton :icon="Save" :square="32" label="组二" />
       </ElButtonGroup>
+    </section>
+
+    <section class="demo-section" data-demo="dynamic-icons">
+      <h2>动态图标</h2>
+      <DynamicIconDemo />
     </section>
 
     <section class="demo-section" data-demo="popover-regression">

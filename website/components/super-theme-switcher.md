@@ -17,6 +17,7 @@ import ThemeSwitcherDemo from '../examples/demos/ThemeSwitcherDemo.vue';
 ```
 
 Popover 形态通过桌面鼠标 hover 打开，内容使用两个 Radio group 分别控制色系和材质。
+需要安装 `element-plus` 和 `@lucide/vue`；主题插件初始化参阅[主题定制](/guide/theming)。
 
 ## Props
 

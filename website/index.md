@@ -4,7 +4,7 @@ layout: home
 hero:
   name: Web Toolkit
   text: Vue 3 组件工具库
-  tagline: 为多个项目复用图标、按钮、浮层、弹窗和配置式表单。
+  tagline: 跨项目复用基础组件、配置式表单与表格，以及主题和常用工具。
   actions:
     - theme: brand
       text: 开始使用
@@ -15,7 +15,7 @@ hero:
 
 features:
   - title: 统一组件能力
-    details: 提供图标、按钮、浮层、弹窗和配置式表单，并保持一致的主题变量与交互约定。
+    details: 覆盖图标、按钮、浮层、弹窗、表单与表格，统一明暗色系和实体、毛玻璃材质。
   - title: 实时可交互示例
     details: 文档示例直接运行仓库中的真实组件源码，便于核对交互和 API。
   - title: Vite 深度集成
@@ -25,7 +25,7 @@ features:
 ## 安装
 
 ```bash
-pnpm add @yyitian/web-toolkit element-plus
+pnpm add @yyitian/web-toolkit element-plus @lucide/vue
 ```
 
-使用 Lucide 图标时，再安装 `@lucide/vue`。完整接入方式请参阅[快速开始](/guide/getting-started)。
+依赖版本、样式引入与主题初始化请参阅[快速开始](/guide/getting-started)。
