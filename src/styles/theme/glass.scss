@@ -22,3 +22,12 @@
     transparent
   );
 }
+
+// 玻璃边框接近白色，不能作为 Switch 关闭轨道的默认颜色。
+:root[data-wt-material='glass'] .el-switch {
+  --el-switch-off-color: color-mix(
+    in srgb,
+    var(--wt-text-regular) 48%,
+    transparent
+  );
+}
