@@ -50,7 +50,6 @@ function triggerFailure() {
       title="任务列表"
       :request="request"
       :selection="{ reserveSelection: reserve }"
-      :max-height="360"
       @query-change="lastQuery = $event"
     >
       <template #search-extra>

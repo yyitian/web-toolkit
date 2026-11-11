@@ -55,6 +55,9 @@ const { setTheme } = useWtTheme();
 排序及勾选，通过 `config` 控制首次加载、行标识和区域显隐。独立导出的
 `DATE_FORMATS` 提供日期、分钟和秒三种格式；日期搜索默认使用
 `datePickerDefaultTime` 和 `DATE_FORMATS.dateTimeSeconds`，列级配置可分别覆盖。
+表格默认填满父容器高度，表体内部滚动、分页固定底部；表体至少预留列头和 10 行常规数据空间。
+`before-header` 插槽可在搜索与标题之间加入内容，空时不占位。父容器应设置确定高度，
+可通过 `--wt-table-body-min-height` 调整默认的 440px 表体最小高度。
 
 此外可直接导入 `formatDate`、`openConfirm`、`openDeleteConfirm` 工具方法：
 

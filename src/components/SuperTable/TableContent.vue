@@ -94,6 +94,7 @@ defineExpose({
   <ElTable
     ref="table"
     empty-text="暂无数据"
+    height="100%"
     v-bind="attrs"
     class="super-table__table"
     :data="data"
@@ -174,6 +175,9 @@ defineExpose({
     var(--wt-surface-overlay)
   );
   width: 100%;
+  // 显式 height 过大时收缩至表体可用空间，避免覆盖分页。
+  flex: 0 1 auto;
+  min-height: 0;
   :deep(.el-table__fixed-right-patch) {
     background: var(--el-table-header-bg-color);
   }

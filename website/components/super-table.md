@@ -7,12 +7,50 @@ import TableDemo from '../examples/demos/TableDemo.vue';
 import TableExternalDemo from '../examples/demos/TableExternalDemo.vue';
 import TableDateDemo from '../examples/demos/TableDateDemo.vue';
 import TableFeaturesDemo from '../examples/demos/TableFeaturesDemo.vue';
+import TableLayoutDemo from '../examples/demos/TableLayoutDemo.vue';
 </script>
 
 # SuperTable
 
 基于 Element Plus 的配置式标准表格，组合搜索、工具栏、表格和分页。使用前安装
 `element-plus`，并在入口引入 `@yyitian/web-toolkit/style.css`。
+
+## 高度与区域布局
+
+组件默认占据父容器的 100% 高度；父容器需要设置确定高度。搜索区、标题和分页按
+内容占高，表体填满剩余空间并在内部滚动，空数据或少量数据也会保持分页位于底部。
+
+表体默认最小高度为 440px，可容纳默认尺寸的列头和 10 行常规数据。整表最小高度
+还包括搜索、标题、分页及区域间距；搜索换行或附加内容增高时会继续撑高组件。
+父容器不足时组件保持最小高度，可在父容器设置 `overflow: auto`。未设置父高度时，
+组件按上述最小空间自然展开。多行单元格或自定义高行可增大 `--wt-table-body-min-height`。
+
+`before-header` 插槽位于搜索区和标题面板之间，可放置统计、提示等内容。未提供插槽，
+或插槽只包含空白、注释、条件为假的内容时不生成占位；有内容时两侧各保留一份
+`--wt-table-gap`，无内容时搜索与标题之间仅保留一份间距。
+
+```vue
+<template>
+  <div class="table-container">
+    <SuperTable title="任务列表" :columns="columns" :request="request">
+      <template #before-header>
+        <div v-if="summary">{{ summary }}</div>
+      </template>
+    </SuperTable>
+  </div>
+</template>
+
+<style scoped>
+.table-container {
+  height: 800px;
+  overflow: auto;
+}
+</style>
+```
+
+下例可切换父高度、数据条数和区域显隐。400px 的父容器用于观察最小高度及外层滚动。
+
+<ClientOnly><DemoBlock><TableLayoutDemo /></DemoBlock></ClientOnly>
 
 ## 请求模式
 
@@ -128,6 +166,9 @@ interface SuperTableQuery {
 `class/style` 作用于组件根节点。其余属性和未接管事件传给底层 `ElTable`，例如
 `height`、`max-height`、`border`、`stripe`、`default-expand-all`、`row-click`。
 表格的 `data/row-key`、排序查询和勾选由组件管理。
+底层表格默认 `height="100%"`；显式传入 `height/max-height` 仅控制底层表格视口，
+组件整体高度通过父容器或根节点 `style` 设置，仍保留表体最小空间和底部分页布局。
+底层表格高度超出可用表体空间时会收缩，不覆盖分页。
 
 `default-sort` 同步作为初始查询排序条件；`empty-text` 可覆盖默认空状态文案。
 
@@ -232,6 +273,7 @@ const dateColumn: SuperTableColumn = {
 | `title`          | —                                          | 替换标题                                          |
 | `toolbar`        | `{ selections, refresh }`                  | 工具栏                                            |
 | `search-extra`   | —                                          | 搜索区附加内容                                    |
+| `before-header`  | —                                          | 搜索区与标题面板之间的内容，空时不占位            |
 | `search-${name}` | 透传 SuperForm 插槽参数                    | 搜索表单字段或其子插槽；映射名称去掉 search- 前缀 |
 | `column-${prop}` | `{ row, value, column, index }`            | 任意列内容                                        |
 | `header-${prop}` | Element Plus 列头作用域，column 为本库配置 | 列头                                              |
@@ -264,6 +306,7 @@ const dateColumn: SuperTableColumn = {
 
 支持四种主题。组件变量包括 `--wt-table-bg/color/header-bg/header-color/border-color/hover-bg/`
 `fixed-bg/radius/shadow/backdrop-filter/gap/padding`；未配置时回退到现有主题变量。
+`--wt-table-body-min-height` 默认 `440px`，可调整表体的最小预留高度。
 
 ```css
 .my-table {

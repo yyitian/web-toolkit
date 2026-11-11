@@ -6,6 +6,7 @@ import { getSearchColumns } from './config.ts';
 import TableSearch from './TableSearch.vue';
 import TableContent from './TableContent.vue';
 import TablePagination from './TablePagination.vue';
+import TableBeforeHeader from './TableBeforeHeader.vue';
 import { useTableQuery } from './useTableQuery.ts';
 import type {
   SuperTableProps,
@@ -145,6 +146,9 @@ defineExpose({
         <slot :name="name" v-bind="scope ?? {}" />
       </template>
     </TableSearch>
+    <TableBeforeHeader v-if="slots['before-header']">
+      <slot name="before-header" />
+    </TableBeforeHeader>
     <div class="super-table__content">
       <header v-if="config.header !== false" class="super-table__header">
         <div class="super-table__title">
@@ -193,6 +197,9 @@ defineExpose({
 .super-table {
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
+  height: 100%;
+  min-height: min-content;
   gap: var(--wt-table-gap, 12px);
   min-width: 0;
   color: var(--wt-table-color, var(--wt-text-regular));
@@ -205,14 +212,24 @@ defineExpose({
     backdrop-filter: var(--wt-table-backdrop-filter, var(--wt-backdrop-filter));
   }
   :deep(.super-table__search) {
+    flex: none;
     padding: var(--wt-table-padding, 12px 16px);
+  }
+  :deep(.super-table__before-header) {
+    flex: none;
+    min-width: 0;
   }
 }
 .super-table__content {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
   min-width: 0;
+  min-height: 0;
   overflow: hidden;
 }
 .super-table__header {
+  flex: none;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -241,6 +258,13 @@ defineExpose({
   background: var(--el-fill-color-light);
 }
 .super-table__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 0;
+  height: 0;
+  // 默认列头与十行数据；自定义高行可增加此变量。
+  min-height: var(--wt-table-body-min-height, 440px);
   min-width: 0;
+  overflow: hidden;
 }
 </style>

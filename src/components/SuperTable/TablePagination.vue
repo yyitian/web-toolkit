@@ -22,6 +22,7 @@ const pageSize = defineModel<number>('pageSize', { required: true });
 
 <style scoped>
 .super-table__footer {
+  flex: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
