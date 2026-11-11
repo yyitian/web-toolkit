@@ -88,6 +88,8 @@ Vite 插件、主题定制、各组件用法及完整 API 均以[在线文档](h
 
 ## 相关链接
 
+维护者请参阅[版本发布与恢复](./docs/releasing.md)：代码按功能提交，版本标签联动发布 npm 与在线文档。
+
 - [在线文档](https://wt.yyitian.top/)
 - [npm](https://www.npmjs.com/package/@yyitian/web-toolkit)
 - [GitHub](https://github.com/yyitian/web-toolkit)

@@ -8,7 +8,11 @@
     "**/*.css",
     "**/*.scss"
   ],
-  "repository": "github:yyitian/web-toolkit",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yyitian/web-toolkit.git"
+  },
+  "packageManager": "pnpm@12.18.0",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
@@ -51,6 +55,8 @@
     "verify:theme": "node scripts/verify-theme.mjs",
     "verify:table": "node scripts/verify-table.mjs",
     "verify:utils": "node scripts/verify-utils.mjs",
+    "verify:release": "node scripts/release/core.test.mjs",
+    "release:check": "node scripts/release/check.mjs",
     "prepublishOnly": "pnpm build"
   },
   "peerDependencies": {

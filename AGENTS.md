@@ -39,15 +39,17 @@ pnpm format:check   # prettier --check .
 }
 ```
 
-发布新版本时按以下顺序执行：
+发布新版本时按以下顺序执行（详细操作见 [版本发布与恢复](docs/releasing.md)）：
 
-1. 运行 `git fetch origin main --tags`，确认本地与 `origin/main` 的分叉情况，且目标标签不存在。
-2. 运行 `npm whoami --registry=https://registry.npmjs.org/` 验证发布身份；凭据只放用户级 npm 配置或环境变量，不写入仓库。
-3. 更新 `package.json` 版本，并运行 `pnpm lint`、`pnpm build`。
-4. 检查发布包内容，创建符合仓库约定的提交和 `v<version>` 标签。
-5. 运行 `pnpm publish --access public --registry=https://registry.npmjs.org/`。
-6. 发布后查询 npm 版本和访问级别，并在不加载用户凭据的临时环境中验证安装。
-7. 验证通过后推送 `main` 和对应版本标签。
+1. 运行 `git fetch origin main --tags`，确认分叉、目标标签与 npm 版本未占用；查询失败必须停止。
+2. 按功能分别校验和提交代码，示例与公开文档随功能提交，内部设计和验收资料默认保留本地。
+3. 最后更新 `package.json` 和 `CHANGELOG.md`，运行 `pnpm release:check` 后单独提交版本更新。
+4. 在最终提交创建 `v<version>` 标签，使用 `git push --atomic origin main v<version>` 推送。
+5. 标签触发 `release.yml`：校验构建 → OIDC 发布 npm → 匿名安装验证 → 部署同一提交的 docs。
+6. 确认 npm 公开版本与线上 `release.json`；部分失败时重跑失败任务或使用手动 recover，不移动标签。
+7. 仅文档修订可从 main 手动运行 docs-only，但库源码、依赖和构建配置必须与已发布版本一致。
+
+固定工具链为 Node 24.18.0、pnpm 12.18.0，使用 `pnpm install --frozen-lockfile`。发布依赖 npm Trusted Publisher 绑定和 Actions 中的 Cloudflare Secrets，不再将本地手动发布作为常规流程。
 
 不要把 scope 重新映射到 GitHub Packages，也不要在项目中创建包含认证信息的 `.npmrc`。
 

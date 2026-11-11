@@ -1,0 +1,138 @@
+name: 发布 npm 与文档
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 选择恢复发布或仅部署文档
+        type: choice
+        options: [docs-only, recover]
+        default: docs-only
+        required: true
+      tag:
+        description: 恢复模式填写版本标签，并在工作流来源中选择同一标签
+        type: string
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: web-toolkit-production
+  cancel-in-progress: false
+  # GitHub 原生多任务排队；actionlint 1.7.12 尚未更新此字段的静态模式。
+  # https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency
+  queue: max
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      mode: ${{ steps.source.outputs.mode }}
+      commit: ${{ steps.source.outputs.commit }}
+      version: ${{ steps.source.outputs.version }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+      - name: 确认发布来源与凭据存在
+        id: source
+        env:
+          RELEASE_MODE: ${{ inputs.mode }}
+          RELEASE_TAG: ${{ inputs.tag }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          git fetch origin main --tags
+          node scripts/release/pipeline.mjs select
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+      - name: 冻结锁文件安装
+        run: pnpm install --frozen-lockfile
+      - name: 核查 Cloudflare 部署身份
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/release/pipeline.mjs preflight
+      - name: 构建并检查完整发布产物
+        if: steps.source.outputs.mode != 'docs-only'
+        run: pnpm release:check
+      - name: 构建文档修订
+        if: steps.source.outputs.mode == 'docs-only'
+        run: node scripts/release/pipeline.mjs docs
+      - name: 检查构建未修改源码
+        run: git diff --exit-code
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ steps.source.outputs.version }}-${{ steps.source.outputs.commit }}
+          path: release-artifacts/
+          retention-days: 30
+          if-no-files-found: error
+          overwrite: true
+
+  publish:
+    if: needs.build.outputs.mode != 'docs-only'
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.build.outputs.commit }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-${{ needs.build.outputs.version }}-${{ needs.build.outputs.commit }}
+          path: release-artifacts/
+      - name: 发布并匿名安装验证 npm
+        run: node scripts/release/pipeline.mjs publish
+
+  deploy:
+    if: ${{ !cancelled() && needs.build.result == 'success' && (needs.build.outputs.mode == 'docs-only' || needs.publish.result == 'success') }}
+    needs: [build, publish]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.build.outputs.commit }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+          package-manager-cache: false
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-${{ needs.build.outputs.version }}-${{ needs.build.outputs.commit }}
+          path: release-artifacts/
+      - name: 部署并验证文档
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/release/pipeline.mjs deploy

@@ -25,3 +25,4 @@ dist
 .superpowers
 .worktrees
 website/.vitepress/cache
+release-artifacts/
