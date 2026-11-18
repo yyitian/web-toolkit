@@ -1,3 +1,7 @@
+<script setup>
+import FormControlThemeDemo from '../examples/demos/FormControlThemeDemo.vue';
+</script>
+
 # 主题定制
 
 主题系统用 `scheme` 表达明暗色系，用 `material` 表达实体或毛玻璃材质。消费方仍只需
@@ -129,6 +133,20 @@ const { setTheme } = useWtTheme();
 安装主题插件后，工具库会桥接实际使用范围内的 Element Plus 文字、表面、边框、状态色、
 阴影与遮罩变量。工具库内 Dialog、Popover、Form、Table 以及 Select/DatePicker/Cascader 浮层会
 补充玻璃滤镜；消费方直接使用的 Element Plus 控件只获得全局配色，不会被强制增加滤镜。
+
+## 表单控件主题检查
+
+表单字段独立使用时会携带相同的主题样式，无需 `.super-form` 父级。
+SuperForm 的自定义字段及插槽仍保留控件适配；SuperTable 的 selection 列也使用同样的复选框配色。
+未选中 Checkbox、Radio 与关闭的 Switch 使用独立中性轮廓，不复用玻璃面板的装饰边框。
+浅色毛玻璃下，禁用选择框使用灰色轮廓和填充，禁用勾选标记也保持可辨认。
+禁用、选中、半选和键盘聚焦保持各自状态，已有 `--wt-form-control-*` 与
+`--wt-form-switch-*` 覆盖继续生效。
+
+下面可切换四种主题、背景及实例变量，并检查独立字段、完整表单和表格选择列。
+示例直接导入仓库内部字段用于对照；本次没有新增包入口或公开子组件导出。
+
+<ClientOnly><DemoBlock><FormControlThemeDemo /></DemoBlock></ClientOnly>
 
 ## 通用交互动效
 

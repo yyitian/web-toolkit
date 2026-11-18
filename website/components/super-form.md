@@ -365,3 +365,16 @@ type SuperUploadRequest = (
 | `elForm`            | `FormInstance \| undefined` | 底层 Element Plus 表单实例               |
 
 在单行 input 中按 Enter 会提交；textarea 和文件输入不会触发该行为。
+
+## 样式与主题
+
+内置字段在 SuperForm 内和独立使用时采用一致的主题样式，支持浅色/暗色与实体/毛玻璃组合。
+自定义字段及插槽内的 Element Plus 控件仍会获得表单的基础适配。
+未选中选择框与关闭开关使用清晰的中性轮廓，禁用状态不会被选中或悬停样式覆盖。
+
+可通过 `--wt-form-control-*` 调整背景、文字、边框及交互状态，使用
+`--wt-form-switch-bg`、`--wt-form-switch-border-color` 调整开关关闭轨道。
+变量可设置在表单父级或具体字段实例上；浮层实例变量需通过 `popperClass` 应用到浮层。
+独立字段没有新增公开导出，消费方仍需引入 `@yyitian/web-toolkit/style.css`。
+
+交互对照参阅 [表单控件主题检查](/guide/theming#表单控件主题检查)。

@@ -21,3 +21,11 @@ function optionValue(value: unknown) {
     </ElRadio>
   </ElRadioGroup>
 </template>
+
+<style lang="scss">
+@use '../control-theme' as controls;
+
+.super-form-radio {
+  @include controls.radio;
+}
+</style>

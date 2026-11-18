@@ -318,6 +318,8 @@ onBeforeUnmount(() => {
 </template>
 
 <style lang="scss" scoped>
+@use '../control-theme' as controls;
+
 .super-form-upload {
   @include flex-column(8px);
   align-items: flex-start;
@@ -331,22 +333,52 @@ onBeforeUnmount(() => {
   display: none;
 }
 
-.super-form-upload__file-trigger {
-  width: 96px;
-  color: var(--wt-upload-trigger-color, var(--el-text-color-secondary));
-  background: var(
+.super-form-upload__file-trigger,
+.super-form-upload__image-trigger {
+  --wt-button-color: var(
+    --wt-upload-trigger-color,
+    var(--el-text-color-secondary)
+  );
+  --wt-button-bg: var(
     --wt-upload-trigger-bg,
     var(--wt-form-control-bg, var(--el-fill-color-blank))
   );
-  border-color: var(
+  --wt-button-border-color: var(
     --wt-upload-trigger-border-color,
-    var(--wt-form-control-border-color, var(--el-border-color))
+    var(
+      --wt-form-control-border-color,
+      var(--_wt-control-border, var(--el-border-color))
+    )
   );
+  --wt-button-hover-color: var(
+    --wt-upload-trigger-hover-color,
+    var(--el-color-primary)
+  );
+  --wt-button-hover-bg: var(
+    --wt-upload-trigger-hover-bg,
+    var(--el-fill-color-light)
+  );
+  --wt-button-hover-border-color: var(
+    --wt-upload-trigger-hover-color,
+    var(--el-color-primary)
+  );
+  --wt-button-disabled-color: var(
+    --wt-form-control-disabled-color,
+    var(--el-disabled-text-color)
+  );
+  --wt-button-disabled-bg: var(
+    --wt-form-control-disabled-bg,
+    var(--el-disabled-bg-color)
+  );
+  --wt-button-disabled-border-color: var(
+    --wt-form-control-disabled-border-color,
+    var(--el-disabled-border-color)
+  );
+  @include controls.backdrop;
+}
 
-  &:hover:not(:disabled) {
-    color: var(--wt-upload-trigger-hover-color, var(--el-color-primary));
-    background: var(--wt-upload-trigger-hover-bg, var(--el-fill-color-light));
-  }
+.super-form-upload__file-trigger {
+  width: 96px;
 }
 
 .super-form-upload__file-list {
@@ -415,6 +447,7 @@ onBeforeUnmount(() => {
 
 .super-form-upload__image-trigger.el-button {
   @include flex-center;
+  @include controls.backdrop;
   margin: 0;
   padding: 0;
   color: var(--wt-upload-trigger-color, var(--el-text-color-secondary));
@@ -425,7 +458,10 @@ onBeforeUnmount(() => {
   border: 1px dashed
     var(
       --wt-upload-trigger-border-color,
-      var(--wt-form-control-border-color, var(--el-border-color))
+      var(
+        --wt-form-control-border-color,
+        var(--_wt-control-border, var(--el-border-color))
+      )
     );
   cursor: pointer;
 
@@ -437,7 +473,11 @@ onBeforeUnmount(() => {
 
   &:disabled {
     color: var(--el-text-color-disabled);
-    background: var(--el-fill-color-light);
+    background: var(--wt-form-control-disabled-bg, var(--el-disabled-bg-color));
+    border-color: var(
+      --wt-form-control-disabled-border-color,
+      var(--el-disabled-border-color)
+    );
     cursor: not-allowed;
   }
 }

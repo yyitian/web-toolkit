@@ -57,3 +57,11 @@ function optionValue(value: unknown) {
     </template>
   </ElSelect>
 </template>
+
+<style lang="scss">
+@use '../control-theme' as controls;
+
+.super-form-select {
+  @include controls.text('.super-form-select');
+}
+</style>

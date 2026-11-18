@@ -1,0 +1,255 @@
+// 内部混入：由唯一组件类名限定，用于独立字段、表单自定义内容和表格选择列。
+// 日期和级联底层含浮层根节点，不能依赖 scoped 属性透传。
+@mixin backdrop {
+  backdrop-filter: var(
+    --wt-form-control-backdrop-filter,
+    var(--wt-backdrop-filter, none)
+  );
+}
+
+@mixin text($root) {
+  .el-input__wrapper,
+  .el-select__wrapper,
+  .el-textarea__inner,
+  &.el-input__wrapper {
+    background: var(--wt-form-control-bg, var(--el-fill-color-blank));
+    box-shadow: var(
+      --wt-form-control-shadow,
+      0 0 0 1px
+        var(
+          --wt-form-control-border-color,
+          var(--_wt-control-border, var(--el-border-color))
+        )
+        inset
+    );
+    @include backdrop;
+  }
+
+  .el-input__wrapper:hover,
+  .el-select__wrapper:hover,
+  .el-textarea__inner:hover,
+  &.el-input__wrapper:hover {
+    box-shadow: var(
+      --wt-form-control-hover-shadow,
+      0 0 0 1px
+        var(
+          --wt-form-control-hover-border-color,
+          var(--_wt-choice-border, var(--el-border-color-hover))
+        )
+        inset
+    );
+  }
+
+  .el-input__wrapper.is-focus,
+  .el-input__wrapper.is-active,
+  .el-select__wrapper.is-focused,
+  .el-textarea__inner:focus,
+  &.el-input__wrapper.is-active {
+    box-shadow: var(
+      --wt-form-control-focus-shadow,
+      0 0 0 1px
+        var(--wt-form-control-focus-border-color, var(--el-color-primary)) inset
+    );
+  }
+
+  .el-input__inner,
+  .el-select__selected-item,
+  .el-textarea__inner,
+  .el-range-input {
+    color: var(--wt-form-control-color, var(--el-text-color-regular));
+  }
+
+  .el-input__inner::placeholder,
+  .el-select__placeholder.is-transparent,
+  .el-textarea__inner::placeholder,
+  .el-range-input::placeholder {
+    color: var(
+      --wt-form-control-placeholder-color,
+      var(--el-text-color-placeholder)
+    );
+  }
+
+  // 保留底层表单校验反馈，包括消费者独立使用字段时的 ElFormItem。
+  .el-form-item.is-error .el-input__wrapper,
+  .el-form-item.is-error .el-select__wrapper,
+  .el-form-item.is-error .el-textarea__inner {
+    box-shadow: 0 0 0 1px var(--el-color-danger) inset;
+  }
+
+  @at-root .el-form-item.is-error #{$root} .el-input__wrapper,
+    .el-form-item.is-error #{$root} .el-select__wrapper,
+    .el-form-item.is-error #{$root} .el-textarea__inner,
+    .el-form-item.is-error #{$root}.el-input__wrapper {
+    box-shadow: 0 0 0 1px var(--el-color-danger) inset;
+  }
+
+  // 禁用规则放在交互和校验之后，悬停也不能恢复正常边框或文字。
+  .el-input.is-disabled .el-input__wrapper,
+  .el-select__wrapper.is-disabled,
+  .el-input__wrapper.is-disabled,
+  .el-textarea.is-disabled .el-textarea__inner,
+  &.el-textarea.is-disabled .el-textarea__inner,
+  &.el-input.is-disabled .el-input__wrapper,
+  &.el-input__wrapper.is-disabled {
+    background: var(--wt-form-control-disabled-bg, var(--el-disabled-bg-color));
+    box-shadow: 0 0 0 1px
+      var(
+        --wt-form-control-disabled-border-color,
+        var(--el-disabled-border-color)
+      )
+      inset;
+  }
+
+  .el-input.is-disabled .el-input__inner,
+  .el-input__wrapper.is-disabled .el-range-input,
+  .el-select__wrapper.is-disabled .el-select__selected-item,
+  .el-textarea.is-disabled .el-textarea__inner,
+  &.el-input.is-disabled .el-input__inner,
+  &.el-textarea.is-disabled .el-textarea__inner,
+  &.el-input__wrapper.is-disabled .el-range-input {
+    color: var(--wt-form-control-disabled-color, var(--el-disabled-text-color));
+    -webkit-text-fill-color: var(
+      --wt-form-control-disabled-color,
+      var(--el-disabled-text-color)
+    );
+  }
+}
+
+@mixin checkbox-vars {
+  --el-checkbox-text-color: var(
+    --wt-form-control-color,
+    var(--el-text-color-regular)
+  );
+  --el-checkbox-bg-color: var(--wt-form-control-bg, var(--el-fill-color-blank));
+  --el-checkbox-input-border: 1px solid
+    var(--wt-form-control-border-color, var(--_wt-choice-border));
+  --el-checkbox-input-border-color-hover: var(
+    --wt-form-control-hover-border-color,
+    var(--el-color-primary)
+  );
+  --el-checkbox-checked-bg-color: var(
+    --wt-form-control-active-bg,
+    var(--el-color-primary)
+  );
+  --el-checkbox-checked-input-border-color: var(
+    --wt-form-control-active-border-color,
+    var(--el-color-primary)
+  );
+  --el-checkbox-disabled-border-color: var(
+    --wt-form-control-disabled-border-color,
+    var(--_wt-choice-disabled-border, var(--el-disabled-border-color))
+  );
+  --el-checkbox-disabled-input-fill: var(
+    --wt-form-control-disabled-bg,
+    var(--_wt-choice-disabled-bg, var(--el-disabled-bg-color))
+  );
+  --el-checkbox-disabled-checked-input-fill: var(
+    --wt-form-control-disabled-bg,
+    var(--_wt-choice-disabled-bg, var(--el-disabled-bg-color))
+  );
+  --el-checkbox-disabled-checked-input-border-color: var(
+    --wt-form-control-disabled-border-color,
+    var(--_wt-choice-disabled-border, var(--el-disabled-border-color))
+  );
+  --el-checkbox-disabled-checked-icon-color: var(
+    --_wt-choice-disabled-mark,
+    var(--el-text-color-placeholder)
+  );
+}
+
+@mixin checkbox {
+  &.el-checkbox,
+  .el-checkbox {
+    @include checkbox-vars;
+  }
+
+  .el-checkbox__inner {
+    @include backdrop;
+  }
+}
+
+@mixin radio {
+  &.el-radio,
+  .el-radio {
+    --el-radio-text-color: var(
+      --wt-form-control-color,
+      var(--el-text-color-regular)
+    );
+    --el-radio-input-bg-color: var(
+      --wt-form-control-bg,
+      var(--el-fill-color-blank)
+    );
+    --el-radio-input-border: 1px solid
+      var(--wt-form-control-border-color, var(--_wt-choice-border));
+    --el-radio-input-border-color-hover: var(
+      --wt-form-control-hover-border-color,
+      var(--el-color-primary)
+    );
+  }
+
+  .el-radio__inner {
+    @include backdrop;
+  }
+
+  .el-radio__input.is-checked:not(.is-disabled) .el-radio__inner {
+    background: var(--wt-form-control-active-bg, var(--el-color-primary));
+    border-color: var(
+      --wt-form-control-active-border-color,
+      var(--el-color-primary)
+    );
+  }
+
+  .el-radio__input.is-disabled .el-radio__inner {
+    background: var(
+      --wt-form-control-disabled-bg,
+      var(--_wt-choice-disabled-bg, var(--el-disabled-bg-color))
+    );
+    border-color: var(
+      --wt-form-control-disabled-border-color,
+      var(--_wt-choice-disabled-border, var(--el-disabled-border-color))
+    );
+  }
+
+  .el-radio__input.is-disabled.is-checked .el-radio__inner::after {
+    background: var(
+      --_wt-choice-disabled-mark,
+      var(--el-text-color-placeholder)
+    );
+  }
+}
+
+@mixin switch {
+  &.el-switch,
+  .el-switch {
+    --el-switch-off-color: var(--wt-form-switch-bg, var(--_wt-switch-off-bg));
+    --el-switch-on-color: var(
+      --wt-form-control-active-bg,
+      var(--el-color-primary)
+    );
+  }
+
+  .el-switch__core {
+    border-color: var(
+      --wt-form-switch-border-color,
+      var(--el-switch-off-color)
+    );
+    @include backdrop;
+  }
+
+  &.el-switch:not(.is-checked) .el-switch__core,
+  .el-switch:not(.is-checked) .el-switch__core {
+    background: var(--wt-form-switch-bg, var(--el-switch-off-color));
+    border-color: var(
+      --wt-form-switch-border-color,
+      var(--wt-form-switch-bg, var(--el-switch-off-color))
+    );
+  }
+
+  &.el-switch.is-checked .el-switch__core,
+  .el-switch.is-checked .el-switch__core {
+    border-color: var(
+      --wt-form-control-active-border-color,
+      var(--el-switch-on-color)
+    );
+  }
+}

@@ -13,3 +13,11 @@ defineOptions({ inheritAttrs: false });
     }"
   />
 </template>
+
+<style lang="scss">
+@use '../control-theme' as controls;
+
+.super-form-textarea {
+  @include controls.text('.super-form-textarea');
+}
+</style>

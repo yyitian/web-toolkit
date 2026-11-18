@@ -9,25 +9,23 @@
   --wt-shadow-base: var(--wt-glass-shadow-soft);
   --wt-shadow-raised: var(--wt-glass-shadow-soft);
   --wt-shadow-overlay: var(--wt-glass-shadow);
+  --_wt-control-border: color-mix(
+    in srgb,
+    var(--_wt-choice-border) 65%,
+    transparent
+  );
   --wt-backdrop-filter: blur(var(--wt-glass-blur))
     saturate(var(--wt-glass-saturation));
-  --_wt-form-switch-bg: color-mix(
-    in srgb,
-    var(--wt-text-regular) 48%,
-    transparent
-  );
-  --_wt-form-switch-border-color: color-mix(
-    in srgb,
-    var(--wt-text-regular) 64%,
-    transparent
-  );
 }
 
-// 玻璃边框接近白色，不能作为 Switch 关闭轨道的默认颜色。
+// 原生 Element Plus Switch 也使用可辨认的关闭轨道，保留既有桥接能力。
 :root[data-wt-material='glass'] .el-switch {
-  --el-switch-off-color: color-mix(
-    in srgb,
-    var(--wt-text-regular) 48%,
-    transparent
-  );
+  --el-switch-off-color: var(--_wt-switch-off-bg);
+}
+
+// 禁用选择控件仍需可辨认的轮廓，不能沿用浅色玻璃面板的白色边框。
+:where(:root[data-wt-material='glass']:not([data-wt-scheme='dark'])) {
+  --_wt-choice-disabled-border: #8d929b;
+  --_wt-choice-disabled-bg: #e4e7ed;
+  --_wt-choice-disabled-mark: #70757e;
 }

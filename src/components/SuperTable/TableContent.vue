@@ -106,6 +106,7 @@ defineExpose({
       v-if="selection"
       :key="`selection-${selectionColumnKey}`"
       type="selection"
+      class-name="wt-table-selection"
       :width="48"
       :reserve-selection="selectionConfig.reserveSelection ?? false"
       :selectable="selectionConfig.selectable"
@@ -190,5 +191,18 @@ defineExpose({
   :deep(th.el-table-fixed-column--right) {
     background: var(--el-table-header-bg-color);
   }
+}
+</style>
+
+<style lang="scss">
+@use '../SuperForm/control-theme' as controls;
+
+// 仅作用于选择列，业务单元格和插槽内的控件不受影响。
+.super-table__table .wt-table-selection .el-checkbox {
+  @include controls.checkbox-vars;
+}
+
+.super-table__table .wt-table-selection .el-checkbox__inner {
+  @include controls.backdrop;
 }
 </style>

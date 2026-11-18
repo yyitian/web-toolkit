@@ -49,8 +49,11 @@ const dynamicProps = computed(() => {
     :popper-class="popperClass"
   />
 </template>
-<style scoped>
+<style lang="scss">
+@use '../control-theme' as controls;
+
 .super-form-date-picker {
+  @include controls.text('.super-form-date-picker');
   width: 100%;
 }
 </style>

@@ -8,3 +8,11 @@ defineOptions({ inheritAttrs: false });
     v-bind="{ inlinePrompt: true, ...$attrs }"
   />
 </template>
+
+<style lang="scss">
+@use '../control-theme' as controls;
+
+.super-form-switch {
+  @include controls.switch;
+}
+</style>

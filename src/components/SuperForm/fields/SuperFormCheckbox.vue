@@ -28,3 +28,11 @@ function optionValue(value: unknown) {
     <slot />
   </ElCheckbox>
 </template>
+
+<style lang="scss">
+@use '../control-theme' as controls;
+
+.super-form-checkbox {
+  @include controls.checkbox;
+}
+</style>

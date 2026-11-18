@@ -8,3 +8,11 @@ defineOptions({ inheritAttrs: false });
     v-bind="{ stepStrictly: true, controlsPosition: 'right', ...$attrs }"
   />
 </template>
+
+<style lang="scss">
+@use '../control-theme' as controls;
+
+.super-form-input-number {
+  @include controls.text('.super-form-input-number');
+}
+</style>

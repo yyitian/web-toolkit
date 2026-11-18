@@ -61,8 +61,11 @@ const options = computed(() => {
   </ElCascader>
 </template>
 
-<style scoped>
+<style lang="scss">
+@use '../control-theme' as controls;
+
 .super-form-cascader {
+  @include controls.text('.super-form-cascader');
   width: 100%;
 }
 </style>
