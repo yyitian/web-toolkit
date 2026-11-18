@@ -53,6 +53,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "verify:theme": "node scripts/verify-theme.mjs",
+    "verify:locale": "node scripts/verify-locale.mjs",
     "verify:table": "node scripts/verify-table.mjs",
     "verify:utils": "node scripts/verify-utils.mjs",
     "verify:release": "node scripts/release/core.test.mjs",

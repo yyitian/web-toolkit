@@ -187,6 +187,8 @@ const columns: SuperFormColumn[] = [
 - 默认 `filterable: true`、`clearable: true`，可在 `column.props` 中覆盖。
 - Cascader 的节点行为配置位于 **`column.props.props`**，包括 `multiple`、
   `emitPath`、`checkStrictly`、`expandTrigger`、`lazy` 和 `lazyLoad`。
+- 默认 `expandTrigger: 'hover'`，悬停展开子级；可在 `column.props.props` 中设置
+  `expandTrigger: 'click'` 改为点击展开。
 - 默认单选输出路径数组，例如 `['zhejiang', 'hangzhou']`；`emitPath: false`
   时输出节点值，例如 `'hangzhou'`。
 - 多选默认输出路径数组的数组；同时设置 `emitPath: false` 时输出节点值数组。

@@ -1,5 +1,6 @@
 <script setup lang="ts" generic="Row extends object = Record<string, unknown>">
 import type { TableInstance } from 'element-plus';
+import { useWtLocale } from '../useWtLocale.ts';
 import { formatLabel } from '../SuperForm/config.ts';
 import { getSearchColumns } from './config.ts';
 import TableSearch from './TableSearch.vue';
@@ -15,6 +16,7 @@ import type {
 } from './types.ts';
 
 defineOptions({ inheritAttrs: false });
+useWtLocale();
 const props = withDefaults(defineProps<SuperTableProps<Row>>(), {
   columns: () => [],
   data: () => [],

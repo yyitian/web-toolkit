@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ElDialog } from 'element-plus';
+import { useWtLocale } from '../useWtLocale.ts';
 import SuperButton from '../SuperButton/index.vue';
 import { formatLabel } from '../SuperForm/config.ts';
 import type { SuperDialogProps } from '../SuperForm/types.ts';
 
 defineOptions({ inheritAttrs: false });
+useWtLocale();
 const visible = defineModel<boolean>();
 const props = withDefaults(defineProps<SuperDialogProps>(), {
   title: '',

@@ -5,6 +5,7 @@ import { ElForm, ElFormItem } from 'element-plus';
 import type { FormInstance } from 'element-plus';
 import type { Component } from 'vue';
 import SuperIcon from '../SuperIcon/index.vue';
+import { useWtLocale } from '../useWtLocale.ts';
 import { formatLabel, formatOptions } from './config.ts';
 import SuperFormCascader from './fields/SuperFormCascader.vue';
 import SuperFormCheckbox from './fields/SuperFormCheckbox.vue';
@@ -19,6 +20,7 @@ import SuperFormUpload from './fields/SuperFormUpload.vue';
 import type { SuperFormColumn, SuperFormProps } from './types.ts';
 
 defineOptions({ inheritAttrs: false });
+useWtLocale();
 const props = withDefaults(defineProps<SuperFormProps>(), {
   columns: () => [],
   disabled: false,

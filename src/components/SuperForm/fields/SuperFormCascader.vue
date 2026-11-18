@@ -52,7 +52,7 @@ const options = computed(() => {
     class="super-form-cascader"
     v-bind="{ filterable: true, clearable: true, ...mergedAttrs }"
     :options="options"
-    :props="fieldProps.props"
+    :props="{ expandTrigger: 'hover', ...fieldProps.props }"
     :popper-class="popperClass"
   >
     <template v-for="(_, name) in $slots" #[name]="scope">

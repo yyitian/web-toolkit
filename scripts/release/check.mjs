@@ -16,6 +16,7 @@ for (const script of [
   'verify:release',
   'build',
   'verify:theme',
+  'verify:locale',
   'verify:table',
   'verify:utils',
   'docs:build',

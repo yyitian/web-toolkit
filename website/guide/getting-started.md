@@ -1,3 +1,7 @@
+<script setup>
+import LocaleDemo from '../examples/demos/LocaleDemo.vue';
+</script>
+
 # 快速开始
 
 `@yyitian/web-toolkit` 面向 Vue 3 和 Vite 项目，提供图标、按钮、浮层、弹窗、配置式表单与表格，以及日期和确认弹窗工具。
@@ -50,6 +54,43 @@ import { SuperButton } from '@yyitian/web-toolkit';
   <SuperButton type="primary" :icon="Settings">设置</SuperButton>
 </template>
 ```
+
+## 默认语言
+
+`SuperForm`、`SuperTable` 和 `SuperDialog` 内部的 Element Plus 组件默认使用简体中文
+`zhCn`，`SuperFormDialog` 自动复用该配置。无需额外安装插件，日期面板、选择器、级联、
+分页及图片预览的内置文案会使用中文。
+
+外层 `ElConfigProvider` 显式指定语言时，组件会继承并响应语言变化，同时保留外层的
+`size`、`namespace` 等其他配置。例如使用英文：
+
+```vue
+<script setup lang="ts">
+import { ElConfigProvider } from 'element-plus';
+import en from 'element-plus/es/locale/lang/en.mjs';
+import { SuperForm } from '@yyitian/web-toolkit';
+import type { SuperFormColumn } from '@yyitian/web-toolkit';
+
+const columns: SuperFormColumn[] = [
+  { prop: 'date', label: '日期', formType: 'date-picker' },
+];
+</script>
+
+<template>
+  <ElConfigProvider :locale="en">
+    <SuperForm :columns="columns" />
+  </ElConfigProvider>
+</template>
+```
+
+默认语言仅作用于工具库组件子树，不设置应用全局语言。内置中文日期语言包已注册，
+不会改变 Day.js 的全局默认语言、日期格式或时区。使用其他日期语言时，按 Day.js 的
+要求自行引入对应语言包。
+
+工具库自有按钮、表格统计、提示和业务标签保留已有文案，本次配置不包含这些文案的翻译，
+也不改变函数式确认弹窗工具的行为。
+
+<ClientOnly><DemoBlock><LocaleDemo /></DemoBlock></ClientOnly>
 
 ## 使用字符串图标
 
