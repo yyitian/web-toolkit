@@ -5,6 +5,7 @@ import DynamicChevronLeft from '@/components/SuperIcon/dynamic-icons/DynamicChev
 import DynamicPin from '@/components/SuperIcon/dynamic-icons/DynamicPin.vue';
 import DynamicRefresh from '@/components/SuperIcon/dynamic-icons/DynamicRefresh.vue';
 import DynamicFoldLeft from '@/components/SuperIcon/dynamic-icons/DynamicFoldLeft.vue';
+import DynamicFolder from '@/components/SuperIcon/dynamic-icons/DynamicFolder.vue';
 import SuperButton from '@/components/SuperButton/index.vue';
 
 const active = ref(false);
@@ -43,6 +44,13 @@ const active = ref(false);
       :active="active"
       :aria-pressed="active"
       label="切换左侧展开状态"
+      @click="active = !active"
+    />
+    <SuperButton
+      :icon="DynamicFolder"
+      :active="active"
+      :aria-pressed="active"
+      label="切换文件夹开关状态"
       @click="active = !active"
     />
   </div>

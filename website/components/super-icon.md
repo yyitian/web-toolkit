@@ -60,12 +60,37 @@ const active = ref(false);
 | `DynamicChevronLeft` | 展开或方向状态切换                              |
 | `DynamicRefresh`     | 激活时顺时针持续旋转，取消后平滑归零            |
 | `DynamicFoldLeft`    | 左侧展开/收起，仅中间箭头在 0° 与 180° 之间旋转 |
+| `DynamicFolder`      | 文件夹关闭/打开状态切换                         |
 
 动态图标从 `@yyitian/web-toolkit/dynamic-icons` 子路径导入，需要安装 `@lucide/vue`。
 不要依赖组件源码路径。
 
 `DynamicRefresh` 每秒顺时针旋转一圈，取消激活后保持原速补完当前圈，停在 0°，不会反转或加速。
 `DynamicFoldLeft` 非激活时箭头朝右，激活时用 200ms 旋转 180° 朝左，方形外框保持不动。
+
+`DynamicFolder` 融合 `folder-closed` 和 `folder-open`：`active=false` 时关闭，
+`active=true` 时打开，以 180ms 淡入淡出切换。文档示例与其他动态图标共享最左侧的 Switch；
+系统启用减少动态效果时直接切换。
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { SuperButton } from '@yyitian/web-toolkit';
+import { DynamicFolder } from '@yyitian/web-toolkit/dynamic-icons';
+
+const open = ref(false);
+</script>
+
+<template>
+  <SuperButton
+    :icon="DynamicFolder"
+    :active="open"
+    :aria-pressed="open"
+    label="切换文件夹开关状态"
+    @click="open = !open"
+  />
+</template>
+```
 
 ## Props
 

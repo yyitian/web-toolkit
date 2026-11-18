@@ -130,13 +130,19 @@ Element Plus 变量。
 - `loading` 状态使用内联 SVG spinner，不依赖 lucide 的 `Loader`。
 - 带 `title` 时自动用 `SuperPopover` 包裹作为 tooltip。
 
-动态图标放在 `src/components/SuperIcon/dynamic-icons/`，使用：
+### 动态图标创建规则
+
+动态图标放在 `src/components/SuperIcon/dynamic-icons/`，统一声明标记和状态属性：
 
 ```ts
 defineOptions({ dynamicIcon: true });
+defineProps<{ active?: boolean }>();
 ```
 
-`SuperIcon` 检测到该标记后会把 `active` 透传给图标，由图标内部负责 `<Transition>` 动画。对外成品动态图标从 `lib/dynamic-icons.ts` 导出。
+- **active 协议**：以 `active` 作为统一的受控状态，省略或为 `false` 时呈现非激活状态，为 `true` 时呈现激活状态。`SuperIcon` 检测到 `dynamicIcon: true` 后透传 `active`，`SuperButton` 通过 `SuperIcon` 使用同一协议。图标必须声明并消费 `active`，避免该属性泄漏到 SVG；由图标内部负责过渡与动画，并支持取消激活、快速往返切换及初始激活。
+- **命名风格**：组件名保留 `Dynamic` 前缀，后接表达用途的 PascalCase 名称，如 `DynamicRefresh`、`DynamicFoldLeft`、`DynamicFolder`。文件名与导出名保持一致，不因改用或组合不同 Lucide 图标而直接套用其完整名称。
+- **共享演示状态**：新增动态图标必须加入 `website/examples/demos/DynamicIconDemo.vue`，复用现有唯一的 `active` 状态。Switch 始终放在最左侧，所有示例图标都绑定同一个 `active`；点击任意图标按钮也统一切换该状态，不新增独立状态开关或状态文字。`src/App.vue` 复用该演示组件。
+- **导出与文档**：成品动态图标统一从 `lib/dynamic-icons.ts` 导出，消费方从 `@yyitian/web-toolkit/dynamic-icons` 子路径导入；同步更新 `website/components/super-icon.md` 的导出列表和状态行为说明。
 
 ### SuperButton
 
