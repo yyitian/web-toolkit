@@ -1,5 +1,4 @@
 <script setup lang="ts" generic="Row extends object = Record<string, unknown>">
-import { vLoading } from 'element-plus';
 import type { TableInstance } from 'element-plus';
 import { formatLabel } from '../SuperForm/config.ts';
 import { getSearchColumns } from './config.ts';
@@ -7,6 +6,7 @@ import TableSearch from './TableSearch.vue';
 import TableContent from './TableContent.vue';
 import TablePagination from './TablePagination.vue';
 import TableBeforeHeader from './TableBeforeHeader.vue';
+import TableLoading from './TableLoading.vue';
 import { useTableQuery } from './useTableQuery.ts';
 import type {
   SuperTableProps,
@@ -167,7 +167,7 @@ defineExpose({
           />
         </div>
       </header>
-      <div v-loading="busy" class="super-table__body">
+      <div class="super-table__body" :class="{ 'is-loading': busy }">
         <TableContent
           v-bind="tableAttrs"
           ref="content"
@@ -182,6 +182,7 @@ defineExpose({
             ><slot :name="name" v-bind="scope"
           /></template>
         </TableContent>
+        <TableLoading :loading="busy" />
       </div>
       <TablePagination
         v-if="config.pagination !== false"
@@ -258,6 +259,8 @@ defineExpose({
   background: var(--el-fill-color-light);
 }
 .super-table__body {
+  position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   flex: 1 0 0;
@@ -266,5 +269,8 @@ defineExpose({
   min-height: var(--wt-table-body-min-height, 440px);
   min-width: 0;
   overflow: hidden;
+  &.is-loading :deep(.el-table__empty-block) {
+    visibility: hidden;
+  }
 }
 </style>

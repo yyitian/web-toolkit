@@ -16,6 +16,7 @@ const failNext = ref(false);
 const reserve = ref(false);
 const lastQuery = ref<SuperTableQuery>();
 const detail = ref('点击操作查看任务');
+const responseDelay = ref(250);
 const request: SuperTableRequest<DemoTableRow> = async (query, { signal }) => {
   count.value++;
   await new Promise<void>((resolve, reject) => {
@@ -26,7 +27,7 @@ const request: SuperTableRequest<DemoTableRow> = async (query, { signal }) => {
     const timer = setTimeout(() => {
       signal.removeEventListener('abort', abort);
       resolve();
-    }, 250);
+    }, responseDelay.value);
     signal.addEventListener('abort', abort, { once: true });
   });
   if (failNext.value) {
@@ -37,6 +38,10 @@ const request: SuperTableRequest<DemoTableRow> = async (query, { signal }) => {
 };
 function triggerFailure() {
   failNext.value = true;
+  void table.value?.refresh();
+}
+function refreshWithDelay(delay: number) {
+  responseDelay.value = delay;
   void table.value?.refresh();
 }
 </script>
@@ -57,10 +62,12 @@ function triggerFailure() {
           >跨页保留：{{ reserve ? '开' : '关' }}</SuperButton
         >
       </template>
-      <template #toolbar="{ selections, refresh }">
+      <template #toolbar="{ selections }">
         <span>已选 {{ selections.length }} 条</span>
         <SuperButton @click="table?.clearSelection()">清空勾选</SuperButton>
-        <SuperButton @click="refresh()">刷新</SuperButton>
+        <SuperButton @click="refreshWithDelay(250)">刷新</SuperButton>
+        <SuperButton @click="refreshWithDelay(50)">快速刷新</SuperButton>
+        <SuperButton @click="refreshWithDelay(1500)">慢速刷新</SuperButton>
         <SuperButton @click="triggerFailure">模拟失败</SuperButton>
       </template>
       <template #column-enabled="{ value }">

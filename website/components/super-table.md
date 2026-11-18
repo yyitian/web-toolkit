@@ -8,6 +8,7 @@ import TableExternalDemo from '../examples/demos/TableExternalDemo.vue';
 import TableDateDemo from '../examples/demos/TableDateDemo.vue';
 import TableFeaturesDemo from '../examples/demos/TableFeaturesDemo.vue';
 import TableLayoutDemo from '../examples/demos/TableLayoutDemo.vue';
+import TableLoadingDemo from '../examples/demos/TableLoadingDemo.vue';
 </script>
 
 # SuperTable
@@ -51,6 +52,20 @@ import TableLayoutDemo from '../examples/demos/TableLayoutDemo.vue';
 下例可切换父高度、数据条数和区域显隐。400px 的父容器用于观察最小高度及外层滚动。
 
 <ClientOnly><DemoBlock><TableLayoutDemo /></DemoBlock></ClientOnly>
+
+## 加载反馈
+
+加载时保留已有数据、列头和分页，不清空表体。反馈延迟 150ms 出现，快速完成的查询
+不闪现遮罩；已显示的反馈至少保持 200ms，再平滑淡出。计时只影响视觉反馈，数据更新
+和 `loading` 状态按实际请求结束时间处理。连续请求与卸载会清理相应计时。
+
+遮罩使用低透明度的主题表面色，图标与文字跟随主题主色，适配明暗、实体和玻璃材质。
+加载开始立即遮挡表体鼠标操作，结束后立即解除；搜索、标题工具栏和分页可继续使用。
+初始加载期间隐藏空状态内容，结束后再按结果显示空状态。
+
+下例通过外部 `loading` 控制；请求模式使用同一反馈，下面请求示例可切换快速和慢速刷新。
+
+<ClientOnly><DemoBlock><TableLoadingDemo /></DemoBlock></ClientOnly>
 
 ## 请求模式
 
@@ -307,6 +322,7 @@ const dateColumn: SuperTableColumn = {
 支持四种主题。组件变量包括 `--wt-table-bg/color/header-bg/header-color/border-color/hover-bg/`
 `fixed-bg/radius/shadow/backdrop-filter/gap/padding`；未配置时回退到现有主题变量。
 `--wt-table-body-min-height` 默认 `440px`，可调整表体的最小预留高度。
+`--wt-table-loading-bg` 控制加载遮罩颜色，`--wt-table-loading-color` 控制加载图标及文字颜色。
 
 ```css
 .my-table {

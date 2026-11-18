@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { mock } from 'node:test';
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -53,6 +54,14 @@ try {
     'src/components/SuperTable/useTableQuery.ts',
     'query.mjs',
     `import { ref, shallowRef, watch, onMounted, onBeforeUnmount } from '${vueUrl}';\n`,
+  );
+  await compile(
+    'src/components/SuperTable/useTableLoading.ts',
+    'loading.mjs',
+    `import { ref, watch, readonly } from '${vueUrl}';\n`,
+  );
+  const { useTableLoading } = await import(
+    pathToFileURL(join(temporary, 'loading.mjs')).href
   );
   const { useTableQuery } = await import(
     pathToFileURL(join(temporary, 'query.mjs')).href
@@ -223,6 +232,9 @@ try {
   table.page.value = 2;
   await flush();
   assert.equal(table.requests.length, 2);
+  assert.equal(table.state.loading.value, true);
+  assert.equal(table.state.result.value.data[0].id, 1);
+  assert.equal(table.state.result.value.total, 57);
   table.pageSize.value = 50;
   await flush();
   assert.equal(table.requests.length, 3);
@@ -307,7 +319,78 @@ try {
   assert.equal(external.queries[0].page, 2);
   assert.equal(external.requests.length, 0);
   console.log('通过：延迟首次加载、reload、外部数据模式');
+
+  // 内置模拟时钟验证视觉时序，不使用真实等待或新增测试框架。
+  mock.timers.enable({ apis: ['setTimeout', 'Date'], now: 1000 });
+  function mountLoading(initial = false) {
+    const busy = ref(initial);
+    let visible;
+    const app = renderer.createApp({
+      setup() {
+        visible = useTableLoading(busy);
+        return () => h('div');
+      },
+    });
+    app.mount({});
+    apps.add(app);
+    return { app, busy, visible };
+  }
+  const indicator = mountLoading();
+  indicator.busy.value = true;
+  mock.timers.tick(149);
+  assert.equal(indicator.visible.value, false);
+  indicator.busy.value = false;
+  mock.timers.tick(500);
+  assert.equal(indicator.visible.value, false);
+
+  indicator.busy.value = true;
+  mock.timers.tick(150);
+  assert.equal(indicator.visible.value, true);
+  indicator.busy.value = false;
+  mock.timers.tick(199);
+  assert.equal(indicator.visible.value, true);
+  mock.timers.tick(1);
+  assert.equal(indicator.visible.value, false);
+
+  indicator.busy.value = true;
+  mock.timers.tick(150);
+  indicator.busy.value = false;
+  mock.timers.tick(100);
+  indicator.busy.value = true;
+  mock.timers.tick(300);
+  assert.equal(indicator.visible.value, true);
+  indicator.busy.value = false;
+  assert.equal(indicator.visible.value, false);
+
+  indicator.busy.value = true;
+  mock.timers.tick(100);
+  indicator.busy.value = false;
+  indicator.busy.value = true;
+  mock.timers.tick(100);
+  assert.equal(indicator.visible.value, false);
+  mock.timers.tick(50);
+  assert.equal(indicator.visible.value, true);
+  indicator.busy.value = false;
+  indicator.app.unmount();
+  apps.delete(indicator.app);
+  mock.timers.tick(500);
+  assert.equal(indicator.visible.value, true); // 卸载取消待隐藏计时。
+
+  const pendingIndicator = mountLoading(true);
+  mock.timers.tick(100);
+  pendingIndicator.app.unmount();
+  apps.delete(pendingIndicator.app);
+  mock.timers.tick(500);
+  assert.equal(pendingIndicator.visible.value, false);
+  const initialIndicator = mountLoading(true);
+  mock.timers.tick(150);
+  assert.equal(initialIndicator.visible.value, true);
+  initialIndicator.app.unmount();
+  apps.delete(initialIndicator.app);
+  mock.timers.reset();
+  console.log('通过：加载延迟、快速完成、最短展示、连续请求与卸载计时清理');
 } finally {
   for (const app of apps) app.unmount();
+  mock.timers.reset();
   await rm(temporary, { recursive: true, force: true });
 }

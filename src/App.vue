@@ -12,6 +12,7 @@ import TableExternalDemo from '../website/examples/demos/TableExternalDemo.vue';
 import TableDateDemo from '../website/examples/demos/TableDateDemo.vue';
 import TableFeaturesDemo from '../website/examples/demos/TableFeaturesDemo.vue';
 import TableLayoutDemo from '../website/examples/demos/TableLayoutDemo.vue';
+import TableLoadingDemo from '../website/examples/demos/TableLoadingDemo.vue';
 import { useWtTheme } from '@/theme/index.ts';
 
 const pinActive = ref(false);
@@ -49,6 +50,8 @@ function startLoading() {
 
     <section class="demo-section" data-demo="table-regression">
       <SuperThemeSwitcher variant="inline" />
+      <h2>SuperTable 加载反馈</h2>
+      <TableLoadingDemo />
       <h2>SuperTable 高度与插槽布局</h2>
       <TableLayoutDemo />
       <h2>SuperTable 请求模式</h2>
