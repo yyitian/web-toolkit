@@ -135,7 +135,15 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@use '../../styles/typography' as typography;
 .super-button.el-button {
+  @include typography.context;
+  --el-button-font-weight: var(--wt-font-weight-regular, 400);
+  font-size: var(--el-font-size-base, var(--wt-font-size-body, 14px));
+  font-weight: var(--el-button-font-weight);
+  &.el-button--small {
+    font-size: var(--el-font-size-small, var(--wt-font-size-caption, 12px));
+  }
   color: var(--wt-button-color, var(--el-button-text-color));
   background: var(--wt-button-bg, var(--el-button-bg-color));
   border-color: var(--wt-button-border-color, var(--el-button-border-color));

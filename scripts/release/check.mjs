@@ -21,6 +21,7 @@ for (const script of [
   'verify:tags',
   'verify:card',
   'verify:table-typography',
+  'verify:super-typography',
   'verify:utils',
   'docs:build',
 ]) {

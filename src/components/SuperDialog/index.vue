@@ -65,15 +65,18 @@ const cancelText = computed(() =>
 </template>
 
 <style lang="scss">
+@use '../../styles/typography' as typography;
+
 .super-dialog {
+  @include typography.context;
+  @include typography.text(
+    body,
+    var(--wt-dialog-color, var(--wt-text-regular))
+  );
   --_wt-dialog-bg: var(--el-dialog-bg-color);
 
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
-  color: var(
-    --wt-dialog-color,
-    var(--wt-text-regular, var(--el-text-color-regular))
-  );
   background: var(--wt-dialog-bg, var(--_wt-dialog-bg));
   border: 1px solid
     var(--wt-dialog-border-color, var(--wt-border-color-light, transparent));
@@ -91,15 +94,22 @@ const cancelText = computed(() =>
   );
 
   > .el-dialog__header {
-    color: var(--wt-dialog-header-color, var(--wt-text-primary, inherit));
+    color: var(--wt-dialog-header-color, var(--wt-text-title, #141b2b));
+  }
+
+  > .el-dialog__header .el-dialog__title {
+    @include typography.text(title, inherit);
   }
 
   > .el-dialog__body {
-    min-height: 0;
-    color: var(
-      --wt-dialog-body-color,
-      var(--wt-dialog-color, var(--wt-text-regular))
+    @include typography.text(
+      body,
+      var(
+        --wt-dialog-body-color,
+        var(--wt-dialog-color, var(--wt-text-regular))
+      )
     );
+    min-height: 0;
     overflow: auto;
   }
 

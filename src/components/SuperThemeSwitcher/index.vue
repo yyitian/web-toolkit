@@ -103,9 +103,14 @@ function setMaterial(value: unknown) {
 </template>
 
 <style lang="scss" scoped>
+@use '../../styles/typography' as typography;
 .super-theme-switcher {
+  @include typography.context;
+  @include typography.text(
+    body,
+    var(--wt-form-label-color, var(--wt-text-regular))
+  );
   @include flex-column(10px);
-  color: var(--wt-form-label-color, var(--el-text-color-regular));
 }
 
 .super-theme-switcher--popover {
@@ -118,6 +123,9 @@ function setMaterial(value: unknown) {
 }
 
 .super-theme-switcher__label {
-  @include font(12px, $color: var(--wt-text-secondary, inherit));
+  @include typography.text(
+    caption,
+    var(--wt-form-label-color, var(--wt-text-secondary))
+  );
 }
 </style>

@@ -319,8 +319,10 @@ onBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 @use '../control-theme' as controls;
+@use '../../../styles/typography' as typography;
 
 .super-form-upload {
+  @include typography.text(body);
   @include flex-column(8px);
   align-items: flex-start;
 }
@@ -389,9 +391,9 @@ onBeforeUnmount(() => {
 .super-form-upload__file-item {
   @include flex-align-center(4px);
   position: relative;
-  height: 24px;
+  min-height: max(24px, var(--wt-line-height-body, 22px));
   padding: 0 0 0 4px;
-  line-height: 24px;
+  line-height: var(--wt-line-height-body, 22px);
   border-radius: var(--wt-upload-radius, 6px);
 
   &:hover {
@@ -424,7 +426,7 @@ onBeforeUnmount(() => {
 .super-form-upload__file-skeleton,
 .super-form-upload__file-skeleton :deep(.el-skeleton__item) {
   width: 100%;
-  height: 24px;
+  height: max(24px, var(--wt-line-height-body, 22px));
 }
 
 .super-form-upload__image-grid {
@@ -489,6 +491,9 @@ onBeforeUnmount(() => {
     var(--wt-upload-image-border-color, var(--el-border-color-lighter));
 }
 
+.super-form-upload__image :deep(.el-image__error) {
+  @include typography.text(caption);
+}
 .super-form-upload__image {
   display: block;
   width: 100%;
@@ -499,9 +504,7 @@ onBeforeUnmount(() => {
   @include flex-center;
   position: absolute;
   inset: 0;
-  color: #fff;
-  font-size: 24px;
-  font-weight: 600;
+  @include typography.text(title, var(--wt-text-inverse, #fff));
   background: var(--wt-upload-image-overlay-bg, rgb(0 0 0 / 52%));
   pointer-events: none;
 }

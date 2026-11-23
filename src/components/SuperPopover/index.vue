@@ -365,10 +365,13 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@use '../../styles/typography' as typography;
+
 .super-popover-floating {
-  @include font(
-    12px,
-    $color: var(--wt-popover-color, var(--_wt-popover-color, #fff))
+  @include typography.context;
+  @include typography.text(
+    caption,
+    var(--wt-popover-color, var(--_wt-popover-color, #fff))
   );
 
   z-index: var(--wt-popover-z-index, 2000);
@@ -403,7 +406,7 @@ export default defineComponent({
 
 :global(:where(:root[data-wt-scheme] .super-popover-floating--auto)) {
   --_wt-popover-bg: var(--wt-surface-overlay, #fff);
-  --_wt-popover-color: var(--wt-text-regular, #606266);
+  --_wt-popover-color: var(--wt-text-secondary, #5f6b7c);
   --_wt-popover-border-color: var(--wt-border-color-light, #e4e7ed);
   --_wt-popover-shadow: var(--wt-shadow-overlay, none);
   --_wt-popover-backdrop-filter: var(--wt-backdrop-filter, none);

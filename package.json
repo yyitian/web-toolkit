@@ -61,7 +61,8 @@
     "release:check": "node scripts/release/check.mjs",
     "prepublishOnly": "pnpm build",
     "verify:card": "node scripts/verify-card.mjs",
-    "verify:table-typography": "node scripts/verify-table-typography.mjs"
+    "verify:table-typography": "node scripts/verify-table-typography.mjs",
+    "verify:super-typography": "node scripts/verify-super-typography.mjs"
   },
   "peerDependencies": {
     "@lucide/vue": "^1.18.0",

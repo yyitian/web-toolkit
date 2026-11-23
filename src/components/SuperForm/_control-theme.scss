@@ -1,5 +1,6 @@
 // 内部混入：由唯一组件类名限定，用于独立字段、表单自定义内容和表格选择列。
 // 日期和级联底层含浮层根节点，不能依赖 scoped 属性透传。
+@use '../../styles/typography' as typography;
 @mixin backdrop {
   backdrop-filter: var(
     --wt-form-control-backdrop-filter,
@@ -8,6 +9,37 @@
 }
 
 @mixin text($root) {
+  @include typography.context;
+  &.el-input,
+  &.el-textarea,
+  &.el-cascader,
+  .el-input,
+  .el-textarea,
+  .el-cascader,
+  &.el-select .el-select__wrapper,
+  .el-select .el-select__wrapper,
+  .el-range-input,
+  .el-range-separator {
+    @include typography.control-font;
+  }
+  &.el-input--small,
+  &.el-cascader--small,
+  .el-input--small,
+  .el-cascader--small,
+  &.el-select--small .el-select__wrapper,
+  .el-select--small .el-select__wrapper,
+  &.el-range-editor--small .el-range-input,
+  &.el-range-editor--small .el-range-separator,
+  .el-range-editor--small .el-range-input,
+  .el-range-editor--small .el-range-separator,
+  .el-input__count {
+    @include typography.control-font(caption);
+  }
+  // 多选/级联/多日期内部标签同样使用 caption，保持原生标签尺寸和业务色。
+  .el-tag {
+    --el-tag-font-size: var(--wt-font-size-caption, 12px);
+    font-weight: var(--wt-font-weight-regular, 400);
+  }
   .el-input__wrapper,
   .el-select__wrapper,
   .el-textarea__inner,
@@ -116,6 +148,8 @@
 }
 
 @mixin checkbox-vars {
+  --el-checkbox-font-size: var(--wt-font-size-body, 14px);
+  --el-checkbox-font-weight: var(--wt-font-weight-regular, 400);
   --el-checkbox-text-color: var(
     --wt-form-control-color,
     var(--el-text-color-regular)
@@ -158,19 +192,47 @@
 }
 
 @mixin checkbox {
+  @include typography.context;
   &.el-checkbox,
   .el-checkbox {
     @include checkbox-vars;
   }
-
+  &.el-checkbox .el-checkbox__label,
+  &.el-checkbox:is(.el-checkbox--small, .el-checkbox--large)
+    .el-checkbox__label,
+  &.el-checkbox:is(.el-checkbox--small, .el-checkbox--large).is-bordered
+    .el-checkbox__label,
+  .el-checkbox .el-checkbox__label,
+  .el-checkbox:is(.el-checkbox--small, .el-checkbox--large) .el-checkbox__label,
+  .el-checkbox:is(.el-checkbox--small, .el-checkbox--large).is-bordered
+    .el-checkbox__label {
+    font-size: var(--el-checkbox-font-size);
+  }
+  &.el-checkbox--small,
+  .el-checkbox--small {
+    --el-checkbox-font-size: var(--wt-font-size-caption, 12px);
+  }
   .el-checkbox__inner {
     @include backdrop;
   }
 }
 
 @mixin radio {
+  @include typography.context;
+  &.el-radio .el-radio__label,
+  &.el-radio:is(.el-radio--small, .el-radio--large) .el-radio__label,
+  &.el-radio:is(.el-radio--small, .el-radio--large).is-bordered
+    .el-radio__label,
+  .el-radio .el-radio__label,
+  .el-radio:is(.el-radio--small, .el-radio--large) .el-radio__label,
+  .el-radio:is(.el-radio--small, .el-radio--large).is-bordered
+    .el-radio__label {
+    font-size: var(--el-radio-font-size);
+  }
   &.el-radio,
   .el-radio {
+    --el-radio-font-size: var(--wt-font-size-body, 14px);
+    --el-radio-font-weight: var(--wt-font-weight-regular, 400);
     --el-radio-text-color: var(
       --wt-form-control-color,
       var(--el-text-color-regular)
@@ -187,6 +249,10 @@
     );
   }
 
+  &.el-radio--small,
+  .el-radio--small {
+    --el-radio-font-size: var(--wt-font-size-caption, 12px);
+  }
   .el-radio__inner {
     @include backdrop;
   }
@@ -219,6 +285,22 @@
 }
 
 @mixin switch {
+  @include typography.context;
+  &.el-switch .el-switch__label,
+  .el-switch .el-switch__label {
+    @include typography.control-font;
+  }
+  &.el-switch .el-switch__label *,
+  .el-switch .el-switch__label * {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+  &.el-switch--small .el-switch__label,
+  .el-switch--small .el-switch__label,
+  &.el-switch .el-switch__inner-wrapper,
+  .el-switch .el-switch__inner-wrapper {
+    @include typography.control-font(caption);
+  }
   &.el-switch,
   .el-switch {
     --el-switch-off-color: var(--wt-form-switch-bg, var(--_wt-switch-off-bg));

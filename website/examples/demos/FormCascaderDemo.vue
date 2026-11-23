@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import DemoLayout from '../DemoLayout.vue';
 import SuperButton from '@/components/SuperButton/index.vue';
 import SuperForm from '@/components/SuperForm/index.vue';
 import type {
@@ -62,20 +63,24 @@ function fill() {
 </script>
 
 <template>
-  <SuperForm
-    ref="form"
-    :columns="columns"
-    @submit="output = JSON.stringify($event, null, 2)"
-  />
-  <div class="demo-row">
-    <SuperButton @click="fill">回填示例</SuperButton>
-    <SuperButton @click="form?.setFormData({ region: null, cities: null })">
-      重置字段
-    </SuperButton>
-    <SuperButton type="primary" @click="form?.submit()"
-      >提交级联表单</SuperButton
-    >
-  </div>
-  <p>最近变化：{{ changeOutput }}</p>
-  <pre class="demo-output">{{ output }}</pre>
+  <DemoLayout>
+    <SuperForm
+      ref="form"
+      :columns="columns"
+      @submit="output = JSON.stringify($event, null, 2)"
+    />
+    <div class="demo-row">
+      <SuperButton @click="fill">回填示例</SuperButton>
+      <SuperButton @click="form?.setFormData({ region: null, cities: null })">
+        重置字段
+      </SuperButton>
+      <SuperButton type="primary" @click="form?.submit()"
+        >提交级联表单</SuperButton
+      >
+    </div>
+    <template #output>
+      <p>最近变化：{{ changeOutput }}</p>
+      <pre>{{ output }}</pre>
+    </template>
+  </DemoLayout>
 </template>

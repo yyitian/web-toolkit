@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import SuperButton from '@/components/SuperButton/index.vue';
+import DemoLayout from '../DemoLayout.vue';
+import SuperForm from '@/components/SuperForm/index.vue';
+import type { SuperFormColumn } from '@/components/SuperForm/types.ts';
 import SuperThemeSwitcher from '@/components/SuperThemeSwitcher/index.vue';
 import FormThemeFields from './FormThemeFields.vue';
 import FormThemeContexts from './FormThemeContexts.vue';
@@ -7,30 +9,49 @@ import FormThemeContexts from './FormThemeContexts.vue';
 const background = ref('theme');
 const override = ref(false);
 const backgrounds: Record<string, string> = {
-  theme: 'var(--wt-surface-page)',
+  theme: 'transparent',
   light: '#fff',
   dark: '#1c2434',
   gradient: 'linear-gradient(120deg, #f8fafc, #bfdbfe 45%, #334155)',
 };
+const settings: SuperFormColumn[] = [
+  {
+    prop: 'background',
+    label: '对照背景',
+    formType: 'select',
+    defaultValue: 'theme',
+    props: {
+      options: [
+        { label: '跟随主题', value: 'theme' },
+        { label: '浅色对照', value: 'light' },
+        { label: '深色对照', value: 'dark' },
+        { label: '渐变对照', value: 'gradient' },
+      ],
+    },
+    change: (_, value) => {
+      background.value = String(value);
+    },
+  },
+  {
+    prop: 'override',
+    label: '自定义控件颜色',
+    formType: 'switch',
+    change: (_, value) => {
+      override.value = value === true;
+    },
+  },
+];
 </script>
 
 <template>
-  <div class="form-theme-demo" data-demo="form-theme">
-    <SuperThemeSwitcher variant="inline" />
-    <div class="form-theme-demo__toolbar">
-      <label
-        >控件背景
-        <select v-model="background" aria-label="控件背景">
-          <option value="theme">主题背景</option>
-          <option value="light">浅色背景</option>
-          <option value="dark">深色背景</option>
-          <option value="gradient">渐变背景</option>
-        </select>
-      </label>
-      <SuperButton @click="override = !override">{{
-        override ? '恢复默认配色' : '验证变量覆盖'
-      }}</SuperButton>
-    </div>
+  <DemoLayout class="form-theme-demo" data-demo="form-theme">
+    <template #controls>
+      <SuperThemeSwitcher variant="inline" />
+      <SuperForm :columns="settings" inline label-position="top" />
+      <span class="wt-text-caption"
+        >对照背景用于观察玻璃材质，默认跟随主题。</span
+      >
+    </template>
     <div
       class="form-theme-demo__preview"
       :style="{
@@ -50,24 +71,13 @@ const backgrounds: Record<string, string> = {
       <FormThemeFields />
       <FormThemeContexts />
     </div>
-  </div>
+  </DemoLayout>
 </template>
 
 <style scoped>
 .form-theme-demo {
   display: grid;
   gap: 16px;
-}
-.form-theme-demo__toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px;
-}
-.form-theme-demo__toolbar select {
-  border: 1px solid var(--wt-text-secondary);
-  padding: 4px;
-  border-radius: 4px;
 }
 .form-theme-demo__preview {
   min-width: 0;

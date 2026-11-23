@@ -53,7 +53,7 @@ interface Row {
 }
 const tableColumns: SuperTableColumn<Row>[] = [
   { prop: 'id', label: '编号', width: 80, fixed: 'left' },
-  { prop: 'name', label: '名称（横向滚动检查固定选择列）', width: 500 },
+  { prop: 'name', label: '任务名称', width: 500 },
   { prop: 'business', label: '业务插槽', tableType: 'slot', width: 160 },
 ];
 const rows: Row[] = [
@@ -66,7 +66,7 @@ const businessChecked = ref(false);
 
 <template>
   <section data-context="form">
-    <h3>SuperForm 渲染</h3>
+    <h3>表单与自定义字段</h3>
     <div class="form-theme-contexts__actions">
       <SuperButton @click="formDisabled = !formDisabled"
         >切换表单禁用</SuperButton
@@ -88,7 +88,7 @@ const businessChecked = ref(false);
     </SuperForm>
   </section>
   <section data-context="table" class="form-theme-contexts__table">
-    <h3>SuperTable 选择列</h3>
+    <h3>表格选择列</h3>
     <SuperTable
       :columns="tableColumns"
       :data="rows"

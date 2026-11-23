@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import DemoLayout from '../DemoLayout.vue';
 import { ElInput } from 'element-plus';
 import type {
   SuperFormColumn,
@@ -112,7 +113,7 @@ const columns: SuperFormColumn[] = [
   },
   {
     prop: 'remoteImages',
-    label: '远程图片',
+    label: '模拟上传图片',
     formType: 'upload',
     props: { type: 'image', multiple: true, limit: 6, upload: remoteUpload },
   },
@@ -131,9 +132,16 @@ function submit(data: Record<string, unknown>) {
 </script>
 
 <template>
-  <SuperForm ref="form" :columns="columns" @submit="submit">
-    <template #notice>slot 字段不会进入最终表单数据。</template>
-  </SuperForm>
-  <SuperButton type="primary" @click="form?.submit()">提交表单</SuperButton>
-  <pre class="demo-output">{{ output }}</pre>
+  <DemoLayout>
+    <p class="wt-text-caption">
+      演示使用本地数据；图片上传仅模拟延迟，不发送文件到服务端。
+    </p>
+    <SuperForm ref="form" :columns="columns" @submit="submit">
+      <template #notice>slot 字段不会进入最终表单数据。</template>
+    </SuperForm>
+    <SuperButton type="primary" @click="form?.submit()">提交表单</SuperButton>
+    <template #output>
+      <pre>{{ output }}</pre>
+    </template>
+  </DemoLayout>
 </template>

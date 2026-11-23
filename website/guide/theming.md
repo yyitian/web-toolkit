@@ -1,15 +1,12 @@
 <script setup>
 import FormControlThemeDemo from '../examples/demos/FormControlThemeDemo.vue';
+import TypographyDemo from '../examples/demos/TypographyDemo.vue';
 </script>
 
 # 主题定制
 
-主题系统用 `scheme` 表达明暗色系，用 `material` 表达实体或毛玻璃材质。消费方仍只需
-引入一个发布样式入口：
-
-```ts
-import '@yyitian/web-toolkit/style.css';
-```
+主题系统用 `scheme` 表达明暗色系，用 `material` 表达实体或毛玻璃材质。
+使用前完成[依赖安装与样式引入](/guide/getting-started#引入样式)。
 
 ## 初始化
 
@@ -54,13 +51,13 @@ createApp(App)
 
 ```vue
 <script setup lang="ts">
-import { useWtTheme } from '@yyitian/web-toolkit';
+import { SuperButton, useWtTheme } from '@yyitian/web-toolkit';
 
 const { setTheme } = useWtTheme();
 </script>
 
 <template>
-  <button @click="setTheme('dark', 'glass')">暗色毛玻璃</button>
+  <SuperButton @click="setTheme('dark', 'glass')">暗色毛玻璃</SuperButton>
 </template>
 ```
 
@@ -75,8 +72,9 @@ const { setTheme } = useWtTheme();
 ```css
 :root {
   --wt-color-primary: #409eff;
+  --wt-text-title: #141b2b;
   --wt-text-primary: #303133;
-  --wt-text-regular: #606266;
+  --wt-text-regular: #475569;
   --wt-surface-page: #f2f3f5;
   --wt-surface-base: #fff;
   --wt-surface-raised: #fafafa;
@@ -89,7 +87,7 @@ const { setTheme } = useWtTheme();
 }
 ```
 
-内置默认变量使用零优先级选择器。消费方可以在全局主题或具体组件上覆盖：
+可以在全局主题或具体组件上覆盖变量：
 
 ```css
 :root[data-wt-scheme='dark'] {
@@ -103,10 +101,113 @@ const { setTheme } = useWtTheme();
 }
 ```
 
+## 文字层级与排版
+
+标题、正文和辅助信息分别使用 16px、14px、12px。组件默认继承消费方字体，不加载字体文件，
+也不重置消费方的 `body`、标题或段落。
+
+| 工具类              | 用途                      | 字号 / 行高 | 字重 | 颜色变量              |
+| ------------------- | ------------------------- | ----------- | ---- | --------------------- |
+| `.wt-text-title`    | 弹窗、表格、卡片标题      | 16 / 24px   | 700  | `--wt-text-title`     |
+| `.wt-text-label`    | 表单标签、表头            | 14 / 22px   | 700  | `--wt-text-title`     |
+| `.wt-text-emphasis` | 重点名称与信息            | 14 / 22px   | 600  | `--wt-text-primary`   |
+| `.wt-text-body`     | 正文与内容                | 14 / 22px   | 400  | `--wt-text-regular`   |
+| `.wt-text-caption`  | 说明、时间、数量、tooltip | 12 / 20px   | 400  | `--wt-text-secondary` |
+
+`.wt-text-placeholder`、`.wt-text-disabled`、`.wt-text-inverse` 仅设置对应颜色，不改变字号和行高。
+原有 `.font-*` 工具类及 `font()` mixin 保持原有用法。按钮、标签、状态及 Element Plus 控件的尺寸配置继续有效。
+
+<span id="super-组件适配范围"></span>
+
+### 组件中的文字
+
+按钮、表单和表格的内容使用正文档位，提示、计数和状态使用辅助档位。通过下方示例
+比较默认样式与自定义变量；调整文字不会替代组件的 `size` 配置，业务色和禁用、校验色仍各自生效。
+
+### 普通内容快速使用
+
+这些 class 不依赖 Vue 组件或主题插件，导入 `style.css` 后即可用于普通 HTML。
+未初始化主题时采用浅色默认值；安装主题插件后自动响应四种主题。
+
+```html
+<section>
+  <h2 class="wt-text-title">任务设置</h2>
+  <p class="wt-text-label">任务名称</p>
+  <p class="wt-text-body">每日巡检</p>
+  <p class="wt-text-body">
+    任务将在指定时间执行，<strong class="wt-text-emphasis"
+      >请确认执行范围</strong
+    >。
+  </p>
+  <p class="wt-text-caption">支持每天或每周执行。</p>
+  <time class="wt-text-caption">更新于 2026-11-20</time>
+  <div class="wt-text-body">
+    <span class="wt-text-placeholder">尚未填写</span>
+    <span class="wt-text-disabled">当前不可用</span>
+  </div>
+</section>
+```
+
+说明、备注、时间和数量共用 `.wt-text-caption`。颜色修饰类只改变颜色，例如
+`class="wt-text-body wt-text-disabled"` 保持正文 14px，仅使用禁用色；`.wt-text-inverse`
+需要配合深色底色。class 不添加外边距、不强制换行或截断，也不自动赋予禁用行为。
+业务样式可以继续覆盖这些工具类。
+
+| 文字变量                | 浅色      | 暗色      |
+| ----------------------- | --------- | --------- |
+| `--wt-text-title`       | `#141b2b` | `#e5eaf3` |
+| `--wt-text-primary`     | `#303133` | `#e5eaf3` |
+| `--wt-text-regular`     | `#475569` | `#cfd3dc` |
+| `--wt-text-secondary`   | `#5f6b7c` | `#a3a6ad` |
+| `--wt-text-placeholder` | `#626f82` | `#8d9095` |
+| `--wt-text-disabled`    | `#c0c4cc` | `#6c6e72` |
+| `--wt-text-inverse`     | `#ffffff` | `#ffffff` |
+
+文字颜色在实体和毛玻璃材质下共用，不对文字整体设置透明度。玻璃后的内容会影响实际对比度，
+消费方应检查自己的背景；禁用文字不用于承载必需信息。品牌强调色和状态色不随文字规范改变。
+
+例如浅色玻璃放在深色背景、暗色玻璃放在白色背景时，透明表面可能使辅助文字对比度不足。
+承载密集说明的区域可使用不透明阅读底色，文字仍保持当前主题层级：
+
+```css
+.reading-panel {
+  background: var(--wt-palette-mix-surface);
+}
+```
+
+字号、行高和字重也可单独覆盖：
+
+```css
+:root {
+  --wt-font-size-title: 16px;
+  --wt-font-size-body: 14px;
+  --wt-font-size-caption: 12px;
+  --wt-line-height-title: 24px;
+  --wt-line-height-body: 22px;
+  --wt-line-height-caption: 20px;
+  --wt-font-weight-regular: 400;
+  --wt-font-weight-semibold: 600;
+  --wt-font-weight-bold: 700;
+}
+
+.project-section {
+  --wt-text-title: #7c3aed;
+}
+
+.project-form {
+  --wt-form-label-color: #b45309; /* 组件变量优先于标题语义色 */
+}
+```
+
+组件专用颜色变量优先于语义默认值。Teleport 浮层继承根节点变量；局部覆盖需传给浮层本身，
+例如弹窗的 `style` 或 popover 的 `popperStyle`，不会自动读取原位置祖先上的局部变量。
+下方设置仅作用于展示内容。可切换自定义语义样式与组件颜色，并展开弹窗或浮层观察效果。
+
+<ClientOnly><DemoBlock><TypographyDemo /></DemoBlock></ClientOnly>
+
 ## 组件变量
 
-各组件在实际 CSS 属性处按“组件变量 → 状态/Element Plus 变量 → 全局语义变量 → 字面量”
-解析。常用变量包括：
+通过组件变量定制单个实例；省略时使用当前主题。常用变量包括：
 
 - Icon：`--wt-icon-color`、`--wt-icon-loading-color`。
 - Button：`--wt-button-bg`、`--wt-button-color`、各交互状态变量、圆角、阴影与滤镜；
@@ -130,21 +231,18 @@ const { setTheme } = useWtTheme();
 `--wt-glass-blur`、`--wt-glass-saturation` 调整强度，或设置
 `--wt-backdrop-filter: none` 关闭滤镜。
 
-安装主题插件后，工具库会桥接实际使用范围内的 Element Plus 文字、表面、边框、状态色、
-阴影与遮罩变量。工具库内 Dialog、Popover、Form、Table 以及 Select/DatePicker/Cascader 浮层会
-补充玻璃滤镜；消费方直接使用的 Element Plus 控件只获得全局配色，不会被强制增加滤镜。
+安装主题插件后，组件与选择器、日期及级联浮层跟随当前主题。直接使用 Element Plus
+控件时会获得主题配色；需要玻璃滤镜的独立业务容器应自行配置。
 
-## 表单控件主题检查
+<span id="表单控件主题检查"></span>
 
-表单字段独立使用时会携带相同的主题样式，无需 `.super-form` 父级。
-SuperForm 的自定义字段及插槽仍保留控件适配；SuperTable 的 selection 列也使用同样的复选框配色。
-未选中 Checkbox、Radio 与关闭的 Switch 使用独立中性轮廓，不复用玻璃面板的装饰边框。
-浅色毛玻璃下，禁用选择框使用灰色轮廓和填充，禁用勾选标记也保持可辨认。
-禁用、选中、半选和键盘聚焦保持各自状态，已有 `--wt-form-control-*` 与
-`--wt-form-switch-*` 覆盖继续生效。
+## 表单控件配色
 
-下面可切换四种主题、背景及实例变量，并检查独立字段、完整表单和表格选择列。
-示例直接导入仓库内部字段用于对照；本次没有新增包入口或公开子组件导出。
+通过 `SuperForm` 的字段配置使用选择框、开关等控件。自定义字段及插槽中的控件也可
+使用表单主题变量；可用配置参阅 [SuperForm 样式与主题](/components/super-form#样式与主题)。
+
+下例展示选中、未选中、半选、禁用和校验状态。默认背景跟随主题；浅色、深色和渐变
+属于显式对照条件，可用于观察玻璃材质。切换“自定义控件颜色”可比较变量覆盖效果。
 
 <ClientOnly><DemoBlock><FormControlThemeDemo /></DemoBlock></ClientOnly>
 

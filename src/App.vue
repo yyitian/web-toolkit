@@ -13,6 +13,12 @@ import TableDateDemo from '../website/examples/demos/TableDateDemo.vue';
 import TableFeaturesDemo from '../website/examples/demos/TableFeaturesDemo.vue';
 import TableLayoutDemo from '../website/examples/demos/TableLayoutDemo.vue';
 import TableLoadingDemo from '../website/examples/demos/TableLoadingDemo.vue';
+import TagsDemo from '../website/examples/demos/TagsDemo.vue';
+import CardTableDemo from '../website/examples/demos/CardTableDemo.vue';
+import CardAdaptiveActionsDemo from '../website/examples/demos/CardAdaptiveActionsDemo.vue';
+import StatusDemo from '../website/examples/demos/StatusDemo.vue';
+import TableTypographyDemo from '../website/examples/demos/TableTypographyDemo.vue';
+import TypographyDemo from '../website/examples/demos/TypographyDemo.vue';
 import { useWtTheme } from '@/theme/index.ts';
 
 const pinActive = ref(false);
@@ -48,8 +54,29 @@ function startLoading() {
       <SuperThemeSwitcher />
     </div>
 
+    <section class="demo-section" data-demo="super-typography">
+      <h2>Super 系列文字排版</h2>
+      <TypographyDemo />
+    </section>
+
+    <section class="demo-section" data-demo="card-regression">
+      <h2>SuperStatus 多状态展示</h2>
+      <StatusDemo />
+      <h2>卡片配置与展示</h2>
+      <CardTableDemo />
+      <h2>卡片操作自适应</h2>
+      <CardAdaptiveActionsDemo />
+    </section>
+
+    <section class="demo-section" data-demo="tags-regression">
+      <h2>SuperTags 多标签折叠</h2>
+      <TagsDemo />
+    </section>
+
     <section class="demo-section" data-demo="table-regression">
       <SuperThemeSwitcher variant="inline" />
+      <h2>表格文字主题与排版</h2>
+      <TableTypographyDemo />
       <h2>SuperTable 加载反馈</h2>
       <TableLoadingDemo />
       <h2>SuperTable 高度与插槽布局</h2>

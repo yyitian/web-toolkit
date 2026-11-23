@@ -200,18 +200,24 @@ function invokeChange(column: SuperFormColumn, value: unknown) {
 function renderLabel(column: SuperFormColumn) {
   if (column.label === undefined) return undefined;
   const children: ReturnType<typeof h>[] = [
-    h('span', String(formatLabel(column.label))),
+    h(
+      'span',
+      { class: 'super-form__label-text' },
+      String(formatLabel(column.label)),
+    ),
   ];
   if (column.tips !== undefined) {
     children.push(
-      h(SuperIcon, {
-        icon: CircleHelp,
-        size: 14,
-        title: String(formatLabel(column.tips)),
-      }),
+      h('span', { class: 'super-form__label-tips' }, [
+        h(SuperIcon, {
+          icon: CircleHelp,
+          size: 14,
+          title: String(formatLabel(column.tips)),
+        }),
+      ]),
     );
   }
-  return h('span', { class: 'super-form__label' }, children);
+  return children;
 }
 
 function renderField(column: SuperFormColumn) {
@@ -308,19 +314,43 @@ defineExpose({ getFormData, setFormData, validate, submit, elForm });
 
 <style lang="scss">
 @use './control-theme' as controls;
-
-.super-form__label {
-  @include flex-align-center(6px);
-}
+@use '../../styles/typography' as typography;
 
 .super-form {
-  .el-form-item__label {
-    color: var(--wt-form-label-color, var(--el-text-color-regular));
+  @include typography.text(body);
+
+  .el-form-item .el-form-item__label {
+    display: inline-flex;
+    align-items: center;
+    height: auto;
+    max-width: 100%;
+    color: var(--wt-form-label-color, var(--wt-text-title, #141b2b));
+
+    &::before,
+    &::after {
+      flex-shrink: 0;
+    }
+  }
+
+  .super-form__label-text {
+    @include typography.text(label, inherit);
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .super-form__label-tips {
+    display: inline-flex;
+    flex-shrink: 0;
+    margin-left: 6px;
   }
 
   .el-form-item.is-required .el-form-item__label::before,
   .el-form-item.is-required .el-form-item__label::after {
     color: var(--wt-form-label-required-color, var(--el-color-danger));
+  }
+
+  .el-form-item__error {
+    @include typography.control-font(caption);
   }
 
   @include controls.text('.super-form');
