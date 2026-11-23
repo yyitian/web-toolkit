@@ -5,12 +5,19 @@ import IconDemo from '../examples/demos/IconDemo.vue';
 
 # SuperIcon
 
-统一渲染 SVG sprite 字符串图标、Vue 图标组件和加载状态。传入 `title` 时会自动使用
-`SuperPopover` 提供 tooltip。
+支持 SVG sprite、Vue 图标组件和加载状态，可通过 `title` 显示提示。
 
 ## 基础用法
 
+通过 `icon` 指定图标，`size` 设置尺寸，`rotate` 设置旋转角度。
+
+::: tip 提示
+字符串图标需要先通过 [Vite 插件](/guide/vite-plugin)注入。
+:::
+
 <ClientOnly><DemoBlock><IconDemo /></DemoBlock></ClientOnly>
+
+::: details 查看代码
 
 ```vue
 <script setup lang="ts">
@@ -26,73 +33,64 @@ import { SuperIcon } from '@yyitian/web-toolkit';
 </template>
 ```
 
-字符串图标必须先通过[Vite 插件](/guide/vite-plugin)注入对应 symbol。
+:::
 
 ## 动态图标
 
-动态图标内部管理状态过渡，由 `SuperIcon` 或 `SuperButton` 自动透传 `active`。
+通过 `active` 控制动态图标的激活状态，可与 `SuperIcon` 或 `SuperButton` 一起使用。
+
+`DynamicRunning` 激活时持续旋转，取消激活后立即恢复初始角度，不播放归零动画。
 
 <ClientOnly><DemoBlock><DynamicIconDemo /></DemoBlock></ClientOnly>
 
+::: details 查看代码
+
 ```vue
 <script setup lang="ts">
-import { SuperButton } from '@yyitian/web-toolkit';
-import { DynamicPin } from '@yyitian/web-toolkit/dynamic-icons';
 import { ref } from 'vue';
+import { ElSwitch } from 'element-plus';
+import { SuperButton } from '@yyitian/web-toolkit';
+import {
+  DynamicPin,
+  DynamicAudioLines,
+  DynamicChevronLeft,
+  DynamicRefresh,
+  DynamicFoldLeft,
+  DynamicFolder,
+  DynamicRunning,
+} from '@yyitian/web-toolkit/dynamic-icons';
 
 const active = ref(false);
+const icons = [
+  { icon: DynamicPin, label: '切换置顶状态' },
+  { icon: DynamicAudioLines, label: '切换音频状态' },
+  { icon: DynamicChevronLeft, label: '切换箭头状态' },
+  { icon: DynamicRefresh, label: '切换刷新状态' },
+  { icon: DynamicFoldLeft, label: '切换左侧展开状态' },
+  { icon: DynamicFolder, label: '切换文件夹开关状态' },
+  { icon: DynamicRunning, label: '切换运行状态' },
+];
 </script>
 
 <template>
+  <ElSwitch v-model="active" aria-label="切换动态图标激活状态" />
   <SuperButton
-    :icon="DynamicPin"
+    v-for="item in icons"
+    :key="item.label"
+    :icon="item.icon"
     :active="active"
-    label="置顶"
+    :label="item.label"
+    :aria-pressed="active"
     @click="active = !active"
   />
 </template>
 ```
 
-| 导出名               | 用途                                            |
-| -------------------- | ----------------------------------------------- |
-| `DynamicPin`         | 置顶状态切换                                    |
-| `DynamicAudioLines`  | 音频状态切换                                    |
-| `DynamicChevronLeft` | 展开或方向状态切换                              |
-| `DynamicRefresh`     | 激活时顺时针持续旋转，取消后平滑归零            |
-| `DynamicFoldLeft`    | 左侧展开/收起，仅中间箭头在 0° 与 180° 之间旋转 |
-| `DynamicFolder`      | 文件夹关闭/打开状态切换                         |
+:::
 
-动态图标从 `@yyitian/web-toolkit/dynamic-icons` 子路径导入，需要安装 `@lucide/vue`。
-不要依赖组件源码路径。
+## API
 
-`DynamicRefresh` 每秒顺时针旋转一圈，取消激活后保持原速补完当前圈，停在 0°，不会反转或加速。
-`DynamicFoldLeft` 非激活时箭头朝右，激活时用 200ms 旋转 180° 朝左，方形外框保持不动。
-
-`DynamicFolder` 融合 `folder-closed` 和 `folder-open`：`active=false` 时关闭，
-`active=true` 时打开，以 180ms 淡入淡出切换。文档示例与其他动态图标共享最左侧的 Switch；
-系统启用减少动态效果时直接切换。
-
-```vue
-<script setup lang="ts">
-import { ref } from 'vue';
-import { SuperButton } from '@yyitian/web-toolkit';
-import { DynamicFolder } from '@yyitian/web-toolkit/dynamic-icons';
-
-const open = ref(false);
-</script>
-
-<template>
-  <SuperButton
-    :icon="DynamicFolder"
-    :active="open"
-    :aria-pressed="open"
-    label="切换文件夹开关状态"
-    @click="open = !open"
-  />
-</template>
-```
-
-## Props
+### Props
 
 | 属性      | 类型                          | 默认值   | 说明                           |
 | --------- | ----------------------------- | -------- | ------------------------------ |
@@ -101,11 +99,21 @@ const open = ref(false);
 | `size`    | `string \| number`            | `20`     | 图标宽高                       |
 | `rotate`  | `number`                      | `0`      | 旋转角度，支持负数             |
 | `loading` | `boolean`                     | `false`  | 使用内置 spinner               |
-| `active`  | `boolean`                     | `false`  | 仅向动态图标透传状态           |
+| `active`  | `boolean`                     | `false`  | 动态图标激活状态               |
 | `effect`  | `'auto' \| 'dark' \| 'light'` | `'auto'` | tooltip 跟随主题或固定实体外观 |
 
-## 注意事项
+### 动态图标导出
 
-- `loading` 状态优先于 `icon`，不会加载额外的 spinner 图标依赖。
-- 普通 Vue 图标组件只接收 `size`；只有带 `dynamicIcon: true` 标记的组件接收 `active`。
-- `title` 用于可见提示；在可交互控件中仍应提供合适的无障碍名称。
+| 导出名               | 用途                                   |
+| -------------------- | -------------------------------------- |
+| `DynamicPin`         | 置顶状态切换                           |
+| `DynamicAudioLines`  | 音频状态切换                           |
+| `DynamicChevronLeft` | 展开或方向状态切换                     |
+| `DynamicRefresh`     | 激活时顺时针持续旋转，取消后平滑归零   |
+| `DynamicFoldLeft`    | 左侧展开/收起                          |
+| `DynamicFolder`      | 文件夹关闭/打开状态切换                |
+| `DynamicRunning`     | 激活时持续旋转，取消后立即恢复初始角度 |
+
+### 注意事项
+
+`loading` 优先于 `icon`。可交互图标应在按钮上提供无障碍名称，`title` 仅用于提示。

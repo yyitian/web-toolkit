@@ -1,0 +1,19 @@
+@use '../typography' as typography;
+
+@layer style.utilities {
+  @each $role in (title, label, emphasis, body, caption) {
+    .wt-text-#{$role} {
+      @include typography.text($role);
+    }
+  }
+
+  .wt-text-placeholder {
+    color: var(--wt-text-placeholder);
+  }
+  .wt-text-disabled {
+    color: var(--wt-text-disabled);
+  }
+  .wt-text-inverse {
+    color: var(--wt-text-inverse);
+  }
+}

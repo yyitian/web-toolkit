@@ -18,6 +18,7 @@ for (const script of [
   'verify:theme',
   'verify:locale',
   'verify:table',
+  'verify:tags',
   'verify:utils',
   'docs:build',
 ]) {

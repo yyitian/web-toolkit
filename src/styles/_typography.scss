@@ -1,0 +1,81 @@
+@use 'sass:map';
+@use 'sass:list';
+
+// 在组件边界重新解析语义变量，使局部主题覆盖也能传入 Element Plus 控件。
+@mixin context {
+  --el-font-size-base: var(--wt-font-size-body, 14px);
+  --el-font-size-small: var(--wt-font-size-caption, 12px);
+  --el-font-size-large: var(--wt-font-size-title, 16px);
+  --el-text-color-regular: var(--wt-text-regular, #475569);
+  --el-text-color-secondary: var(--wt-text-secondary, #5f6b7c);
+  --el-text-color-placeholder: var(--wt-text-placeholder, #626f82);
+  --el-text-color-disabled: var(--wt-text-disabled, #c0c4cc);
+}
+
+// 内部语义排版规则，不转发到公共 mixin，避免被通用工具类生成器重复展开。
+@mixin text($role, $color: null) {
+  $roles: (
+    title: (
+      title,
+      bold,
+      var(--wt-text-title, #141b2b),
+    ),
+    label: (
+      body,
+      bold,
+      var(--wt-text-title, #141b2b),
+    ),
+    emphasis: (
+      body,
+      semibold,
+      var(--wt-text-primary, #303133),
+    ),
+    body: (
+      body,
+      regular,
+      var(--wt-text-regular, #475569),
+    ),
+    caption: (
+      caption,
+      regular,
+      var(--wt-text-secondary, #5f6b7c),
+    ),
+  );
+  $sizes: (
+    title: 16px,
+    body: 14px,
+    caption: 12px,
+  );
+  $heights: (
+    title: 24px,
+    body: 22px,
+    caption: 20px,
+  );
+  $weights: (
+    regular: 400,
+    semibold: 600,
+    bold: 700,
+  );
+  $values: map.get($roles, $role);
+  $scale: list.nth($values, 1);
+  $weight: list.nth($values, 2);
+  $resolved-color: list.nth($values, 3);
+  @if $color != null {
+    $resolved-color: $color;
+  }
+
+  font-size: var(--wt-font-size-#{$scale}, #{map.get($sizes, $scale)});
+  line-height: var(--wt-line-height-#{$scale}, #{map.get($heights, $scale)});
+  font-weight: var(--wt-font-weight-#{$weight}, #{map.get($weights, $weight)});
+  color: $resolved-color;
+}
+
+// 控件只桥接字号与字重，保留 Element Plus 的密集行高、尺寸及交互颜色。
+@mixin control-font($scale: body) {
+  @if $scale == caption {
+    font-size: var(--el-font-size-small, var(--wt-font-size-caption, 12px));
+  } @else {
+    font-size: var(--el-font-size-base, var(--wt-font-size-body, 14px));
+  }
+  font-weight: var(--wt-font-weight-regular, 400);
+}

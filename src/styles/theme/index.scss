@@ -2,8 +2,18 @@
 @use './dark';
 @use './solid';
 @use './glass';
+@use '../typography' as typography;
 
 :where(:root) {
+  --wt-font-size-title: 16px;
+  --wt-font-size-body: 14px;
+  --wt-font-size-caption: 12px;
+  --wt-line-height-title: 24px;
+  --wt-line-height-body: 22px;
+  --wt-line-height-caption: 20px;
+  --wt-font-weight-regular: 400;
+  --wt-font-weight-semibold: 600;
+  --wt-font-weight-bold: 700;
   --wt-color-primary: #409eff;
   --wt-color-success: #67c23a;
   --wt-color-warning: #e6a23c;
@@ -25,6 +35,9 @@
 }
 
 :root:is([data-wt-scheme='light'], [data-wt-scheme='dark']) {
+  --el-font-size-base: var(--wt-font-size-body);
+  --el-font-size-small: var(--wt-font-size-caption);
+  --el-font-size-large: var(--wt-font-size-title);
   --el-color-primary: var(--wt-color-primary);
   --el-color-success: var(--wt-color-success);
   --el-color-warning: var(--wt-color-warning);
@@ -166,8 +179,71 @@
   .wt-form-date-picker-popper,
   .wt-form-cascader-popper
 ) {
+  @include typography.context;
   backdrop-filter: var(
     --wt-form-control-backdrop-filter,
     var(--wt-backdrop-filter, none)
   );
+}
+
+// 仅作用于本库字段的真实浮层；不改消费方原生 Element Plus 控件。
+.wt-form-select-popper {
+  .el-select-dropdown__item {
+    @include typography.control-font;
+    &.is-selected {
+      font-weight: var(--wt-font-weight-bold, 700);
+    }
+  }
+  .el-select-group__title,
+  .el-select-dropdown__empty,
+  .el-select-dropdown__loading {
+    @include typography.control-font(caption);
+  }
+}
+.wt-form-cascader-popper {
+  .el-cascader-node,
+  .el-cascader__suggestion-item {
+    @include typography.control-font;
+  }
+  .el-cascader-node.in-active-path,
+  .el-cascader-node.is-active,
+  .el-cascader__suggestion-item.is-checked {
+    font-weight: var(--wt-font-weight-bold, 700);
+  }
+  .el-cascader-menu__empty-text {
+    @include typography.control-font(caption);
+  }
+}
+.wt-form-date-picker-popper {
+  .el-picker-panel,
+  .el-date-table,
+  .el-year-table,
+  .el-month-table,
+  .el-date-picker__time-header,
+  .el-date-range-picker__time-header,
+  .el-picker-panel__btn,
+  .el-time-panel__btn,
+  .el-time-spinner__item {
+    @include typography.control-font(caption);
+  }
+  .el-picker-panel__shortcut,
+  .el-time-range-picker__header {
+    @include typography.control-font;
+  }
+  .el-date-picker__header-label,
+  .el-date-range-picker__header div,
+  .el-date-range-picker__header-label {
+    font-size: var(--wt-font-size-title, 16px);
+    font-weight: var(--wt-font-weight-bold, 700);
+  }
+  .el-date-table th {
+    font-weight: var(--wt-font-weight-regular, 400);
+  }
+  .el-date-table td.today .el-date-table-cell__text,
+  .el-month-table td.today .el-date-table-cell__text,
+  .el-year-table td.today .el-date-table-cell__text,
+  .el-time-spinner__item.is-active:not(.is-disabled),
+  .el-time-panel__btn.confirm {
+    font-weight: var(--wt-font-weight-bold, 700);
+  }
 }

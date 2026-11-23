@@ -2,6 +2,7 @@
 @use 'sass:meta';
 @use 'sass:list';
 @use '../mixin/index' as mixins;
+@use './typography';
 
 @layer style.utilities {
   // 所有的mixin
