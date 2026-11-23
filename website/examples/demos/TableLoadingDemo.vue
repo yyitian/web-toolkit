@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import DemoLayout from '../DemoLayout.vue';
 import SuperTable from '@/components/SuperTable/index.vue';
 import SuperButton from '@/components/SuperButton/index.vue';
 import type { SuperTableColumn } from '@/components/SuperTable/types.ts';
@@ -19,6 +20,7 @@ const rows: Row[] = Array.from({ length: 6 }, (_, i) => ({
   owner: i % 2 ? '小林' : '小周',
 }));
 const loading = ref(false);
+const view = ref<'table' | 'card'>('table');
 const empty = ref(false);
 const alternateColor = ref(false);
 let timer: ReturnType<typeof setTimeout> | undefined;
@@ -34,8 +36,11 @@ onBeforeUnmount(() => clearTimeout(timer));
 </script>
 
 <template>
-  <div class="table-loading-demo" data-demo="table-loading">
-    <div class="table-loading-demo__controls">
+  <DemoLayout class="table-loading-demo" data-demo="table-loading">
+    <template #controls>
+      <SuperButton @click="view = view === 'table' ? 'card' : 'table'">{{
+        view === 'table' ? '切换卡片' : '切换表格'
+      }}</SuperButton>
       <SuperButton :disabled="loading" @click="loading = true"
         >开始加载</SuperButton
       >
@@ -49,29 +54,22 @@ onBeforeUnmount(() => clearTimeout(timer));
       <SuperButton @click="alternateColor = !alternateColor"
         >切换主色</SuperButton
       >
-    </div>
+    </template>
     <SuperTable
       title="加载时保留已有数据"
+      :view="view"
+      :card="{ fields: { title: 'name' } }"
       :columns="columns"
       :data="empty ? [] : rows"
       :total="empty ? 0 : rows.length"
       :loading="loading"
       :style="{ '--wt-color-primary': alternateColor ? '#8b5cf6' : undefined }"
     />
-  </div>
+  </DemoLayout>
 </template>
 
 <style scoped>
 .table-loading-demo {
   min-width: 0;
-}
-.table-loading-demo__controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-.table-loading-demo__controls .super-button {
-  margin: 0;
 }
 </style>

@@ -38,6 +38,18 @@ export type {
   SuperStatusOption,
   SuperStatusProps,
 } from '@/components/SuperStatus/types.ts';
+export type {
+  SuperTableView,
+  SuperTableCardConfig,
+  SuperTableCardValue,
+  SuperTableCardRowOption,
+  SuperTableCardText,
+  SuperTableCardSwitch,
+  SuperTableCardContext,
+  SuperTableCardActionsScope,
+  SuperTableCardActionsContext,
+  SuperTableCardSwitchChange,
+} from '@/components/SuperTable/card-types.ts';
 export { default as SuperTable } from '@/components/SuperTable/index.vue';
 export type {
   SuperTableCellContext,

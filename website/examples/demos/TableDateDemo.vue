@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import DemoLayout from '../DemoLayout.vue';
+import TableDemoViewport from '../TableDemoViewport.vue';
 import SuperTable from '@/components/SuperTable/index.vue';
 import { DATE_FORMATS } from '@/constants/date.ts';
 import type {
@@ -40,16 +42,46 @@ const columns: SuperTableColumn[] = [
     },
   },
 ];
+const rows = Array.from({ length: 8 }, (_, index) => {
+  const day = String(index + 1).padStart(2, '0');
+  return {
+    id: index + 1,
+    defaults: `2026-11-${day} 08:30:00`,
+    time: `2026-11-${day} 10:15:00`,
+    format: `2026-11-${day} 14:00:00`,
+    both: `2026-11-${day} 17:45:00`,
+  };
+});
+const visibleRows = shallowRef(rows);
 const lastQuery = ref<SuperTableQuery>();
+function query(value: SuperTableQuery) {
+  lastQuery.value = value;
+  visibleRows.value = rows.filter((row) =>
+    Object.entries(value.search).every(([key, range]) => {
+      if (!Array.isArray(range) || range.length !== 2) return true;
+      const date = String(row[key as keyof typeof row]).slice(0, 10);
+      return (
+        date >= String(range[0]).slice(0, 10) &&
+        date <= String(range[1]).slice(0, 10)
+      );
+    }),
+  );
+}
 </script>
 
 <template>
-  <div data-demo="table-dates">
-    <SuperTable
-      :columns="columns"
-      :config="{ header: false, pagination: false }"
-      @query-change="lastQuery = $event"
-    />
-    <pre>{{ JSON.stringify(lastQuery?.search ?? {}, null, 2) }}</pre>
-  </div>
+  <DemoLayout data-demo="table-dates">
+    <TableDemoViewport>
+      <SuperTable
+        :columns="columns"
+        :data="visibleRows"
+        :total="visibleRows.length"
+        :config="{ header: false, pagination: false }"
+        @query-change="query"
+      />
+    </TableDemoViewport>
+    <template #output>
+      <pre>{{ JSON.stringify(lastQuery?.search ?? {}, null, 2) }}</pre>
+    </template>
+  </DemoLayout>
 </template>

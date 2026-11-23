@@ -14,18 +14,26 @@ export interface DemoTableRow {
   owner: { name: string };
 }
 
-const rows: DemoTableRow[] = Array.from({ length: 57 }, (_, index) => ({
-  id: index + 1,
-  name: `示例任务 ${String(index + 1).padStart(2, '0')}`,
-  enabled: index % 3 !== 0,
-  tags: index % 2 ? ['报表'] : ['自动化', '巡检'],
-  progress: (index * 13) % 101,
-  createdAt: `2026-11-${String((index % 9) + 1).padStart(2, '0')} 12:30:00`,
-  owner: { name: index % 2 ? '小林' : '小周' },
-}));
+export const demoRows: DemoTableRow[] = Array.from(
+  { length: 57 },
+  (_, index) => ({
+    id: index + 1,
+    name: `${['资产巡检', '告警分析', '日志归档', '备份检查', '漏洞扫描', '报表生成'][index % 6]} ${String(index + 1).padStart(2, '0')}`,
+    enabled: index % 3 !== 0,
+    tags: [
+      ['自动化', '巡检', '生产'],
+      ['报表'],
+      ['审计', '归档', '每日', '安全'],
+      [],
+    ][index % 4]!,
+    progress: (index * 13) % 101,
+    createdAt: `2026-11-${String((index % 9) + 1).padStart(2, '0')} 12:30:00`,
+    owner: { name: ['小周', '小林', '小陈', '小许'][index % 4]! },
+  }),
+);
 
 export const tableColumns: SuperTableColumn<DemoTableRow>[] = [
-  { prop: 'index', label: '序号', tableType: 'index', width: 64 },
+  { prop: 'index', label: '序号', tableType: 'index' },
   {
     prop: 'name',
     label: '任务名称',
@@ -55,14 +63,12 @@ export const tableColumns: SuperTableColumn<DemoTableRow>[] = [
     prop: 'progress',
     label: '进度',
     tableType: 'progress',
-    width: 160,
     sortable: true,
   },
   {
     prop: 'createdAt',
     label: '创建时间',
     tableType: 'date',
-    width: 180,
     search: true,
   },
   {
@@ -78,7 +84,7 @@ export const tableColumns: SuperTableColumn<DemoTableRow>[] = [
 export function queryDemoRows(
   query: SuperTableQuery,
 ): SuperTableResult<DemoTableRow> {
-  let filtered = rows.filter((row) => {
+  let filtered = demoRows.filter((row) => {
     if (query.search.name && !row.name.includes(String(query.search.name)))
       return false;
     if (

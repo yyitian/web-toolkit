@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import DemoLayout from '../DemoLayout.vue';
+import SuperForm from '@/components/SuperForm/index.vue';
+import type { SuperFormColumn } from '@/components/SuperForm/types.ts';
 import SuperTable from '@/components/SuperTable/index.vue';
-import SuperButton from '@/components/SuperButton/index.vue';
 import type { SuperTableColumn } from '@/components/SuperTable/types.ts';
 
 interface Row {
@@ -27,39 +29,82 @@ const rows = computed(() =>
     note: '数据在表体内滚动，标题和分页保持原位',
   })),
 );
+const settings: SuperFormColumn[] = [
+  {
+    prop: 'rows',
+    label: '数据条数',
+    formType: 'select',
+    defaultValue: 30,
+    props: {
+      options: [0, 3, 10, 30].map((value) => ({ label: `${value} 条`, value })),
+    },
+    change: (_, value) => {
+      rowCount.value = Number(value);
+    },
+  },
+  {
+    prop: 'height',
+    label: '父容器高度',
+    formType: 'select',
+    defaultValue: 720,
+    props: {
+      options: [400, 720, 900].map((value) => ({ label: `${value}px`, value })),
+    },
+    change: (_, value) => {
+      parentHeight.value = Number(value);
+    },
+  },
+  {
+    prop: 'natural',
+    label: '自然高度',
+    formType: 'switch',
+    change: (_, value) => {
+      naturalHeight.value = value === true;
+    },
+  },
+  {
+    prop: 'extra',
+    label: '附加内容',
+    formType: 'switch',
+    change: (_, value) => {
+      showExtra.value = value === true;
+    },
+  },
+  {
+    prop: 'search',
+    label: '搜索区',
+    formType: 'switch',
+    defaultValue: true,
+    change: (_, value) => {
+      showSearch.value = value === true;
+    },
+  },
+  {
+    prop: 'header',
+    label: '标题栏',
+    formType: 'switch',
+    defaultValue: true,
+    change: (_, value) => {
+      showHeader.value = value === true;
+    },
+  },
+  {
+    prop: 'pagination',
+    label: '分页栏',
+    formType: 'switch',
+    defaultValue: true,
+    change: (_, value) => {
+      showPagination.value = value === true;
+    },
+  },
+];
 </script>
 
 <template>
-  <div class="table-layout-demo" data-demo="table-layout">
-    <div class="table-layout-demo__controls">
-      <SuperButton
-        v-for="count in [0, 3, 10, 30]"
-        :key="count"
-        @click="rowCount = count"
-        >{{ count }} 条数据</SuperButton
-      >
-      <SuperButton
-        v-for="height in [400, 720, 900]"
-        :key="height"
-        @click="parentHeight = height"
-        >父高度 {{ height }}px</SuperButton
-      >
-      <SuperButton @click="naturalHeight = !naturalHeight"
-        >父高度模式：{{ naturalHeight ? '自然高度' : '固定高度' }}</SuperButton
-      >
-      <SuperButton @click="showExtra = !showExtra"
-        >附加内容：{{ showExtra ? '显示' : '隐藏' }}</SuperButton
-      >
-      <SuperButton @click="showSearch = !showSearch"
-        >搜索：{{ showSearch ? '显示' : '隐藏' }}</SuperButton
-      >
-      <SuperButton @click="showHeader = !showHeader"
-        >标题：{{ showHeader ? '显示' : '隐藏' }}</SuperButton
-      >
-      <SuperButton @click="showPagination = !showPagination"
-        >分页：{{ showPagination ? '显示' : '隐藏' }}</SuperButton
-      >
-    </div>
+  <DemoLayout class="table-layout-demo" data-demo="table-layout">
+    <template #controls
+      ><SuperForm :columns="settings" inline label-position="top"
+    /></template>
     <div
       class="table-layout-demo__viewport"
       :style="{ height: naturalHeight ? undefined : `${parentHeight}px` }"
@@ -83,21 +128,12 @@ const rows = computed(() =>
         </template>
       </SuperTable>
     </div>
-  </div>
+  </DemoLayout>
 </template>
 
 <style scoped>
 .table-layout-demo {
   min-width: 0;
-}
-.table-layout-demo__controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-.table-layout-demo__controls .super-button {
-  margin: 0;
 }
 .table-layout-demo__viewport {
   min-width: 0;

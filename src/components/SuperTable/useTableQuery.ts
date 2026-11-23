@@ -14,7 +14,7 @@ interface QueryOptions<Row> {
   immediate: () => boolean;
   initialSort?: SuperTableQuery['sort'];
   beforeQuery: () => void;
-  onQuery: (query: SuperTableQuery) => void;
+  onQuery: (query: SuperTableQuery, reason: 'page' | 'refresh') => void;
   onLoad: (result: SuperTableResult<Row>) => void;
 }
 
@@ -30,6 +30,7 @@ export function useTableQuery<Row>(options: QueryOptions<Row>) {
   let sequence = 0;
   let controller: AbortController | undefined;
   let scheduled: Promise<void> | undefined;
+  let scheduledReason: 'page' | 'refresh' = 'page';
 
   function getQuery(): SuperTableQuery {
     return cloneDeep({
@@ -40,13 +41,13 @@ export function useTableQuery<Row>(options: QueryOptions<Row>) {
     });
   }
 
-  async function execute() {
+  async function execute(reason: 'page' | 'refresh') {
     const id = ++sequence;
     controller?.abort();
     controller = undefined;
     options.beforeQuery();
     const query = getQuery();
-    options.onQuery(cloneDeep(query));
+    options.onQuery(cloneDeep(query), reason);
     const request = options.request();
     if (!request) {
       loading.value = false;
@@ -68,18 +69,24 @@ export function useTableQuery<Row>(options: QueryOptions<Row>) {
   }
 
   // 同步修改页码与查询条件时合并为一次执行。
-  function refresh(): Promise<void> {
+  function schedule(reason: 'page' | 'refresh'): Promise<void> {
     if (!active) return Promise.resolve();
+    if (reason === 'refresh') scheduledReason = 'refresh';
     scheduled ??= Promise.resolve().then(() => {
+      const reason = scheduledReason;
       scheduled = undefined;
-      if (active) return execute();
+      scheduledReason = 'page';
+      if (active) return execute(reason);
     });
     return scheduled;
   }
-
+  function refresh(): Promise<void> {
+    return schedule('refresh');
+  }
   function reload(): Promise<void> {
+    const pending = schedule('refresh');
     options.page.value = 1;
-    return refresh();
+    return pending;
   }
 
   function initializeSearch(data: Record<string, unknown>) {
@@ -92,7 +99,7 @@ export function useTableQuery<Row>(options: QueryOptions<Row>) {
   }
 
   function setSort(value: SuperTableQuery['sort']) {
-    sort.value = value;
+    sort.value = cloneDeep(value);
     void reload();
   }
 
@@ -100,7 +107,7 @@ export function useTableQuery<Row>(options: QueryOptions<Row>) {
   watch(
     [options.page, options.pageSize],
     () => {
-      if (mounted) void refresh();
+      if (mounted) void schedule('page');
     },
     { flush: 'sync' },
   );
@@ -121,6 +128,7 @@ export function useTableQuery<Row>(options: QueryOptions<Row>) {
   });
 
   return {
+    sort,
     result,
     loading,
     refresh,

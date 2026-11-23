@@ -1,4 +1,5 @@
 import type { Component } from 'vue';
+import type { SuperTableCardConfig, SuperTableView } from './card-types.ts';
 import type { TableInstance } from 'element-plus';
 import type { LabelValue, SuperFormColumn } from '../SuperForm/types.ts';
 
@@ -25,6 +26,7 @@ export interface SuperTableConfig<Row = Record<string, unknown>> {
   search?: boolean;
   header?: boolean;
   pagination?: boolean;
+  pageSizes?: number[];
 }
 
 export interface SuperTableSelection<Row = Record<string, unknown>> {
@@ -76,7 +78,7 @@ export interface SuperTableCellContext<Row = Record<string, unknown>> {
   index: number;
 }
 
-export interface SuperTableProps<Row = Record<string, unknown>> {
+export interface SuperTableBaseProps<Row = Record<string, unknown>> {
   columns?: SuperTableColumn<Row>[];
   title?: LabelValue;
   data?: Row[];
@@ -89,10 +91,18 @@ export interface SuperTableProps<Row = Record<string, unknown>> {
   pageSize?: number;
 }
 
+/** 卡片缺省读取同名字段；配置用于覆盖映射和展示。 */
+export type SuperTableProps<Row = Record<string, unknown>> =
+  SuperTableBaseProps<Row> & {
+    view?: SuperTableView;
+    card?: SuperTableCardConfig<Row>;
+  };
+
 export interface SuperTableInstance<Row = Record<string, unknown>> {
   refresh(): Promise<void>;
   reload(): Promise<void>;
   clearSelection(): void;
+  toggleRowSelection(row: Row, selected?: boolean): void;
   getQuery(): SuperTableQuery;
   readonly selections: Row[];
   readonly elTable: TableInstance | undefined;

@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import SuperIcon from '../SuperIcon/index.vue';
-import { useTableLoading } from './useTableLoading.ts';
-
-const props = defineProps<{ loading: boolean }>();
-const visible = useTableLoading(toRef(props, 'loading'));
+defineProps<{ loading: boolean; visible: boolean }>();
 </script>
 
 <template>
@@ -15,10 +11,8 @@ const visible = useTableLoading(toRef(props, 'loading'));
         role="status"
         aria-live="polite"
       >
-        <div class="super-table__loading-indicator">
-          <SuperIcon loading :size="28" aria-hidden="true" />
-          <span>加载中…</span>
-        </div>
+        <span class="super-table__loading-label">加载中…</span>
+        <div class="super-table__loading-progress" aria-hidden="true" />
       </div>
     </Transition>
   </div>
@@ -38,8 +32,7 @@ const visible = useTableLoading(toRef(props, 'loading'));
 .super-table__loading-mask {
   position: absolute;
   inset: 0;
-  display: grid;
-  place-items: center;
+  overflow: hidden;
   color: var(--wt-table-loading-color, var(--wt-color-primary));
   background: var(
     --wt-table-loading-bg,
@@ -50,18 +43,36 @@ const visible = useTableLoading(toRef(props, 'loading'));
     )
   );
 }
-.super-table__loading-indicator {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 20px;
-  border-radius: var(--wt-radius-large);
-  background: var(--wt-surface-overlay);
-  box-shadow: var(--wt-shadow-base);
-  backdrop-filter: var(--wt-backdrop-filter, none);
-  font-size: 12px;
-  line-height: 1.5;
+.super-table__loading-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.super-table__loading-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    currentColor 45%,
+    transparent 75%
+  );
+  background-size: 200% 100%;
+  animation: table-progress 1.2s linear infinite;
+}
+@keyframes table-progress {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
 }
 .table-loading-enter-active,
 .table-loading-leave-active {
@@ -76,8 +87,9 @@ const visible = useTableLoading(toRef(props, 'loading'));
   .table-loading-leave-active {
     transition: none;
   }
-  .super-table__loading-indicator :deep(.super-icon.loading) {
+  .super-table__loading-progress {
     animation: none;
+    background: currentColor;
   }
 }
 </style>

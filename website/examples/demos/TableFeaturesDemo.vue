@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import DemoLayout from '../DemoLayout.vue';
 import SuperTable from '@/components/SuperTable/index.vue';
 import type { SuperTableColumn } from '@/components/SuperTable/types.ts';
 
@@ -8,6 +9,7 @@ interface Row {
   value: number;
   enabled: boolean;
   note: string | null;
+  tags: string[];
 }
 const AmountCell = defineComponent({
   props: { value: { type: Number, default: 0 } },
@@ -21,7 +23,7 @@ const AmountCell = defineComponent({
   },
 });
 const columns: SuperTableColumn<Row>[] = [
-  { prop: 'expand', tableType: 'expand', width: 48 },
+  { prop: 'expand', tableType: 'expand' },
   { prop: 'name', label: '名称', fixed: 'left', minWidth: 180 },
   {
     prop: 'value',
@@ -33,6 +35,13 @@ const columns: SuperTableColumn<Row>[] = [
   { prop: 'enabled', label: '布尔值', minWidth: 160 },
   { prop: 'note', label: '空值', minWidth: 160 },
   {
+    prop: 'tags',
+    label: '标签（默认两个）',
+    tableType: 'tag',
+    minWidth: 220,
+    cellProps: { type: 'info', size: 'small' },
+  },
+  {
     prop: 'formatted',
     label: '格式化',
     minWidth: 160,
@@ -40,15 +49,28 @@ const columns: SuperTableColumn<Row>[] = [
   },
 ];
 const data: Row[] = [
-  { id: 1, name: '可选记录', value: 0, enabled: false, note: null },
-  { id: 2, name: '不可选记录', value: 8, enabled: true, note: '' },
+  {
+    id: 1,
+    name: '可选记录',
+    value: 0,
+    enabled: false,
+    note: null,
+    tags: ['研发', '运维', '审计', '安全'],
+  },
+  {
+    id: 2,
+    name: '不可选记录',
+    value: 8,
+    enabled: true,
+    note: '',
+    tags: ['自动化', '告警', '巡检'],
+  },
 ];
 const clicked = ref('尚未点击行');
 </script>
 
 <template>
-  <div data-demo="table-features">
-    <p>{{ clicked }}</p>
+  <DemoLayout data-demo="table-features">
     <SuperTable
       :columns="columns"
       :data="data"
@@ -67,5 +89,6 @@ const clicked = ref('尚未点击行');
         ><p>展开记录：{{ row.name }}，行索引：{{ index }}</p></template
       >
     </SuperTable>
-  </div>
+    <template #output>{{ clicked }}</template>
+  </DemoLayout>
 </template>

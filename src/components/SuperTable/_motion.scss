@@ -1,0 +1,34 @@
+@mixin result {
+  &.is-result-a {
+    animation: wt-result-a var(--wt-result-duration, 160ms) ease-out backwards;
+  }
+  &.is-result-b {
+    animation: wt-result-b var(--wt-result-duration, 160ms) ease-out backwards;
+  }
+  @keyframes wt-result-a {
+    from {
+      opacity: 0;
+      transform: translateX(var(--wt-result-x, 0px));
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  @keyframes wt-result-b {
+    from {
+      opacity: 0;
+      transform: translateX(var(--wt-result-x, 0px));
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    &.is-result-a,
+    &.is-result-b {
+      animation: none;
+    }
+  }
+}

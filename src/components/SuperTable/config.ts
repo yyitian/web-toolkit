@@ -64,3 +64,26 @@ export function getCellValue<Row>(
   const value = get(row, column.prop);
   return column.formatter ? column.formatter(row, value, index) : value;
 }
+
+/** 显式宽度配置优先，不用固定默认宽度覆盖调用方的弹性列。 */
+export function getColumnDefaults<Row>(column: SuperTableColumn<Row>) {
+  const defaults: Record<string, unknown> = {
+    resizable: true,
+    showOverflowTooltip: !column.tableType || column.tableType === 'text',
+  };
+  if (
+    [
+      column.width,
+      column.minWidth,
+      column.props?.width,
+      column.props?.minWidth,
+    ].every((value) => value === undefined)
+  ) {
+    const width = { date: 180, index: 60, expand: 48 }[
+      column.tableType as 'date' | 'index' | 'expand'
+    ];
+    if (width !== undefined) defaults.width = width;
+    else if (column.tableType === 'progress') defaults.minWidth = 160;
+  }
+  return defaults;
+}

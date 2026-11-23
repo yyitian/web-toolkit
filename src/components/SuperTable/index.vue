@@ -1,13 +1,20 @@
 <script setup lang="ts" generic="Row extends object = Record<string, unknown>">
+import { ElCheckbox } from 'element-plus';
 import type { TableInstance } from 'element-plus';
 import { useWtLocale } from '../useWtLocale.ts';
 import { formatLabel } from '../SuperForm/config.ts';
 import { getSearchColumns } from './config.ts';
 import TableSearch from './TableSearch.vue';
 import TableContent from './TableContent.vue';
+import TableCards from './TableCards.vue';
+import { useTableSelection } from './useTableSelection.ts';
+import { getPageOptions, normalizePageSize } from './pagination.ts';
+import type { SuperTableCardSwitchChange } from './card-types.ts';
 import TablePagination from './TablePagination.vue';
 import TableBeforeHeader from './TableBeforeHeader.vue';
 import TableLoading from './TableLoading.vue';
+import { useTableLoading } from './useTableLoading.ts';
+import { useTableMotion } from './useTableMotion.ts';
 import { useTableQuery } from './useTableQuery.ts';
 import type {
   SuperTableProps,
@@ -18,6 +25,7 @@ import type {
 defineOptions({ inheritAttrs: false });
 useWtLocale();
 const props = withDefaults(defineProps<SuperTableProps<Row>>(), {
+  view: 'table',
   columns: () => [],
   data: () => [],
   total: 0,
@@ -26,11 +34,22 @@ const props = withDefaults(defineProps<SuperTableProps<Row>>(), {
   config: () => ({}),
 });
 const page = defineModel<number>('page', { default: 1 });
-const pageSize = defineModel<number>('pageSize', { default: 20 });
+const pageSizeModel = defineModel<number>('pageSize');
+const pageOptions = computed(() =>
+  getPageOptions(props.view, props.config.pageSizes),
+);
+const pageSize = computed({
+  get: () => normalizePageSize(pageSizeModel.value, pageOptions.value),
+  set: (value: number) => {
+    pageSizeModel.value = normalizePageSize(value, pageOptions.value);
+  },
+});
+pageSizeModel.value = pageSize.value;
 const emit = defineEmits<{
   'query-change': [query: SuperTableQuery];
   'selection-change': [rows: Row[]];
   load: [result: SuperTableResult<Row>];
+  'card-switch-change': [change: SuperTableCardSwitchChange<Row>];
 }>();
 const attrs = useAttrs();
 const defaultSort = (attrs.defaultSort ?? attrs['default-sort']) as
@@ -60,22 +79,14 @@ const content = ref<{
   clearSelection(): void;
   elTable: TableInstance | undefined;
 }>();
-const selections = shallowRef<Row[]>([]);
-const reserveSelection = computed(
-  () =>
-    typeof props.selection === 'object' &&
-    props.selection.reserveSelection === true,
-);
-
-function updateSelection(rows: Row[]) {
-  selections.value = rows.slice();
-  emit('selection-change', rows.slice());
-}
 function clearSelection() {
-  content.value?.clearSelection();
-  if (selections.value.length) updateSelection([]);
+  selectionState.clearSelection();
 }
 
+const motion = useTableMotion(toRef(props, 'view'));
+let waitingExternal = false;
+let changedExternal = false;
+let hasExternalResult = props.data.length > 0;
 const query = useTableQuery<Row>({
   page,
   pageSize,
@@ -87,10 +98,18 @@ const query = useTableQuery<Row>({
       ? { prop: defaultSort.prop, order: defaultSort.order }
       : null,
   beforeQuery: () => {
-    if (!reserveSelection.value) clearSelection();
+    if (!selectionState.reserve.value) clearSelection();
   },
-  onQuery: (value) => emit('query-change', value),
-  onLoad: (value) => emit('load', value),
+  onQuery: (value, reason) => {
+    motion.begin(value, reason === 'page');
+    waitingExternal = !props.request;
+    changedExternal = false;
+    emit('query-change', value);
+  },
+  onLoad: (value) => {
+    motion.commit(value.data.length > 0);
+    emit('load', value);
+  },
 });
 const rows = computed(() =>
   props.request ? query.result.value.data : props.data,
@@ -99,30 +118,71 @@ const total = computed(() =>
   props.request ? query.result.value.total : props.total,
 );
 const busy = computed(() => props.loading || query.loading.value);
+const feedback = useTableLoading(busy);
+watch(
+  [() => props.data, () => props.loading],
+  ([data, loading], [previousData, previousLoading]) => {
+    if (props.request) return;
+    if (
+      data !== previousData &&
+      (waitingExternal || loading || previousLoading || !hasExternalResult)
+    )
+      changedExternal = true;
+    if (!loading && changedExternal) {
+      if (!waitingExternal) motion.begin(query.getQuery(), false);
+      motion.commit(data.length > 0);
+      if (data.length) hasExternalResult = true;
+      waitingExternal = false;
+      changedExternal = false;
+    }
+  },
+);
+onMounted(() => {
+  if (!props.request && !busy.value && rows.value.length) {
+    motion.begin(query.getQuery(), false);
+    motion.commit(true);
+  }
+});
 
-watch(
-  () => props.data,
-  () => {
-    if (!props.request && !reserveSelection.value) clearSelection();
-  },
-);
-watch(
-  () => props.selection,
-  (value) => {
-    if (!value) clearSelection();
-  },
-);
+const selectionState = useTableSelection<Row>({
+  rows: () => rows.value,
+  selection: () => props.selection,
+  rowKey: () => props.config.rowKey ?? 'id',
+  onChange: (value) => emit('selection-change', value),
+});
+const selections = selectionState.selections;
+// 插槽名称在渲染时读取，响应父级动态增加或移除插槽。
+function cardSlots() {
+  return Object.keys(slots).filter(
+    (name) => name.startsWith('card-') || name === 'empty',
+  );
+}
+watch([() => props.view, pageOptions], ([view, options], [previousView]) => {
+  const changedView = view !== previousView;
+  const next = normalizePageSize(
+    changedView && !options.custom ? undefined : pageSizeModel.value,
+    options,
+  );
+  const changedSize = next !== pageSizeModel.value;
+  pageSizeModel.value = next;
+  if (changedView || changedSize) void query.reload();
+});
+watch(pageSizeModel, (value) => {
+  const normalized = normalizePageSize(value, pageOptions.value);
+  if (value !== normalized) pageSizeModel.value = normalized;
+});
 
 defineExpose({
   refresh: query.refresh,
   reload: query.reload,
   getQuery: query.getQuery,
   clearSelection,
+  toggleRowSelection: selectionState.toggleRowSelection,
   get selections() {
     return selections.value.slice();
   },
   get elTable() {
-    return content.value?.elTable;
+    return props.view === 'table' ? content.value?.elTable : undefined;
   },
 });
 </script>
@@ -154,7 +214,16 @@ defineExpose({
     <div class="super-table__content">
       <header v-if="config.header !== false" class="super-table__header">
         <div class="super-table__title">
-          <strong
+          <ElCheckbox
+            v-if="view === 'card' && selection"
+            class="super-table__page-selection"
+            :model-value="selectionState.checked.value"
+            :indeterminate="selectionState.indeterminate.value"
+            :disabled="selectionState.selectableRows.value.length === 0"
+            @change="selectionState.togglePage($event === true)"
+            >本页全选</ElCheckbox
+          >
+          <strong class="super-table__heading"
             ><slot name="title">{{
               title === undefined ? '' : formatLabel(title)
             }}</slot></strong
@@ -166,38 +235,75 @@ defineExpose({
             name="toolbar"
             :selections="selections.slice()"
             :refresh="query.refresh"
+            :sort="query.sort.value ? { ...query.sort.value } : null"
+            :set-sort="query.setSort"
           />
         </div>
       </header>
       <div class="super-table__body" :class="{ 'is-loading': busy }">
         <TableContent
+          v-if="view === 'table'"
           v-bind="tableAttrs"
           ref="content"
           :columns="columns"
           :data="rows"
           :row-key="config.rowKey ?? 'id'"
           :selection="selection"
+          :selections="selections"
+          :sort="query.sort.value"
+          :loading="busy"
+          :feedback="feedback"
+          :motion="motion.state.value"
           @sort="query.setSort"
-          @selection="updateSelection"
+          @selection="selectionState.fromTable"
         >
           <template v-for="name in contentSlots" #[name]="scope"
             ><slot :name="name" v-bind="scope"
           /></template>
         </TableContent>
-        <TableLoading :loading="busy" />
+        <TableCards
+          v-else
+          :data="rows"
+          :card="card"
+          :selection="Boolean(selection)"
+          :row-key="selectionState.key"
+          :is-selected="
+            (row) =>
+              selectionState.selectedKeys.value.has(selectionState.key(row))
+          "
+          :selectable="selectionState.selectable"
+          :loading="busy"
+          :feedback="feedback"
+          :page-size="pageSize"
+          :motion="motion.state.value"
+          :empty-text="
+            String(attrs['empty-text'] ?? attrs.emptyText ?? '暂无数据')
+          "
+          @select="selectionState.toggleRowSelection"
+          @switch-change="emit('card-switch-change', $event)"
+        >
+          <template v-for="name in cardSlots()" #[name]="scope"
+            ><slot :name="name" v-bind="scope"
+          /></template>
+        </TableCards>
+        <TableLoading :loading="busy" :visible="feedback" />
       </div>
       <TablePagination
         v-if="config.pagination !== false"
         v-model:page="page"
         v-model:page-size="pageSize"
         :total="total"
+        :page-sizes="pageOptions.sizes"
       />
     </div>
   </section>
 </template>
 
 <style lang="scss" scoped>
+@use '../../styles/typography' as typography;
 .super-table {
+  @include typography.context;
+  @include typography.text(body, var(--wt-table-color, var(--wt-text-regular)));
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -205,7 +311,6 @@ defineExpose({
   min-height: min-content;
   gap: var(--wt-table-gap, 12px);
   min-width: 0;
-  color: var(--wt-table-color, var(--wt-text-regular));
   :deep(.super-table__search),
   .super-table__content {
     border: 1px solid var(--wt-table-border-color, var(--wt-border-color-light));
@@ -249,13 +354,11 @@ defineExpose({
   flex-wrap: wrap;
   gap: 8px;
 }
-.super-table__title {
-  color: var(--wt-text-primary);
-  font-size: 14px;
+.super-table__heading {
+  @include typography.text(title);
 }
 .super-table__count {
-  color: var(--wt-text-secondary);
-  font-size: 12px;
+  @include typography.text(caption);
   padding: 2px 8px;
   border-radius: 20px;
   background: var(--el-fill-color-light);
@@ -271,8 +374,12 @@ defineExpose({
   min-height: var(--wt-table-body-min-height, 440px);
   min-width: 0;
   overflow: hidden;
-  &.is-loading :deep(.el-table__empty-block) {
-    visibility: hidden;
-  }
+}
+</style>
+
+<style lang="scss">
+@use '../SuperForm/control-theme' as controls;
+.super-table__page-selection {
+  @include controls.checkbox;
 }
 </style>

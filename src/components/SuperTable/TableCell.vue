@@ -1,6 +1,9 @@
 <script setup lang="ts" generic="Row extends object">
-import { dayjs, ElProgress, ElTag } from 'element-plus';
+import { dayjs, ElProgress } from 'element-plus';
 import { DATE_FORMATS } from '../../constants/date.ts';
+import SuperTags from '../SuperTags/index.vue';
+import { toTagValues } from '../SuperTags/config.ts';
+import type { SuperTagsLimit } from '../SuperTags/types.ts';
 import type { SuperTableCellContext } from './types.ts';
 
 const props = defineProps<{ context: SuperTableCellContext<Row> }>();
@@ -23,11 +26,11 @@ const text = computed(() => {
   }
   return String(props.context.value);
 });
-const tags = computed(() =>
-  Array.isArray(props.context.value)
-    ? props.context.value
-    : [props.context.value],
-);
+const tags = computed(() => toTagValues(props.context.value));
+const tagConfig = computed(() => {
+  const { limit, ...appearance } = cellProps.value;
+  return { limit: limit as SuperTagsLimit | undefined, props: appearance };
+});
 const percentage = computed(() => {
   const value = Number(props.context.value);
   return Number.isFinite(value) ? Math.min(100, Math.max(0, value)) : 0;
@@ -40,14 +43,13 @@ const percentage = computed(() => {
     v-if="context.column.tableType === 'custom' && context.column.component"
     v-bind="{ ...cellProps, ...context }"
   />
-  <span
+  <SuperTags
     v-else-if="context.column.tableType === 'tag' && !empty"
     class="super-table__tags"
-  >
-    <ElTag v-for="(tag, index) in tags" :key="index" v-bind="cellProps">{{
-      tag
-    }}</ElTag>
-  </span>
+    :tags="tags"
+    :limit="tagConfig.limit"
+    :props="tagConfig.props"
+  />
   <ElProgress
     v-else-if="context.column.tableType === 'progress' && !empty"
     v-bind="cellProps"
@@ -55,11 +57,3 @@ const percentage = computed(() => {
   />
   <span v-else>{{ text }}</span>
 </template>
-
-<style scoped>
-.super-table__tags {
-  display: inline-flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-</style>

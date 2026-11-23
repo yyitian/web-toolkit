@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import DemoLayout from '../DemoLayout.vue';
+import TableDemoViewport from '../TableDemoViewport.vue';
 import { ElTag } from 'element-plus';
+import { Eye } from '@lucide/vue';
 import SuperTable from '@/components/SuperTable/index.vue';
 import SuperButton from '@/components/SuperButton/index.vue';
 import type {
@@ -11,14 +14,12 @@ import { queryDemoRows, tableColumns } from './table-data.ts';
 import type { DemoTableRow } from './table-data.ts';
 
 const table = ref<SuperTableInstance<DemoTableRow>>();
-const count = ref(0);
 const failNext = ref(false);
 const reserve = ref(false);
 const lastQuery = ref<SuperTableQuery>();
 const detail = ref('点击操作查看任务');
 const responseDelay = ref(250);
 const request: SuperTableRequest<DemoTableRow> = async (query, { signal }) => {
-  count.value++;
   await new Promise<void>((resolve, reject) => {
     const abort = () => {
       clearTimeout(timer);
@@ -47,48 +48,55 @@ function refreshWithDelay(delay: number) {
 </script>
 
 <template>
-  <div class="table-demo" data-demo="table-request">
-    <p>请求次数：{{ count }}；{{ detail }}</p>
-    <SuperTable
-      ref="table"
-      :columns="tableColumns"
-      title="任务列表"
-      :request="request"
-      :selection="{ reserveSelection: reserve }"
-      @query-change="lastQuery = $event"
-    >
-      <template #search-extra>
-        <SuperButton @click="reserve = !reserve"
-          >跨页保留：{{ reserve ? '开' : '关' }}</SuperButton
-        >
-      </template>
-      <template #toolbar="{ selections }">
-        <span>已选 {{ selections.length }} 条</span>
-        <SuperButton @click="table?.clearSelection()">清空勾选</SuperButton>
-        <SuperButton @click="refreshWithDelay(250)">刷新</SuperButton>
-        <SuperButton @click="refreshWithDelay(50)">快速刷新</SuperButton>
-        <SuperButton @click="refreshWithDelay(1500)">慢速刷新</SuperButton>
-        <SuperButton @click="triggerFailure">模拟失败</SuperButton>
-      </template>
-      <template #column-enabled="{ value }">
-        <ElTag :type="value ? 'success' : 'info'">{{
-          value ? '启用' : '停用'
-        }}</ElTag>
-      </template>
-      <template #column-operation="{ row }">
-        <SuperButton
-          link
-          type="primary"
-          @click="detail = `当前任务：${row.name}`"
-          >查看</SuperButton
-        >
-      </template>
-    </SuperTable>
-    <details>
-      <summary>当前查询参数</summary>
-      <pre>{{ JSON.stringify(lastQuery, null, 2) }}</pre>
-    </details>
-  </div>
+  <DemoLayout class="table-demo" data-demo="table-request">
+    <template #controls>
+      <SuperButton @click="reserve = !reserve"
+        >跨页保留：{{ reserve ? '开' : '关' }}</SuperButton
+      >
+      <SuperButton @click="refreshWithDelay(50)">快速请求</SuperButton>
+      <SuperButton @click="refreshWithDelay(1500)">慢速请求</SuperButton>
+      <SuperButton @click="triggerFailure">模拟失败</SuperButton>
+      <span class="wt-text-caption"
+        >使用本地模拟请求，失败时保留已有数据。</span
+      >
+    </template>
+    <TableDemoViewport>
+      <SuperTable
+        ref="table"
+        :columns="tableColumns"
+        title="任务列表"
+        :request="request"
+        :selection="{ reserveSelection: reserve }"
+        @query-change="lastQuery = $event"
+      >
+        <template #toolbar="{ selections }">
+          <span>已选 {{ selections.length }} 条</span>
+          <SuperButton @click="table?.clearSelection()">清空勾选</SuperButton>
+          <SuperButton @click="refreshWithDelay(250)">刷新</SuperButton>
+        </template>
+        <template #column-enabled="{ value }">
+          <ElTag :type="value ? 'success' : 'info'">{{
+            value ? '启用' : '停用'
+          }}</ElTag>
+        </template>
+        <template #column-operation="{ row }">
+          <SuperButton
+            :icon="Eye"
+            :square="32"
+            label="查看"
+            @click="detail = `当前任务：${row.name}`"
+          />
+        </template>
+      </SuperTable>
+    </TableDemoViewport>
+    <template #output>
+      <p>{{ detail }}</p>
+      <details>
+        <summary>查询参数</summary>
+        <pre>{{ JSON.stringify(lastQuery, null, 2) }}</pre>
+      </details>
+    </template>
+  </DemoLayout>
 </template>
 
 <style scoped>

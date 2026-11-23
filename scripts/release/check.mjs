@@ -19,6 +19,8 @@ for (const script of [
   'verify:locale',
   'verify:table',
   'verify:tags',
+  'verify:card',
+  'verify:table-typography',
   'verify:utils',
   'docs:build',
 ]) {
