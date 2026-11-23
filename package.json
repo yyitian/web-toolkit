@@ -44,7 +44,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build && vite build --config vite.config.plugin.ts",
-    "docs:dev": "vitepress dev website",
+    "docs:dev": "vitepress dev website --host",
     "docs:build": "vitepress build website",
     "docs:preview": "vitepress preview website",
     "docs:deploy": "pnpm docs:build && wrangler deploy",

@@ -177,6 +177,10 @@ defineProps<{ active?: boolean }>();
 
 新增 mixin 会被纳入工具类生成，注意命名冲突。所有工具类包在 `@layer style.utilities` 内。
 
+## 文档维护
+
+编写或调整 VitePress 页面和示例时遵循[文档内容规范](docs/documentation-guidelines.md)：按概要、简短用法与必要提示、交互展示、折叠代码、末尾 API 排序；精简文案，复用交互和主题，组合用法通过链接去重。
+
 ## 修改守则
 
 - 新增对外组件时，同时更新 `lib/main.ts` 和必要文档。

@@ -1,27 +1,25 @@
 <script setup lang="ts">
+import SuperButton from '@/components/SuperButton/index.vue';
 import SuperPopover from '@/components/SuperPopover/index.vue';
 
+const props = defineProps<{ section?: 'triggers' | 'customization' }>();
 const manualVisible = ref(false);
 </script>
 
 <template>
   <div class="popover-demo">
-    <div class="popover-demo__group">
+    <div v-if="props.section !== 'customization'" class="popover-demo__group">
       <span class="popover-demo__label">触发方式</span>
       <div class="demo-row">
         <SuperPopover title="默认 hover 提示">
           <template #reference="{ setReference }">
-            <button :ref="setReference" class="demo-trigger" type="button">
-              Hover
-            </button>
+            <SuperButton :ref="setReference"> 悬停查看 </SuperButton>
           </template>
         </SuperPopover>
 
-        <SuperPopover trigger="click" effect="light">
+        <SuperPopover trigger="click">
           <template #reference="{ setReference }">
-            <button :ref="setReference" class="demo-trigger" type="button">
-              Click
-            </button>
+            <SuperButton :ref="setReference"> 点击查看 </SuperButton>
           </template>
           <template #content>点击浮层内部不会关闭</template>
         </SuperPopover>
@@ -32,20 +30,18 @@ const manualVisible = ref(false);
           title="由外部状态控制"
         >
           <template #reference="{ setReference }">
-            <button
+            <SuperButton
               :ref="setReference"
-              class="demo-trigger"
-              type="button"
               @click="manualVisible = !manualVisible"
             >
-              Manual
-            </button>
+              手动控制
+            </SuperButton>
           </template>
         </SuperPopover>
       </div>
     </div>
 
-    <div class="popover-demo__group">
+    <div v-if="props.section !== 'triggers'" class="popover-demo__group">
       <span class="popover-demo__label">Teleport 与样式定制</span>
       <div class="demo-row">
         <div class="popover-demo__clip">
@@ -54,18 +50,16 @@ const manualVisible = ref(false);
             :popper-style="{ '--wt-popover-padding': '10px 14px' }"
           >
             <template #reference="{ setReference }">
-              <button :ref="setReference" class="demo-trigger" type="button">
-                容器外浮层
-              </button>
+              <SuperButton :ref="setReference"> 容器外浮层 </SuperButton>
             </template>
-            <template #content>默认 Teleport，不受 overflow 裁切</template>
+            <template #content>浮层不会被容器边界裁切</template>
           </SuperPopover>
         </div>
 
         <SuperPopover :teleport-to="false" title="浮层与触发器相邻渲染">
           <template #reference="{ setReference }">
-            <button :ref="setReference" class="demo-trigger" type="button">
-              不 Teleport
+            <button :ref="setReference" type="button" class="demo-trigger">
+              原生参考元素（不 Teleport）
             </button>
           </template>
         </SuperPopover>

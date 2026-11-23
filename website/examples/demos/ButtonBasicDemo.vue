@@ -22,17 +22,17 @@ function handleLoading() {
           type="primary"
           :loading="loading"
           @click="handleLoading"
-          >{{ loading ? `保存中` : '点击保存' }}</SuperButton
+          >{{ loading ? `保存中` : '模拟保存' }}</SuperButton
         >
         <SuperButton type="primary" :loading="loading" @click="handleLoading">{{
-          loading ? `保存中` : '点击保存'
+          loading ? `保存中` : '模拟保存'
         }}</SuperButton>
         <SuperButton type="danger" disabled>禁用</SuperButton>
       </div>
     </div>
 
     <div class="button-demo__group">
-      <span class="button-demo__label">原生用法</span>
+      <span class="button-demo__label">按钮样式</span>
       <div class="button-demo__row">
         <SuperButton type="primary">默认按钮</SuperButton>
         <SuperButton type="success" plain>朴素按钮</SuperButton>

@@ -4,22 +4,36 @@ import ThemeSwitcherDemo from '../examples/demos/ThemeSwitcherDemo.vue';
 
 # SuperThemeSwitcher
 
-提供开箱即用的双轴主题切换界面。组件读取 `createWtTheme()` 注入的状态，不自行创建或
-持久化主题。
+切换浅色／暗色和实体／玻璃主题。
 
 ## 示例
 
+默认悬停展开主题选项，设置 `variant="inline"` 可直接显示选项。
+
+::: tip 提示
+使用前[初始化主题插件](/guide/theming#初始化)。
+:::
+
 <ClientOnly><DemoBlock><ThemeSwitcherDemo /></DemoBlock></ClientOnly>
 
+::: details 查看代码
+
 ```vue
-<SuperThemeSwitcher />
-<SuperThemeSwitcher variant="inline" />
+<script setup lang="ts">
+import { SuperThemeSwitcher } from '@yyitian/web-toolkit';
+</script>
+
+<template>
+  <SuperThemeSwitcher />
+  <SuperThemeSwitcher variant="inline" />
+</template>
 ```
 
-Popover 形态通过桌面鼠标 hover 打开，内容使用两个 Radio group 分别控制色系和材质。
-需要安装 `element-plus` 和 `@lucide/vue`；主题插件初始化参阅[主题定制](/guide/theming)。
+:::
 
-## Props
+## API
+
+### Props
 
 | 属性        | 类型                    | 默认值         | 说明                   |
 | ----------- | ----------------------- | -------------- | ---------------------- |

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import DemoLayout from '../DemoLayout.vue';
 import SuperButton from '@/components/SuperButton/index.vue';
 import { openConfirm, openDeleteConfirm } from '@/utils/message.ts';
 
@@ -37,7 +38,7 @@ async function remove(custom = false) {
 </script>
 
 <template>
-  <div class="message-demo">
+  <DemoLayout class="message-demo">
     <div class="message-demo__actions">
       <SuperButton type="primary" @click="confirm">通用确认</SuperButton>
       <SuperButton @click="remove()">删除确认</SuperButton>
@@ -45,8 +46,8 @@ async function remove(custom = false) {
         自定义删除文案
       </SuperButton>
     </div>
-    <p role="status" aria-live="polite">{{ result }}</p>
-  </div>
+    <template #output>{{ result }}</template>
+  </DemoLayout>
 </template>
 
 <style scoped lang="scss">

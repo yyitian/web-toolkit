@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import DemoLayout from '../DemoLayout.vue';
 import { ElConfigProvider } from 'element-plus';
 import en from 'element-plus/es/locale/lang/en.mjs';
 import zhCn from 'element-plus/es/locale/lang/zh-cn.mjs';
@@ -18,14 +19,16 @@ const locale = computed(() => (english.value ? en : zhCn));
     </section>
     <section>
       <h3>外层语言配置</h3>
-      <div class="locale-demo__switch">
-        <SuperButton @click="english = !english">
-          {{ english ? '切换为中文' : '切换为英文' }}
-        </SuperButton>
-      </div>
-      <ElConfigProvider :locale="locale">
-        <LocaleDemoPanel />
-      </ElConfigProvider>
+      <DemoLayout>
+        <template #controls>
+          <SuperButton @click="english = !english">
+            {{ english ? '切换为中文' : '切换为英文' }}
+          </SuperButton>
+        </template>
+        <ElConfigProvider :locale="locale">
+          <LocaleDemoPanel />
+        </ElConfigProvider>
+      </DemoLayout>
     </section>
   </div>
 </template>
@@ -38,8 +41,5 @@ const locale = computed(() => (english.value ? en : zhCn));
 }
 .locale-demo section {
   min-width: 0;
-}
-.locale-demo__switch {
-  margin-bottom: 16px;
 }
 </style>

@@ -14,7 +14,7 @@ pnpm add @yyitian/web-toolkit element-plus @lucide/vue
 
 项目需要 Vue 3.5 或更高版本。上面的命令安装完整组件所需的依赖；当前对等依赖范围为
 `element-plus ^2.14.0`、`@lucide/vue ^1.18.0`。表单（含上传）、表格、表单弹窗、
-主题切换器和成品动态图标内部也使用 Lucide 图标。
+主题切换器和成品动态图标也需要 `@lucide/vue`。
 
 `webToolkitPlugin` 只处理 SVG sprite 和 SCSS mixin，不负责自动导入 Vue API 或注册组件。
 下方示例均通过显式导入使用组件。
@@ -87,7 +87,7 @@ const columns: SuperFormColumn[] = [
 不会改变 Day.js 的全局默认语言、日期格式或时区。使用其他日期语言时，按 Day.js 的
 要求自行引入对应语言包。
 
-工具库自有按钮、表格统计、提示和业务标签保留已有文案，本次配置不包含这些文案的翻译，
+工具库自有按钮、表格统计、提示和业务标签保留已有文案，语言配置不包含这些文案的翻译，
 也不改变函数式确认弹窗工具的行为。
 
 <ClientOnly><DemoBlock><LocaleDemo /></DemoBlock></ClientOnly>

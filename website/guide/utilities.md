@@ -76,7 +76,7 @@ formatLabel({ title: '标题' }, 'title'); // '标题'
 
 ## 确认弹窗
 
-需要安装 `element-plus`，并在应用入口引入 `@yyitian/web-toolkit/style.css`。
+使用前完成[依赖安装与样式引入](/guide/getting-started#安装依赖)。
 
 <ClientOnly><DemoBlock><MessageDemo /></DemoBlock></ClientOnly>
 

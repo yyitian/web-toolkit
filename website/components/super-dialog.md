@@ -4,22 +4,48 @@ import DialogDemo from '../examples/demos/DialogDemo.vue';
 
 # SuperDialog
 
-对 Element Plus `ElDialog` 的轻量封装，提供统一的可滚动布局、默认页脚和
-`SuperButton` 操作按钮。
+用于编辑、确认和详情查看，提供可滚动正文和默认确认、取消按钮。
 
 ## 基础用法
 
+使用 `v-model` 控制显示，默认提供确认与取消按钮。
+
+::: tip 提示
+取消按钮直接关闭；确认后由调用方执行操作并关闭弹窗。
+:::
+
 <ClientOnly><DemoBlock><DialogDemo /></DemoBlock></ClientOnly>
 
+::: details 查看代码
+
 ```vue
-<SuperDialog v-model="visible" title="编辑" @confirm="save">
-  弹窗正文
-</SuperDialog>
+<script setup lang="ts">
+import { ref } from 'vue';
+import { SuperButton, SuperDialog } from '@yyitian/web-toolkit';
+
+const visible = ref(false);
+</script>
+
+<template>
+  <SuperButton type="primary" @click="visible = true">打开弹窗</SuperButton>
+  <SuperDialog
+    v-model="visible"
+    title="删除确认"
+    :width="480"
+    @confirm="visible = false"
+  >
+    弹窗内容高度自然增长，超过 maxHeight 后正文区域滚动。
+  </SuperDialog>
+</template>
 ```
 
-## Props
+:::
 
-除下表外，其他 attrs 会继续传给 `ElDialog`。
+## API
+
+### Props
+
+支持 Element Plus Dialog 属性；默认启用 `draggable`、`destroy-on-close` 和 `append-to-body`。
 
 | 属性         | 类型                    | 默认值      | 说明                                |
 | ------------ | ----------------------- | ----------- | ----------------------------------- |
@@ -32,20 +58,17 @@ import DialogDemo from '../examples/demos/DialogDemo.vue';
 | `cancel`     | `boolean \| LabelValue` | `true`      | 取消按钮开关或文案                  |
 | `confirm`    | `LabelValue`            | `'确认'`    | 确认按钮文案                        |
 
-## Events
+### Events
 
 | 事件                | 参数                 | 说明                               |
 | ------------------- | -------------------- | ---------------------------------- |
 | `update:modelValue` | `(visible: boolean)` | 弹窗状态变化                       |
 | `confirm`           | —                    | 点击默认确认按钮；组件不会自动关闭 |
 
-## Slots
+### Slots
 
 | 插槽      | 说明                                           |
 | --------- | ---------------------------------------------- |
 | `default` | 弹窗正文                                       |
 | `header`  | 自定义标题，接收 Element Plus header slot 参数 |
 | `footer`  | 覆盖整个默认页脚                               |
-
-组件默认启用 `draggable`、`destroy-on-close` 和 `append-to-body`。取消按钮会直接关闭，
-确认后的保存和关闭时机由使用方控制。

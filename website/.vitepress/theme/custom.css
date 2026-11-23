@@ -1,3 +1,12 @@
+/* 保留页面滚动条位置，避免弹窗锁定滚动时挤压正文和固定导航。 */
+html {
+  scrollbar-gutter: stable;
+}
+
+body:is(.el-popup-parent--hidden, .el-message-box-parent--hidden) {
+  width: auto !important;
+}
+
 :root {
   --vp-c-brand-1: var(--wt-color-primary);
   --vp-c-brand-2: #337ecc;
@@ -18,7 +27,7 @@
   --vp-nav-bg-color: var(--wt-surface-page);
   --vp-nav-screen-bg-color: var(--wt-surface-page);
   --vp-local-nav-bg-color: var(--wt-surface-page);
-  --vp-sidebar-bg-color: var(--wt-surface-base);
+  --vp-sidebar-bg-color: var(--wt-surface-page);
   --vp-local-search-bg: var(--wt-surface-overlay);
   --vp-local-search-result-bg: var(--wt-surface-raised);
   --vp-local-search-result-selected-bg: var(--wt-surface-base);
@@ -33,9 +42,6 @@
 }
 
 :root[data-wt-material='glass'] {
-  --vp-nav-bg-color: var(--wt-glass-bg);
-  --vp-nav-screen-bg-color: var(--wt-glass-bg-strong);
-  --vp-local-nav-bg-color: var(--wt-glass-bg);
   --wt-vp-glass-ambient-primary: color-mix(
     in srgb,
     var(--wt-color-primary) 18%,
@@ -116,23 +122,8 @@
   margin: 20px 0;
   border: 1px solid var(--vp-c-divider);
   border-radius: 8px;
-  background: var(--vp-c-bg-soft);
+  background: var(--wt-surface-base);
   padding: 20px;
-}
-
-:root[data-wt-material='glass'] .demo-block {
-  background:
-    radial-gradient(
-      circle at 12% 18%,
-      var(--wt-vp-glass-ambient-primary),
-      transparent 46%
-    ),
-    radial-gradient(
-      circle at 88% 82%,
-      var(--wt-vp-glass-ambient-secondary),
-      transparent 44%
-    ),
-    var(--wt-glass-bg-strong);
 }
 
 .demo-row {
@@ -146,7 +137,9 @@
   margin-top: 16px;
   border-radius: 6px;
   padding: 12px;
-  background: var(--vp-code-block-bg);
+  background: var(--wt-surface-raised);
+  color: var(--wt-text-regular);
+  overflow: auto;
   white-space: pre-wrap;
 }
 

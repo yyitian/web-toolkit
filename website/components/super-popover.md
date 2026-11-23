@@ -4,22 +4,112 @@ import PopoverDemo from '../examples/demos/PopoverDemo.vue';
 
 # SuperPopover
 
-基于 Floating UI 的浮层组件，支持 hover、click 和 manual 三种触发方式。参考节点通过唯一
-的 `reference` scoped slot 注册，不会生成额外包装节点。
+在参考元素旁显示提示或自定义内容，支持悬停、点击和手动控制。
 
 ## 交互示例
 
-<ClientOnly><DemoBlock><PopoverDemo /></DemoBlock></ClientOnly>
+使用 `trigger` 选择触发方式，手动模式通过 `v-model` 控制显示。
+
+::: tip 提示
+将 `reference` 插槽中的 `setReference` 绑定到触发元素的 `ref`。
+:::
+
+<ClientOnly><DemoBlock><PopoverDemo section="triggers" /></DemoBlock></ClientOnly>
+
+::: details 查看代码
 
 ```vue
-<SuperPopover title="提示内容">
-  <template #reference="{ setReference }">
-    <button :ref="setReference">Hover</button>
-  </template>
-</SuperPopover>
+<script setup lang="ts">
+import { ref } from 'vue';
+import { SuperButton, SuperPopover } from '@yyitian/web-toolkit';
+
+const visible = ref(false);
+</script>
+
+<template>
+  <SuperPopover title="默认 hover 提示">
+    <template #reference="{ setReference }">
+      <SuperButton :ref="setReference">悬停查看</SuperButton>
+    </template>
+  </SuperPopover>
+  <SuperPopover trigger="click">
+    <template #reference="{ setReference }">
+      <SuperButton :ref="setReference">点击查看</SuperButton>
+    </template>
+    <template #content>点击浮层内部不会关闭</template>
+  </SuperPopover>
+  <SuperPopover v-model="visible" trigger="manual" title="由外部状态控制">
+    <template #reference="{ setReference }">
+      <SuperButton :ref="setReference" @click="visible = !visible">
+        手动控制
+      </SuperButton>
+    </template>
+  </SuperPopover>
+</template>
 ```
 
-## Props
+:::
+
+## Teleport 与样式
+
+浮层默认挂载到 `body`，可显示在裁切容器外；设置 `:teleport-to="false"` 时挂载在参考元素旁。
+原生元素也可作为参考元素。
+
+::: tip 提示
+浮层样式通过 `popperClass` 或 `popperStyle` 设置，不依赖触发位置祖先的 scoped 样式。
+:::
+
+<ClientOnly><DemoBlock><PopoverDemo section="customization" /></DemoBlock></ClientOnly>
+
+::: details 查看代码
+
+```vue
+<script setup lang="ts">
+import { SuperButton, SuperPopover } from '@yyitian/web-toolkit';
+</script>
+
+<template>
+  <div class="clip-container">
+    <SuperPopover
+      popper-class="project-popover"
+      :popper-style="{ '--wt-popover-padding': '10px 14px' }"
+    >
+      <template #reference="{ setReference }">
+        <SuperButton :ref="setReference">容器外浮层</SuperButton>
+      </template>
+      <template #content>浮层不会被容器边界裁切</template>
+    </SuperPopover>
+  </div>
+  <SuperPopover :teleport-to="false" title="浮层与触发器相邻渲染">
+    <template #reference="{ setReference }">
+      <button :ref="setReference" type="button">
+        原生参考元素（不 Teleport）
+      </button>
+    </template>
+  </SuperPopover>
+</template>
+
+<style scoped>
+.clip-container {
+  width: 132px;
+  height: 42px;
+  overflow: hidden;
+}
+</style>
+
+<style>
+.project-popover {
+  --wt-popover-bg: linear-gradient(135deg, #7c3aed, #2563eb);
+  --wt-popover-color: #fff;
+}
+</style>
+```
+
+:::
+
+## API
+
+### Props
 
 | 属性                  | 类型                                          | 默认值                    | 说明                                        |
 | --------------------- | --------------------------------------------- | ------------------------- | ------------------------------------------- |
@@ -37,42 +127,15 @@ import PopoverDemo from '../examples/demos/PopoverDemo.vue';
 | `popperClass`         | 任意 class 值                                 | `undefined`               | 应用到浮层自身的 class                      |
 | `popperStyle`         | `StyleValue`                                  | `undefined`               | 应用到浮层自身的样式                        |
 
-## Events
+### Events
 
 | 事件                | 参数                 | 说明         |
 | ------------------- | -------------------- | ------------ |
 | `update:modelValue` | `(visible: boolean)` | 可见状态变化 |
 
-## Slots
+### Slots
 
 | 插槽        | 参数               | 说明                                             |
 | ----------- | ------------------ | ------------------------------------------------ |
 | `reference` | `{ setReference }` | 必须把 `setReference` 绑定到真实参考元素的 `ref` |
 | `content`   | —                  | 自定义浮层内容，优先于 `title`                   |
-
-## Teleport 与样式
-
-默认浮层位于 `body`，不要依赖触发器祖先的 scoped 样式。使用 `popperClass` 或
-`popperStyle` 把变量应用到浮层自身，详情参阅[主题定制](/guide/theming)。
-
-上方示例中的“容器外浮层”位于 `overflow: hidden` 容器内，但浮层默认 Teleport 到
-`body`，不会被容器裁切。单实例样式可以直接应用到浮层：
-
-```vue
-<SuperPopover
-  popper-class="project-popover"
-  :popper-style="{ '--wt-popover-padding': '10px 14px' }"
->
-  <template #reference="{ setReference }">
-    <button :ref="setReference">查看详情</button>
-  </template>
-  <template #content>自定义内容</template>
-</SuperPopover>
-
-<style>
-.project-popover {
-  --wt-popover-bg: linear-gradient(135deg, #7c3aed, #2563eb);
-  --wt-popover-color: #fff;
-}
-</style>
-```

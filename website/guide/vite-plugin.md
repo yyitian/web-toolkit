@@ -24,6 +24,8 @@ export default defineConfig({
 假设图标目录中存在 `settings.svg`，插件会在 HTML 的 `<body>` 开头注入
 `#icon-settings`，组件中可以直接使用：
 
+配置片段：
+
 ```vue
 <SuperIcon icon="settings" />
 ```
