@@ -28,6 +28,8 @@ import CardAdaptiveActionsDemo from '../website/examples/demos/CardAdaptiveActio
 import StatusDemo from '../website/examples/demos/StatusDemo.vue';
 import TableTypographyDemo from '../website/examples/demos/TableTypographyDemo.vue';
 import TypographyDemo from '../website/examples/demos/TypographyDemo.vue';
+import CarouselConfigDemo from '../website/examples/demos/CarouselConfigDemo.vue';
+import CarouselBasicDemo from '../website/examples/demos/CarouselBasicDemo.vue';
 import { useWtTheme } from '@/theme/index.ts';
 
 const pinActive = ref(false);
@@ -62,6 +64,13 @@ function startLoading() {
       </div>
       <SuperThemeSwitcher />
     </div>
+
+    <section class="demo-section" data-demo="carousel">
+      <h2>SuperCarousel 3D 轮播</h2>
+      <CarouselBasicDemo />
+      <h3>轮播配置、预览与勾选</h3>
+      <CarouselConfigDemo />
+    </section>
 
     <section class="demo-section" data-demo="super-typography">
       <h2>Super 系列文字排版</h2>

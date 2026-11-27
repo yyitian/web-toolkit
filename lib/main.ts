@@ -96,3 +96,18 @@ export type {
   SuperUploadResult,
   SuperUploadValue,
 } from '@/components/SuperForm/types.ts';
+
+export { default as SuperCarousel } from '@/components/SuperCarousel/index.vue';
+export type {
+  SuperCarouselId,
+  SuperCarouselItem,
+  SuperCarouselImageProps,
+  SuperCarouselProps,
+  SuperCarouselItemContext,
+  SuperCarouselSelectionChange,
+  SuperCarouselSlotScope,
+  SuperCarouselNavigationScope,
+  SuperCarouselInstance,
+  SuperCarouselSlots,
+  SuperCarouselToolbarScope,
+} from '@/components/SuperCarousel/types.ts';

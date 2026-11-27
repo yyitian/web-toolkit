@@ -63,7 +63,8 @@
     "prepublishOnly": "pnpm build",
     "verify:card": "node scripts/verify-card.mjs",
     "verify:table-typography": "node scripts/verify-table-typography.mjs",
-    "verify:super-typography": "node scripts/verify-super-typography.mjs"
+    "verify:super-typography": "node scripts/verify-super-typography.mjs",
+    "verify:carousel": "node scripts/verify-carousel.mjs"
   },
   "peerDependencies": {
     "@lucide/vue": "^1.18.0",

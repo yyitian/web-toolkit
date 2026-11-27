@@ -94,6 +94,7 @@ export default defineConfig({
           { text: 'SuperTag', link: '/components/super-tag' },
           { text: 'SuperTags', link: '/components/super-tags' },
           { text: 'SuperStatus', link: '/components/super-status' },
+          { text: 'SuperCarousel', link: '/components/super-carousel' },
           { text: 'SuperTable', link: '/components/super-table' },
         ],
       },

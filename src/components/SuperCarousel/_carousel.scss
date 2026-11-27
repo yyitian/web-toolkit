@@ -1,0 +1,234 @@
+@use '../../styles/typography' as typography;
+
+.super-carousel {
+  @include typography.context;
+  @include typography.text(body);
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  isolation: isolate;
+  &:focus-visible {
+    outline: 2px solid var(--wt-color-primary);
+    outline-offset: 3px;
+    border-radius: 12px;
+  }
+  &__stage {
+    position: relative;
+    overflow: hidden;
+    perspective: var(--wt-carousel-perspective, 1100px);
+    touch-action: pan-y;
+    transition: height var(--wt-carousel-duration, 350ms) ease;
+  }
+  &__card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: min(var(--wt-carousel-card-width, 440px), 72%);
+    aspect-ratio: var(--wt-carousel-ratio, 16 / 10);
+    border-radius: var(--wt-carousel-radius, 14px);
+    background: var(--wt-carousel-bg, var(--wt-surface-base));
+    border: 1px solid var(--wt-carousel-border-color, var(--wt-border-color));
+    box-shadow: var(--wt-carousel-shadow, var(--wt-shadow-raised));
+    backdrop-filter: var(--wt-backdrop-filter);
+    transform: translate3d(
+        calc(-50% + var(--_carousel-distance) * var(--wt-carousel-step, 82%)),
+        -50%,
+        0
+      )
+      rotateY(calc(var(--_carousel-distance) * var(--wt-carousel-angle, 32deg)))
+      scale(var(--_carousel-scale));
+    transition:
+      transform var(--wt-carousel-duration, 350ms) ease,
+      opacity var(--wt-carousel-duration, 350ms) ease;
+    &.is-active {
+      border-color: var(
+        --wt-carousel-active-border,
+        var(--wt-border-color-strong)
+      );
+    }
+  }
+  &__content {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: inherit;
+  }
+  &__image.el-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+  }
+  &__placeholder {
+    @include typography.text(caption);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    min-height: 100px;
+    background: var(--wt-surface-raised);
+  }
+  &__skeleton {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: inherit;
+    background: linear-gradient(
+      100deg,
+      transparent 20%,
+      var(--el-fill-color-light) 50%,
+      transparent 80%
+    );
+  }
+  &__side-target {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    padding: 0;
+    border-radius: inherit;
+    background: transparent;
+    cursor: pointer;
+  }
+  &__preview-host {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    overflow: visible;
+    pointer-events: none;
+    .el-image-viewer__wrapper {
+      pointer-events: auto;
+    }
+  }
+  &__controls {
+    position: absolute;
+    z-index: 4;
+    left: 50%;
+    top: calc(50% + var(--_carousel-active-height) / 2 - 12px);
+    transform: translate(-50%, -100%);
+    width: max-content;
+    max-width: max(0px, calc(var(--_carousel-active-width) - 24px));
+  }
+  &__navigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    max-width: 100%;
+    padding: 4px;
+    border: 1px solid var(--wt-border-color-strong);
+    border-radius: 10px;
+    background: var(--wt-surface-overlay);
+    box-shadow: var(--wt-shadow-base);
+    backdrop-filter: var(--wt-backdrop-filter);
+    > .super-button {
+      flex: none;
+    }
+  }
+  &__count {
+    @include typography.text(caption);
+    padding: 0 4px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  &__empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--wt-text-secondary);
+  }
+  &.has-fixed-height .super-carousel__card {
+    max-height: calc(100% - 40px);
+  }
+  &--vertical {
+    .super-carousel__stage {
+      touch-action: pan-x;
+    }
+    .super-carousel__card {
+      transform: translate3d(
+          -50%,
+          calc(-50% + var(--_carousel-distance) * var(--wt-carousel-step, 85%)),
+          0
+        )
+        rotateX(
+          calc(var(--_carousel-distance) * var(--wt-carousel-angle, -32deg))
+        )
+        scale(var(--_carousel-scale));
+    }
+  }
+  &.is-hover-arrows .super-carousel__arrow {
+    visibility: hidden;
+    opacity: 0;
+  }
+  &.is-hover-arrows:is(:hover, :focus-within) .super-carousel__arrow {
+    visibility: visible;
+    opacity: 1;
+  }
+  &.is-disabled {
+    .super-carousel__side-target {
+      cursor: default;
+    }
+  }
+  &.has-motion-blur.is-moving:not(.is-reduced) .super-carousel__content {
+    animation: wt-carousel-blur var(--wt-carousel-duration, 350ms) ease;
+  }
+  &.is-reduced {
+    .super-carousel__stage,
+    .super-carousel__card {
+      transition: none;
+    }
+  }
+}
+@keyframes wt-carousel-blur {
+  0%,
+  100% {
+    filter: blur(0);
+  }
+  45% {
+    filter: blur(2px);
+  }
+}
+@media (hover: none) {
+  .super-carousel.is-hover-arrows .super-carousel__arrow {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .super-carousel {
+    .super-carousel__stage,
+    .super-carousel__card {
+      transition: none;
+    }
+    .super-carousel__content {
+      animation: none !important;
+    }
+  }
+}
+
+.super-carousel__card.is-selected {
+  border-color: var(--wt-carousel-selected-border, var(--wt-color-primary));
+  box-shadow:
+    0 0 0 1px var(--wt-carousel-selected-border, var(--wt-color-primary)),
+    var(--wt-carousel-shadow, var(--wt-shadow-raised));
+}
+.super-carousel__selection-corner {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  transform: translate(25%, -25%);
+  border: 1px solid var(--wt-border-color-strong);
+  border-radius: 6px;
+  background: var(--wt-surface-overlay);
+  backdrop-filter: var(--wt-backdrop-filter);
+}

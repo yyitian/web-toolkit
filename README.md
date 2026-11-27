@@ -82,6 +82,10 @@ const { setTheme } = useWtTheme();
 设为 `0` 仅展示计数，或设为 `'all'` 全部展示。普通表格的 `tableType: 'tag'` 同样默认
 折叠为 2 个，可通过 `cellProps.limit` 调整，原有 ElTag 属性及回调继续透传实际标签。
 
+`SuperCarousel` 提供水平与垂直 3D 透视轮播，支持图片、自定义卡片、按 ID 定位、
+懒渲染和自动播放。`selectable` 配合 `v-model:selected-ids` 可在普通与预览视图同步勾选。开启 `preview` 可使用 ElImage 大图预览，原图地址通过 `previewSrc` 配置；
+详见 [SuperCarousel](https://wt.yyitian.top/components/super-carousel)。
+
 此外可直接导入 `formatDate`、`openConfirm`、`openDeleteConfirm` 工具方法：
 
 ```ts

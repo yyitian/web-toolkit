@@ -21,6 +21,7 @@ for (const script of [
   'verify:tags',
   'verify:segmented',
   'verify:card',
+  'verify:carousel',
   'verify:table-typography',
   'verify:super-typography',
   'verify:utils',
