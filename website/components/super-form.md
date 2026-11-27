@@ -1,7 +1,6 @@
 <script setup>
 import FormBasicDemo from '../examples/demos/FormBasicDemo.vue';
 import FormDemo from '../examples/demos/FormDemo.vue';
-import FormCascaderDemo from '../examples/demos/FormCascaderDemo.vue';
 import FormLabelDemo from '../examples/demos/FormLabelDemo.vue';
 </script>
 
@@ -58,19 +57,40 @@ function submit(data: Record<string, unknown>) {
 
 :::
 
+<span id="cascader-级联选择"></span>
+
 ## 综合示例
 
-按类型选择字段，通过 `show` 控制条件显示。图片上传为本地模拟。
+集中展示内置字段、级联单选与多选，以及 `show` 条件显示。图片上传为本地模拟。
 
 <ClientOnly><DemoBlock><FormDemo /></DemoBlock></ClientOnly>
 
-配置片段，仅展示类型选择与条件字段；其他字段配置参阅下方各节。
-
 ::: details 查看配置片段
+
+省略普通输入、上传及自定义字段，以下为综合示例中的条件字段与级联配置。
 
 ```ts
 import type { SuperFormColumn } from '@yyitian/web-toolkit';
 
+const regionOptions = [
+  {
+    value: 'zhejiang',
+    label: '浙江',
+    children: [
+      { value: 'hangzhou', label: '杭州' },
+      { value: 'ningbo', label: '宁波' },
+      { value: 'wenzhou', label: '温州（禁用）', disabled: true },
+    ],
+  },
+  {
+    value: 'jiangsu',
+    label: '江苏',
+    children: [
+      { value: 'nanjing', label: '南京' },
+      { value: 'suzhou', label: '苏州' },
+    ],
+  },
+];
 const columns: SuperFormColumn[] = [
   {
     prop: 'kind',
@@ -88,6 +108,24 @@ const columns: SuperFormColumn[] = [
     label: '高级名称',
     formType: 'input',
     show: (data) => data.kind === 'advanced',
+  },
+  {
+    prop: 'location',
+    label: '所在地区',
+    formType: 'cascader',
+    rules: { required: true, message: '请选择所在地区', trigger: 'change' },
+    props: { options: regionOptions, placeholder: '请选择省市' },
+  },
+  {
+    prop: 'cities',
+    label: '服务城市',
+    formType: 'cascader',
+    props: {
+      options: regionOptions,
+      props: { multiple: true, emitPath: false },
+      collapseTags: true,
+      collapseTagsTooltip: true,
+    },
   },
 ];
 ```
@@ -196,80 +234,6 @@ const dateColumn: SuperFormColumn = {
 
 `format` 控制界面显示，`valueFormat` 控制绑定值。表格搜索另有字符串格式默认值，参阅
 [SuperTable 日期配置](/components/super-table#搜索与日期配置)。
-
-## Cascader 级联选择
-
-使用 `formType: 'cascader'`，通过 `props.options` 配置树形选项，`props.props` 配置节点行为。
-
-<ClientOnly><DemoBlock><FormCascaderDemo /></DemoBlock></ClientOnly>
-
-::: details 查看配置片段
-
-```ts
-import type { SuperFormColumn } from '@yyitian/web-toolkit';
-
-const options = [
-  {
-    value: 'zhejiang',
-    label: '浙江',
-    children: [
-      { value: 'hangzhou', label: '杭州' },
-      { value: 'ningbo', label: '宁波' },
-      { value: 'wenzhou', label: '温州（禁用）', disabled: true },
-    ],
-  },
-  {
-    value: 'jiangsu',
-    label: '江苏',
-    children: [
-      { value: 'nanjing', label: '南京' },
-      { value: 'suzhou', label: '苏州' },
-    ],
-  },
-];
-const columns: SuperFormColumn[] = [
-  {
-    prop: 'region',
-    label: '所在地区（路径单选）',
-    formType: 'cascader',
-    rules: { required: true, message: '请选择所在地区', trigger: 'change' },
-    props: { options, placeholder: '请选择省市' },
-  },
-  {
-    prop: 'cities',
-    label: '服务城市（多选末级值）',
-    formType: 'cascader',
-    props: {
-      options,
-      props: { multiple: true, emitPath: false },
-      collapseTags: true,
-      collapseTagsTooltip: true,
-    },
-  },
-];
-```
-
-:::
-
-后端选项使用自定义键时，可通过节点配置映射；其他选项属性会原样保留：
-
-::: details 查看配置片段
-
-```ts
-{
-  prop: 'department',
-  label: '部门',
-  formType: 'cascader',
-  props: {
-    options: [
-      { id: 1, name: '研发', nodes: [{ id: 2, name: '前端', leaf: true }] },
-    ],
-    props: { value: 'id', label: 'name', children: 'nodes', emitPath: false },
-  },
-}
-```
-
-:::
 
 ## Upload 使用教程
 
@@ -395,6 +359,8 @@ const columns: SuperFormColumn[] = [
 | `slots`        | `Record<string, string \| Slot>` | 内置字段的子插槽映射                    |
 | `change`       | `(formData, value) => void`      | 字段变化回调                            |
 
+<span id="cascader-配置"></span>
+
 ### 字段类型
 
 | `formType`     | 默认值                     | 说明                                     |
@@ -411,6 +377,8 @@ const columns: SuperFormColumn[] = [
 | `upload`       | `null` 或 `[]`             | 本地或远程文件                           |
 | `slot`         | 不进入数据                 | 使用以 `prop` 命名的插槽                 |
 | `custom`       | `undefined`                | 使用 `component` 指定自定义 v-model 组件 |
+
+`cascader` 默认可搜索、可清空，子级悬停展开；`props.options` 设置树形数据，`props.props` 设置[节点选项](https://element-plus.org/zh-CN/component/cascader)。关闭 `emitPath` 后，单选默认值为 `''`，多选返回节点值数组。
 
 ### Slots
 
@@ -438,22 +406,6 @@ const columns: SuperFormColumn[] = [
 | `elForm`            | `FormInstance \| undefined` | 底层 Element Plus 表单实例               |
 
 在单行 input 中按 Enter 会提交；textarea 和文件输入不会触发该行为。
-
-### Cascader 配置
-
-`column.props` 中的 `filterable`、`clearable` 默认均为 `true`。
-`column.props.props` 支持 Element Plus Cascader 节点选项，常用配置如下：
-
-| 选项            | 默认值    | 说明                                         |
-| --------------- | --------- | -------------------------------------------- |
-| `expandTrigger` | `'hover'` | 改为 `'click'` 后点击展开子级                |
-| `multiple`      | `false`   | 多选                                         |
-| `emitPath`      | `true`    | 返回节点路径；关闭后只返回节点值             |
-| `checkStrictly` | `false`   | 是否允许选择任意层级                         |
-| `lazy/lazyLoad` | —         | 懒加载，返回原生选项结构，动态标签使用字符串 |
-
-路径单选和多选默认值为 `[]`，仅返回节点值的单选为 `''`；清空值遵循 Element Plus 行为。
-多选返回路径数组的数组，关闭 `emitPath` 后返回节点值数组。
 
 ### Upload 配置
 
@@ -505,4 +457,3 @@ type SuperUploadRequest = (
 
 下拉、级联和日期浮层的局部样式通过字段 `props.popperStyle` 或 `props.popperClass` 设置；
 挂载于 body 的浮层不会自动继承触发位置的局部变量。
-使用效果参阅[表单控件配色](/guide/theming#表单控件配色)。

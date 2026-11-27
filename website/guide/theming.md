@@ -1,6 +1,5 @@
 <script setup>
-import FormControlThemeDemo from '../examples/demos/FormControlThemeDemo.vue';
-import TypographyDemo from '../examples/demos/TypographyDemo.vue';
+import ThemeEffectsDemo from '../examples/demos/ThemeEffectsDemo.vue';
 </script>
 
 # 主题定制
@@ -40,12 +39,7 @@ createApp(App)
 
 ## 切换主题
 
-开箱即用的 `SuperThemeSwitcher` 提供 Popover 和行内两种形态：
-
-```vue
-<SuperThemeSwitcher />
-<SuperThemeSwitcher variant="inline" />
-```
+使用 [SuperThemeSwitcher](/components/super-theme-switcher) 切换明暗与材质。
 
 自定义界面使用 `useWtTheme()`：
 
@@ -65,46 +59,207 @@ const { setTheme } = useWtTheme();
 更新两个维度；`setScheme()`、`setMaterial()` 可单独切换一个维度。
 未安装主题插件时调用 `useWtTheme()` 会明确报错。
 
-## 全局语义变量
+## 主题效果
 
-样式入口提供以下变量，并默认采用浅色实体值：
+语义色、背景层级、边框、阴影与文字集中展示如下，使用文档站主题入口切换明暗和材质。组件效果直接查看各组件页面中的示例。
 
-```css
-:root {
-  --wt-color-primary: #409eff;
-  --wt-text-title: #141b2b;
-  --wt-text-primary: #303133;
-  --wt-text-regular: #475569;
-  --wt-surface-page: #f2f3f5;
-  --wt-surface-base: #fff;
-  --wt-surface-raised: #fafafa;
-  --wt-surface-overlay: #fff;
-  --wt-border-color: #dcdfe6;
-  --wt-shadow-overlay:
-    0 12px 32px 4px rgb(0 0 0 / 4%), 0 8px 20px rgb(0 0 0 / 8%);
-  --wt-radius-base: 4px;
-  --wt-motion-base: 200ms;
+<ClientOnly><DemoBlock><ThemeEffectsDemo /></DemoBlock></ClientOnly>
+
+::: details 查看代码
+
+使用前引入[库样式](./getting-started.md#引入样式)并完成上方主题初始化。
+
+```vue
+<script setup lang="ts">
+const colors = [
+  { name: 'primary', label: '主色' },
+  { name: 'success', label: '成功' },
+  { name: 'warning', label: '警告' },
+  { name: 'danger', label: '危险' },
+  { name: 'info', label: '信息' },
+];
+const surfaces = [
+  { name: 'base', label: '基础背景' },
+  { name: 'raised', label: '抬高背景' },
+  { name: 'overlay', label: '浮层背景' },
+];
+const textRoles = [
+  { name: 'title', label: '任务设置' },
+  { name: 'label', label: '字段标签' },
+  { name: 'emphasis', label: '重点信息' },
+  { name: 'body', label: '正文内容保持清晰易读。' },
+  { name: 'caption', label: '说明、时间与数量使用辅助文字。' },
+];
+const textStates = [
+  { name: 'placeholder', label: '占位文字' },
+  { name: 'disabled', label: '禁用文字' },
+  { name: 'inverse', label: '反色文字' },
+];
+</script>
+
+<template>
+  <section class="theme-effects" aria-label="公共样式主题效果">
+    <div class="theme-effects__colors">
+      <div
+        v-for="color in colors"
+        :key="color.name"
+        class="theme-effects__color"
+      >
+        <span
+          class="theme-effects__swatch"
+          :style="{ background: `var(--wt-color-${color.name})` }"
+        />
+        <span class="wt-text-body">{{ color.label }}</span>
+        <span class="wt-text-caption">{{ color.name }}</span>
+      </div>
+    </div>
+    <div class="theme-effects__surfaces">
+      <article
+        v-for="surface in surfaces"
+        :key="surface.name"
+        class="theme-effects__surface"
+        :data-surface="surface.name"
+        :style="{ background: `var(--wt-surface-${surface.name})` }"
+      >
+        <span class="wt-text-label">{{ surface.label }}</span>
+        <span class="wt-text-body">边框、阴影与材质随主题切换。</span>
+      </article>
+    </div>
+    <div class="theme-effects__text">
+      <span
+        v-for="role in textRoles"
+        :key="role.name"
+        :class="`wt-text-${role.name}`"
+        >{{ role.label }}</span
+      >
+      <div class="theme-effects__states wt-text-body">
+        <span
+          v-for="state in textStates"
+          :key="state.name"
+          :class="[
+            `wt-text-${state.name}`,
+            { 'theme-effects__inverse': state.name === 'inverse' },
+          ]"
+          >{{ state.label }}</span
+        >
+      </div>
+    </div>
+  </section>
+</template>
+
+<style scoped>
+.theme-effects {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
 }
+.theme-effects__colors {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 12px;
+}
+.theme-effects__color {
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+}
+.theme-effects__swatch {
+  width: 100%;
+  height: 28px;
+  border-radius: var(--wt-radius-base);
+}
+.theme-effects__surfaces {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+  gap: 12px;
+}
+.theme-effects__surface {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--wt-border-color);
+  border-radius: var(--wt-radius-large);
+  box-shadow: var(--wt-shadow-base);
+  backdrop-filter: var(--wt-backdrop-filter);
+}
+.theme-effects__text {
+  display: grid;
+  gap: 8px;
+}
+.theme-effects__states {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.theme-effects__inverse {
+  padding: 0 6px;
+  border-radius: var(--wt-radius-base);
+  background: #141b2b;
+}
+</style>
 ```
 
-可以在全局主题或具体组件上覆盖变量：
+:::
+
+## 全局语义变量
+
+按用途选择语义变量，让页面与组件随主题切换：
+
+| 变量                   | 用途                        |
+| ---------------------- | --------------------------- |
+| `--wt-color-*`         | [主题色](#主题色)           |
+| `--wt-text-*`          | [文字颜色](#文字层级与排版) |
+| `--wt-surface-page`    | 页面背景                    |
+| `--wt-surface-base`    | 组件基础背景                |
+| `--wt-surface-raised`  | 抬高区域背景                |
+| `--wt-surface-overlay` | 浮层背景                    |
+| `--wt-border-color`    | 边框                        |
+| `--wt-shadow-overlay`  | 浮层阴影                    |
+| `--wt-radius-base`     | 基础圆角，默认 `4px`        |
+| `--wt-motion-base`     | 基础过渡时间，默认 `200ms`  |
+
+全局配色在根节点设置；单个组件的外观通过其专用变量定制。自定义全局样式放在库样式之后：
 
 ```css
 :root[data-wt-scheme='dark'] {
-  --wt-color-primary: #8b5cf6;
   --wt-radius-base: 8px;
-}
-
-.project-dialog {
-  --wt-dialog-bg: rgb(17 24 39 / 82%);
-  --wt-dialog-radius: 16px;
+  --wt-surface-page: #111827;
 }
 ```
 
+## 主题色
+
+工具库与 Element Plus 组件共用五种语义色；Element Plus 的 `error` 对应 `danger`。
+
+| 语义           | 浅色      | 暗色      |
+| -------------- | --------- | --------- |
+| 主色 `primary` | `#3156FF` | `#5D75FF` |
+| 成功 `success` | `#00C853` | `#00DE87` |
+| 警告 `warning` | `#FFAB00` | `#FFBC24` |
+| 危险 `danger`  | `#FF2448` | `#FF4B69` |
+| 信息 `info`    | `#5B7DB8` | `#7799D2` |
+
+### 颜色变量
+
+在根节点覆盖 `--wt-color-{type}`，其中 `{type}` 为上表的语义名称；Element Plus 的对应色阶与交互色会同步更新。浅色和暗色可分别设置：
+
+```css
+:root[data-wt-scheme='light'] {
+  --wt-color-primary: #6d28d9;
+}
+
+:root[data-wt-scheme='dark'] {
+  --wt-color-primary: #a78bfa;
+}
+```
+
+局部设置 `--wt-color-*` 不会重新计算根节点上的 Element Plus 色阶。单实例定制请使用组件专用变量或公开属性，参见下方[组件变量](#组件变量)。
+
 ## 文字层级与排版
 
-标题、正文和辅助信息分别使用 16px、14px、12px。组件默认继承消费方字体，不加载字体文件，
-也不重置消费方的 `body`、标题或段落。
+标题、正文和辅助信息分别使用 16px、14px、12px，字体继承所在应用。
 
 | 工具类              | 用途                      | 字号 / 行高 | 字重 | 颜色变量              |
 | ------------------- | ------------------------- | ----------- | ---- | --------------------- |
@@ -115,19 +270,15 @@ const { setTheme } = useWtTheme();
 | `.wt-text-caption`  | 说明、时间、数量、tooltip | 12 / 20px   | 400  | `--wt-text-secondary` |
 
 `.wt-text-placeholder`、`.wt-text-disabled`、`.wt-text-inverse` 仅设置对应颜色，不改变字号和行高。
-原有 `.font-*` 工具类及 `font()` mixin 保持原有用法。按钮、标签、状态及 Element Plus 控件的尺寸配置继续有效。
+控件尺寸仍通过各组件的 `size` 配置。
 
 <span id="super-组件适配范围"></span>
 
-### 组件中的文字
-
-按钮、表单和表格的内容使用正文档位，提示、计数和状态使用辅助档位。通过下方示例
-比较默认样式与自定义变量；调整文字不会替代组件的 `size` 配置，业务色和禁用、校验色仍各自生效。
+<span id="组件中的文字"></span>
 
 ### 普通内容快速使用
 
-这些 class 不依赖 Vue 组件或主题插件，导入 `style.css` 后即可用于普通 HTML。
-未初始化主题时采用浅色默认值；安装主题插件后自动响应四种主题。
+引入[库样式](/guide/getting-started#引入样式)后，可直接为普通内容添加以下 class；初始化主题后随主题切换。
 
 ```html
 <section>
@@ -148,10 +299,7 @@ const { setTheme } = useWtTheme();
 </section>
 ```
 
-说明、备注、时间和数量共用 `.wt-text-caption`。颜色修饰类只改变颜色，例如
-`class="wt-text-body wt-text-disabled"` 保持正文 14px，仅使用禁用色；`.wt-text-inverse`
-需要配合深色底色。class 不添加外边距、不强制换行或截断，也不自动赋予禁用行为。
-业务样式可以继续覆盖这些工具类。
+颜色修饰类可与排版类组合，例如 `class="wt-text-body wt-text-disabled"`。禁用色不包含禁用行为，`.wt-text-inverse` 需配合深色背景。
 
 | 文字变量                | 浅色      | 暗色      |
 | ----------------------- | --------- | --------- |
@@ -163,11 +311,7 @@ const { setTheme } = useWtTheme();
 | `--wt-text-disabled`    | `#c0c4cc` | `#6c6e72` |
 | `--wt-text-inverse`     | `#ffffff` | `#ffffff` |
 
-文字颜色在实体和毛玻璃材质下共用，不对文字整体设置透明度。玻璃后的内容会影响实际对比度，
-消费方应检查自己的背景；禁用文字不用于承载必需信息。品牌强调色和状态色不随文字规范改变。
-
-例如浅色玻璃放在深色背景、暗色玻璃放在白色背景时，透明表面可能使辅助文字对比度不足。
-承载密集说明的区域可使用不透明阅读底色，文字仍保持当前主题层级：
+玻璃后的背景会影响文字对比度；承载密集文字的区域可使用以下不透明底色，禁用文字不用于必要信息：
 
 ```css
 .reading-panel {
@@ -199,26 +343,24 @@ const { setTheme } = useWtTheme();
 }
 ```
 
-组件专用颜色变量优先于语义默认值。Teleport 浮层继承根节点变量；局部覆盖需传给浮层本身，
-例如弹窗的 `style` 或 popover 的 `popperStyle`，不会自动读取原位置祖先上的局部变量。
-下方设置仅作用于展示内容。可切换自定义语义样式与组件颜色，并展开弹窗或浮层观察效果。
-
-<ClientOnly><DemoBlock><TypographyDemo /></DemoBlock></ClientOnly>
+<span id="提示与反馈"></span>
+<span id="表单控件主题检查"></span>
+<span id="表单控件配色"></span>
 
 ## 组件变量
 
-通过组件变量定制单个实例；省略时使用当前主题。常用变量包括：
+组件在各自文档的正常示例中响应站点主题。通过组件变量定制单个实例；省略时使用当前主题：
 
-- Icon：`--wt-icon-color`、`--wt-icon-loading-color`。
-- Button：`--wt-button-bg`、`--wt-button-color`、各交互状态变量、圆角、阴影与滤镜；
+- [SuperIcon](/components/super-icon)：`--wt-icon-color`、`--wt-icon-loading-color`。
+- [SuperButton](/components/super-button)：`--wt-button-bg`、`--wt-button-color`、各交互状态变量、圆角、阴影与滤镜；
   纯图标形态可用 `--wt-button-icon-only-bg`、`--wt-button-icon-only-hover-bg`、
   `--wt-button-icon-only-backdrop-filter` 独立控制。
-- Popover：`--wt-popover-bg`、文字、边框、圆角、阴影、滤镜、间距及层级。
-- Dialog：`--wt-dialog-bg`、文字、边框、圆角、阴影、滤镜及 Header/Body/Footer 颜色。
-- Form：`--wt-form-label-color` 与 `--wt-form-control-*` 控件基础、悬停、聚焦、选中状态变量；
+- [SuperPopover](/components/super-popover#teleport-与样式)：`--wt-popover-bg`、文字、边框、圆角、阴影、滤镜、间距及层级。
+- [SuperDialog](/components/super-dialog)：`--wt-dialog-bg`、文字、边框、圆角、阴影、滤镜及 Header/Body/Footer 颜色。
+- [SuperForm](/components/super-form#样式与主题)：`--wt-form-label-color` 与 `--wt-form-control-*` 控件基础、悬停、聚焦、选中状态变量；
   Switch 关闭轨道可用 `--wt-form-switch-bg`、`--wt-form-switch-border-color` 独立控制。
-- Upload：`--wt-upload-trigger-*`、`--wt-upload-file-hover-bg`、图片描边、遮罩和删除按钮变量。
-- Table：`--wt-table-bg`、`--wt-table-color`、表头、边框、悬停和固定列背景，以及间距；
+- [SuperForm Upload](/components/super-form#upload-使用教程)：`--wt-upload-trigger-*`、`--wt-upload-file-hover-bg`、图片描边、遮罩和删除按钮变量。
+- [SuperTable](/components/super-table#样式定制)：`--wt-table-bg`、`--wt-table-color`、表头、边框、悬停和固定列背景，以及间距；
   完整列表参阅 [SuperTable 样式定制](/components/super-table#样式定制)。
 
 `SuperPopover` 默认 Teleport 到 `body`。根节点变量可以正常继承；单实例变量需要通过
@@ -233,18 +375,6 @@ const { setTheme } = useWtTheme();
 
 安装主题插件后，组件与选择器、日期及级联浮层跟随当前主题。直接使用 Element Plus
 控件时会获得主题配色；需要玻璃滤镜的独立业务容器应自行配置。
-
-<span id="表单控件主题检查"></span>
-
-## 表单控件配色
-
-通过 `SuperForm` 的字段配置使用选择框、开关等控件。自定义字段及插槽中的控件也可
-使用表单主题变量；可用配置参阅 [SuperForm 样式与主题](/components/super-form#样式与主题)。
-
-下例展示选中、未选中、半选、禁用和校验状态。默认背景跟随主题；浅色、深色和渐变
-属于显式对照条件，可用于观察玻璃材质。切换“自定义控件颜色”可比较变量覆盖效果。
-
-<ClientOnly><DemoBlock><FormControlThemeDemo /></DemoBlock></ClientOnly>
 
 ## 通用交互动效
 

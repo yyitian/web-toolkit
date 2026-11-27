@@ -4,6 +4,7 @@ import { ElInput } from 'element-plus';
 import type {
   SuperFormColumn,
   SuperFormInstance,
+  SuperFormOption,
   SuperUploadRequest,
 } from '@/components/SuperForm/types.ts';
 import SuperButton from '@/components/SuperButton/index.vue';
@@ -46,6 +47,25 @@ const remoteUpload: SuperUploadRequest = async (files) => {
   );
 };
 
+const regionOptions: SuperFormOption[] = [
+  {
+    value: 'zhejiang',
+    label: '浙江',
+    children: [
+      { value: 'hangzhou', label: '杭州' },
+      { value: 'ningbo', label: '宁波' },
+      { value: 'wenzhou', label: '温州（禁用）', disabled: true },
+    ],
+  },
+  {
+    value: 'jiangsu',
+    label: '江苏',
+    children: [
+      { value: 'nanjing', label: '南京' },
+      { value: 'suzhou', label: '苏州' },
+    ],
+  },
+];
 const columns: SuperFormColumn[] = [
   {
     prop: 'name',
@@ -77,6 +97,24 @@ const columns: SuperFormColumn[] = [
         { label: '华东', value: 'east' },
         { label: '华南', value: 'south' },
       ],
+    },
+  },
+  {
+    prop: 'location',
+    label: '所在地区',
+    formType: 'cascader',
+    rules: { required: true, message: '请选择所在地区', trigger: 'change' },
+    props: { options: regionOptions, placeholder: '请选择省市' },
+  },
+  {
+    prop: 'cities',
+    label: '服务城市',
+    formType: 'cascader',
+    props: {
+      options: regionOptions,
+      props: { multiple: true, emitPath: false },
+      collapseTags: true,
+      collapseTagsTooltip: true,
     },
   },
   {
@@ -132,7 +170,7 @@ function submit(data: Record<string, unknown>) {
 </script>
 
 <template>
-  <DemoLayout>
+  <DemoLayout data-demo="form-comprehensive">
     <p class="wt-text-caption">
       演示使用本地数据；图片上传仅模拟延迟，不发送文件到服务端。
     </p>
