@@ -9,8 +9,14 @@ body:is(.el-popup-parent--hidden, .el-message-box-parent--hidden) {
 
 :root {
   --vp-c-brand-1: var(--wt-color-primary);
-  --vp-c-brand-2: #337ecc;
-  --vp-c-brand-3: #79bbff;
+  --vp-c-brand-2: var(--el-color-primary-light-3);
+  --vp-c-brand-3: var(--wt-color-primary);
+  --vp-button-brand-bg: var(--wt-color-primary);
+  --vp-button-brand-text: var(--el-color-white);
+  --vp-button-brand-hover-bg: var(--el-color-primary-light-3);
+  --vp-button-brand-hover-text: var(--el-color-white);
+  --vp-button-brand-active-bg: var(--el-color-primary-dark-2);
+  --vp-button-brand-active-text: var(--el-color-white);
 }
 
 :root:is([data-wt-scheme='light'], [data-wt-scheme='dark']) {
@@ -199,4 +205,12 @@ body:is(.el-popup-parent--hidden, .el-message-box-parent--hidden) {
 
 .vp-doc .super-table .el-pagination li + li {
   margin-top: 0;
+}
+
+/* 演示中的语义链接沿用 Element Plus，避免正文链接色覆盖。 */
+.vp-doc .el-link:not(.is-disabled) {
+  color: var(--el-link-text-color);
+}
+.vp-doc .el-link:not(.is-disabled):hover {
+  color: var(--el-link-hover-text-color);
 }

@@ -49,7 +49,7 @@ export default defineConfig({
   cleanUrls: true,
   lastUpdated: true,
   head: [
-    ['meta', { name: 'theme-color', content: '#409eff' }],
+    ['meta', { name: 'theme-color', content: '#3156ff' }],
     ['link', { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' }],
     ['script', {}, wtThemeInitScript],
   ],

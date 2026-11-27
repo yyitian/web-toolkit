@@ -14,16 +14,21 @@
   --wt-font-weight-regular: 400;
   --wt-font-weight-semibold: 600;
   --wt-font-weight-bold: 700;
-  --wt-color-primary: #409eff;
-  --wt-color-success: #67c23a;
-  --wt-color-warning: #e6a23c;
-  --wt-color-danger: #f56c6c;
-  --wt-color-info: #909399;
   --wt-radius-small: 2px;
   --wt-radius-base: 4px;
   --wt-radius-large: 8px;
   --wt-motion-fast: 120ms;
   --wt-motion-base: 200ms;
+}
+
+:root:is([data-wt-scheme='light'], [data-wt-scheme='dark']),
+:root:not([data-wt-scheme]) {
+  --el-color-primary: var(--wt-color-primary);
+  --el-color-success: var(--wt-color-success);
+  --el-color-warning: var(--wt-color-warning);
+  --el-color-danger: var(--wt-color-danger);
+  --el-color-error: var(--wt-color-danger);
+  --el-color-info: var(--wt-color-info);
 }
 
 :root[data-wt-scheme='light'] {
@@ -38,12 +43,6 @@
   --el-font-size-base: var(--wt-font-size-body);
   --el-font-size-small: var(--wt-font-size-caption);
   --el-font-size-large: var(--wt-font-size-title);
-  --el-color-primary: var(--wt-color-primary);
-  --el-color-success: var(--wt-color-success);
-  --el-color-warning: var(--wt-color-warning);
-  --el-color-danger: var(--wt-color-danger);
-  --el-color-error: var(--wt-color-danger);
-  --el-color-info: var(--wt-color-info);
 
   --el-text-color-primary: var(--wt-text-primary);
   --el-text-color-regular: var(--wt-text-regular);
@@ -140,7 +139,8 @@
       'info': 'info'
     )
 {
-  :root:is([data-wt-scheme='light'], [data-wt-scheme='dark']) {
+  :root:is([data-wt-scheme='light'], [data-wt-scheme='dark']),
+  :root:not([data-wt-scheme]) {
     --el-color-#{$name}-light-3: color-mix(
       in srgb,
       var(--wt-color-#{$token}) 70%,

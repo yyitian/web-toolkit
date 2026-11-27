@@ -28,6 +28,7 @@ import CardAdaptiveActionsDemo from '../website/examples/demos/CardAdaptiveActio
 import StatusDemo from '../website/examples/demos/StatusDemo.vue';
 import TableTypographyDemo from '../website/examples/demos/TableTypographyDemo.vue';
 import TypographyDemo from '../website/examples/demos/TypographyDemo.vue';
+import ThemePaletteDemo from '../website/examples/demos/ThemePaletteDemo.vue';
 import CarouselConfigDemo from '../website/examples/demos/CarouselConfigDemo.vue';
 import CarouselBasicDemo from '../website/examples/demos/CarouselBasicDemo.vue';
 import { useWtTheme } from '@/theme/index.ts';
@@ -64,6 +65,11 @@ function startLoading() {
       </div>
       <SuperThemeSwitcher />
     </div>
+
+    <section class="demo-section" data-demo="palette-regression">
+      <h2>鲜明主题色</h2>
+      <ThemePaletteDemo />
+    </section>
 
     <section class="demo-section" data-demo="carousel">
       <h2>SuperCarousel 3D 轮播</h2>
