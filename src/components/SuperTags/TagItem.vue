@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ElTag } from 'element-plus';
+import SuperTag from '../SuperTag/index.vue';
 import type { TagEntry } from './config.ts';
 import type { SuperTagContext, SuperTagEvent } from './types.ts';
 
@@ -15,7 +15,7 @@ function payload(event: MouseEvent): SuperTagEvent {
 </script>
 
 <template>
-  <ElTag
+  <SuperTag
     v-bind="entry.props"
     @click="emit('click', payload($event))"
     @close="emit('close', payload($event))"
@@ -27,5 +27,5 @@ function payload(event: MouseEvent): SuperTagEvent {
       :overflow="overflow"
       >{{ entry.label }}</slot
     >
-  </ElTag>
+  </SuperTag>
 </template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ElTag } from 'element-plus';
+import SuperTag from '../SuperTag/index.vue';
 import SuperPopover from '../SuperPopover/index.vue';
 import TagItem from './TagItem.vue';
 import { getCountProps, getTagEntries, normalizeLimit } from './config.ts';
@@ -34,11 +34,15 @@ function bindReference(
   element: unknown,
   setReference: (value: unknown) => void,
 ) {
+  const reference =
+    element && typeof element === 'object' && '$el' in element
+      ? element.$el
+      : element;
   interaction.reference.value =
-    typeof HTMLElement !== 'undefined' && element instanceof HTMLElement
-      ? element
+    typeof HTMLElement !== 'undefined' && reference instanceof HTMLElement
+      ? reference
       : undefined;
-  setReference(element);
+  setReference(interaction.reference.value ?? null);
 }
 function bindContent(element: unknown) {
   interaction.content.value =
@@ -80,10 +84,12 @@ function pointerLeave(event: PointerEvent, area: 'reference' | 'content') {
       :popper-style="popover.popperStyle"
     >
       <template #reference="{ setReference }">
-        <button
+        <SuperTag
           :ref="(element) => bindReference(element, setReference)"
+          v-bind="countProps"
           class="super-tags__more"
-          type="button"
+          role="button"
+          tabindex="0"
           :aria-label="`查看其余 ${hidden.length} 个标签`"
           :aria-expanded="visible"
           :aria-controls="contentId"
@@ -93,11 +99,10 @@ function pointerLeave(event: PointerEvent, area: 'reference' | 'content') {
           @focusout="interaction.focusOut"
           @click.stop="interaction.open"
           @keydown.down.prevent="interaction.focusContent"
+          @keydown.enter.prevent="interaction.open"
+          @keydown.space.prevent="interaction.open"
+          >{{ `+${hidden.length}` }}</SuperTag
         >
-          <ElTag v-bind="countProps" aria-hidden="true"
-            >+{{ hidden.length }}</ElTag
-          >
-        </button>
       </template>
       <template #content>
         <div
@@ -146,23 +151,11 @@ function pointerLeave(event: PointerEvent, area: 'reference' | 'content') {
   max-width: 100%;
   vertical-align: middle;
 }
-.super-tags__visible :deep(.el-tag),
-.super-tags__overflow :deep(.el-tag) {
-  --el-tag-font-size: var(--wt-font-size-caption, 12px);
-  font-weight: var(--wt-font-weight-regular, 400);
-}
 .super-tags__more {
-  display: inline-flex;
   flex: none;
-  padding: 0;
-  border: 0;
-  border-radius: var(--wt-radius-base, 4px);
-  background: transparent;
-  color: inherit;
-  font: inherit;
   cursor: pointer;
   &:focus-visible {
-    outline: 2px solid var(--wt-color-primary, #409eff);
+    outline: 2px solid var(--wt-color-primary, #3156ff);
     outline-offset: 2px;
   }
 }
@@ -177,7 +170,7 @@ function pointerLeave(event: PointerEvent, area: 'reference' | 'content') {
   // 将留白放在交互区域内，鼠标停在浮层留白处也保持打开。
   padding: 8px;
   &:focus-visible {
-    outline: 1px solid var(--wt-color-primary, #409eff);
+    outline: 1px solid var(--wt-color-primary, #3156ff);
     outline-offset: 1px;
   }
   :deep(.el-tag) {

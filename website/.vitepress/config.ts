@@ -91,6 +91,7 @@ export default defineConfig({
       {
         text: '数据展示',
         items: [
+          { text: 'SuperTag', link: '/components/super-tag' },
           { text: 'SuperTags', link: '/components/super-tags' },
           { text: 'SuperStatus', link: '/components/super-status' },
           { text: 'SuperTable', link: '/components/super-table' },

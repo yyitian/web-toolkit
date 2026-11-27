@@ -158,8 +158,13 @@ export function createWtTheme(options: WtThemeOptions = {}): Plugin {
   };
 }
 
+/** 内部组件允许未安装主题插件时使用默认外观，不从包入口导出。 */
+export function useOptionalWtTheme(): WtThemeContext | undefined {
+  return inject(wtThemeKey, undefined);
+}
+
 export function useWtTheme(): WtThemeContext {
-  const context = inject(wtThemeKey);
+  const context = useOptionalWtTheme();
   if (!context) {
     throw new Error(
       '[web-toolkit] useWtTheme() 需要先执行 app.use(createWtTheme())。',

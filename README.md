@@ -72,6 +72,9 @@ const { setTheme } = useWtTheme();
 `SuperStatus` 以主题色圆点与文字展示多状态，内置待处理、启动中、运行中、成功、失败、
 已停用与未知状态，支持精确值匹配、自定义文案和颜色，与布尔激活开关独立。
 
+`SuperTag` 兼容 ElTag 属性、事件、插槽和公开实例，未指定 `effect` 时随明暗主题切换，
+显式配置优先。`SuperTags` 的标签及轻量 `+N` 计数入口复用相同外观。
+
 `SuperTags` 默认展示前 2 个标签，其余通过 `+N` 悬停浮层展示；`limit` 可指定数量、
 设为 `0` 仅展示计数，或设为 `'all'` 全部展示。普通表格的 `tableType: 'tag'` 同样默认
 折叠为 2 个，可通过 `cellProps.limit` 调整，原有 ElTag 属性及回调继续透传实际标签。

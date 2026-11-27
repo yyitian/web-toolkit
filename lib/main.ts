@@ -18,6 +18,11 @@ export { default as SuperIcon } from '@/components/SuperIcon/index.vue';
 export { default as SuperButton } from '@/components/SuperButton/index.vue';
 export type { SuperButtonProps } from '@/components/SuperButton/index.vue';
 export { default as SuperPopover } from '@/components/SuperPopover/index.vue';
+export { default as SuperTag } from '@/components/SuperTag/index.vue';
+export type {
+  SuperTagProps,
+  SuperTagInstance,
+} from '@/components/SuperTag/types.ts';
 export { default as SuperTags } from '@/components/SuperTags/index.vue';
 export type {
   SuperTagContext,

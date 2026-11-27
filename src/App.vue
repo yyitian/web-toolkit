@@ -14,6 +14,10 @@ import TableFeaturesDemo from '../website/examples/demos/TableFeaturesDemo.vue';
 import TableLayoutDemo from '../website/examples/demos/TableLayoutDemo.vue';
 import TableLoadingDemo from '../website/examples/demos/TableLoadingDemo.vue';
 import TagsDemo from '../website/examples/demos/TagsDemo.vue';
+import TagBasicDemo from '../website/examples/demos/TagBasicDemo.vue';
+import TagAppearanceDemo from '../website/examples/demos/TagAppearanceDemo.vue';
+import TagEventsDemo from '../website/examples/demos/TagEventsDemo.vue';
+import TagContentDemo from '../website/examples/demos/TagContentDemo.vue';
 import CardTableDemo from '../website/examples/demos/CardTableDemo.vue';
 import CardAdaptiveActionsDemo from '../website/examples/demos/CardAdaptiveActionsDemo.vue';
 import StatusDemo from '../website/examples/demos/StatusDemo.vue';
@@ -69,6 +73,11 @@ function startLoading() {
     </section>
 
     <section class="demo-section" data-demo="tags-regression">
+      <h2>SuperTag 单标签</h2>
+      <TagBasicDemo />
+      <TagAppearanceDemo />
+      <TagEventsDemo />
+      <TagContentDemo />
       <h2>SuperTags 多标签折叠</h2>
       <TagsDemo />
     </section>

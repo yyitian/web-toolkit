@@ -10,7 +10,7 @@ import TagsPopoverDemo from '../examples/demos/TagsPopoverDemo.vue';
 
 # SuperTags
 
-展示标签列表，超出指定数量时通过浮层查看。
+展示标签列表，超出指定数量时通过浮层查看。单个标签使用 [SuperTag](./super-tag.md)。
 
 ## 基础用法
 
@@ -77,7 +77,7 @@ const options: { value: SuperTagsLimit; label: string }[] = [
 
 ## 设置标签外观
 
-通过 `props` 设置标签外观，单个标签的 `props` 优先。
+通过 `props` 设置公共外观，单个标签的 `props` 优先。颜色、尺寸与主题行为参见 [SuperTag](./super-tag.md#设置外观)。
 
 <ClientOnly><DemoBlock><TagsAppearanceDemo /></DemoBlock></ClientOnly>
 
@@ -88,41 +88,19 @@ const options: { value: SuperTagsLimit; label: string }[] = [
 import { SuperTags } from '@yyitian/web-toolkit';
 import type { SuperTagValue } from '@yyitian/web-toolkit';
 
-const tones = [
-  { label: '主要', props: { type: 'primary' } },
-  { label: '成功', props: { type: 'success' } },
-  { label: '信息', props: { type: 'info' } },
-  { label: '警告', props: { type: 'warning' } },
-  { label: '危险', props: { type: 'danger' } },
-] satisfies SuperTagValue[];
-const effects = [
-  { value: 'light', label: '浅色' },
-  { value: 'dark', label: '深色' },
-  { value: 'plain', label: '描边' },
-] as const;
-const sizes: SuperTagValue[] = [
-  { label: '小尺寸', props: { size: 'small' } },
-  { label: '默认尺寸' },
-  { label: '大尺寸', props: { size: 'large' } },
-  { label: '圆角', props: { round: true } },
+const tags: SuperTagValue[] = [
+  '公共外观',
+  { label: '单项覆盖颜色', props: { type: 'warning' } },
+  { label: '单项覆盖尺寸', props: { size: 'large' } },
 ];
 </script>
 
 <template>
-  <div class="tags-appearance" data-demo="tags-appearance">
-    <div
-      v-for="effect in effects"
-      :key="effect.value"
-      class="tags-appearance__row"
-    >
-      <span class="wt-text-caption">{{ effect.label }}</span>
-      <SuperTags :tags="tones" limit="all" :props="{ effect: effect.value }" />
-    </div>
-    <div class="tags-appearance__row">
-      <span class="wt-text-caption">尺寸与圆角</span>
-      <SuperTags :tags="sizes" limit="all" />
-    </div>
-  </div>
+  <SuperTags
+    :tags="tags"
+    limit="all"
+    :props="{ type: 'success', size: 'small' }"
+  />
 </template>
 ```
 
@@ -152,7 +130,7 @@ const tags: SuperTagValue[] = [
 </script>
 
 <template>
-  <SuperTags :tags="tags" limit="all" data-demo="tags-values" />
+  <SuperTags :tags="tags" limit="all" />
 </template>
 ```
 

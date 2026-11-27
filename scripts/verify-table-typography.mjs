@@ -100,13 +100,13 @@ assert.match(
   status,
   /color: var\(--wt-status-text-color, var\(--wt-text-regular\)\)/,
 );
-const tags = await styles('SuperTags/index.vue');
+const tags = await styles('SuperTag/index.vue');
 assert.match(
-  rule(tags, /\.el-tag\s*$/),
+  rule(tags, /\.super-tag\.el-tag\[/),
   /--el-tag-font-size: var\(--wt-font-size-caption/,
 );
 assert.doesNotMatch(
-  rule(tags, /\.el-tag\s*$/),
+  rule(tags, /\.super-tag\.el-tag\[/),
   /(?:^|;)\s*color:/,
   '标签继续使用 ElTag 的业务语义色',
 );
