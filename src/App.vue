@@ -18,6 +18,11 @@ import TagBasicDemo from '../website/examples/demos/TagBasicDemo.vue';
 import TagAppearanceDemo from '../website/examples/demos/TagAppearanceDemo.vue';
 import TagEventsDemo from '../website/examples/demos/TagEventsDemo.vue';
 import TagContentDemo from '../website/examples/demos/TagContentDemo.vue';
+import SegmentedBasicDemo from '../website/examples/demos/SegmentedBasicDemo.vue';
+import SegmentedDisabledDemo from '../website/examples/demos/SegmentedDisabledDemo.vue';
+import SegmentedLayoutDemo from '../website/examples/demos/SegmentedLayoutDemo.vue';
+import SegmentedOverflowDemo from '../website/examples/demos/SegmentedOverflowDemo.vue';
+import SegmentedContentDemo from '../website/examples/demos/SegmentedContentDemo.vue';
 import CardTableDemo from '../website/examples/demos/CardTableDemo.vue';
 import CardAdaptiveActionsDemo from '../website/examples/demos/CardAdaptiveActionsDemo.vue';
 import StatusDemo from '../website/examples/demos/StatusDemo.vue';
@@ -70,6 +75,17 @@ function startLoading() {
       <CardTableDemo />
       <h2>卡片操作自适应</h2>
       <CardAdaptiveActionsDemo />
+    </section>
+
+    <section class="demo-section" data-demo="segmented-regression">
+      <h2>SuperSegmented 分段选择</h2>
+      <SegmentedBasicDemo />
+      <h3>禁用与布局</h3>
+      <SegmentedDisabledDemo />
+      <SegmentedLayoutDemo />
+      <h3>超宽滚动与自定义内容</h3>
+      <SegmentedOverflowDemo />
+      <SegmentedContentDemo />
     </section>
 
     <section class="demo-section" data-demo="tags-regression">

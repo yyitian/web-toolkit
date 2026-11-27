@@ -56,6 +56,7 @@
     "verify:locale": "node scripts/verify-locale.mjs",
     "verify:table": "node scripts/verify-table.mjs",
     "verify:tags": "node scripts/verify-tags.mjs",
+    "verify:segmented": "node scripts/verify-segmented.mjs",
     "verify:utils": "node scripts/verify-utils.mjs",
     "verify:release": "node scripts/release/core.test.mjs",
     "release:check": "node scripts/release/check.mjs",

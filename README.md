@@ -72,6 +72,9 @@ const { setTheme } = useWtTheme();
 `SuperStatus` 以主题色圆点与文字展示多状态，内置待处理、启动中、运行中、成功、失败、
 已停用与未知状态，支持精确值匹配、自定义文案和颜色，与布尔激活开关独立。
 
+`SuperSegmented` 兼容 ElSegmented 属性与插槽，提供主题色滑块、排版适配和超宽横向滚动。
+详见 [SuperSegmented](https://wt.yyitian.top/components/super-segmented)。
+
 `SuperTag` 兼容 ElTag 属性、事件、插槽和公开实例，未指定 `effect` 时随明暗主题切换，
 显式配置优先。`SuperTags` 的标签及轻量 `+N` 计数入口复用相同外观。
 

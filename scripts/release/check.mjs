@@ -19,6 +19,7 @@ for (const script of [
   'verify:locale',
   'verify:table',
   'verify:tags',
+  'verify:segmented',
   'verify:card',
   'verify:table-typography',
   'verify:super-typography',

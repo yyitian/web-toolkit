@@ -18,6 +18,13 @@ export { default as SuperIcon } from '@/components/SuperIcon/index.vue';
 export { default as SuperButton } from '@/components/SuperButton/index.vue';
 export type { SuperButtonProps } from '@/components/SuperButton/index.vue';
 export { default as SuperPopover } from '@/components/SuperPopover/index.vue';
+export { default as SuperSegmented } from '@/components/SuperSegmented/index.vue';
+export type {
+  SuperSegmentedProps,
+  SuperSegmentedOption,
+  SuperSegmentedValue,
+  SuperSegmentedInstance,
+} from '@/components/SuperSegmented/types.ts';
 export { default as SuperTag } from '@/components/SuperTag/index.vue';
 export type {
   SuperTagProps,

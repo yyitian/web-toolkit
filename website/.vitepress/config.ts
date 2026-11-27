@@ -100,6 +100,7 @@ export default defineConfig({
       {
         text: '表单组件',
         items: [
+          { text: 'SuperSegmented', link: '/components/super-segmented' },
           { text: 'SuperForm', link: '/components/super-form' },
           { text: 'SuperFormDialog', link: '/components/super-form-dialog' },
         ],
